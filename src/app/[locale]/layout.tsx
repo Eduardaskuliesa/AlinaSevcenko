@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono,  } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import "./globals.css";
+import NavBar from "./(main)/components/NavBar";
 
 export const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,6 +41,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <NextIntlClientProvider locale={locale} messages={messages}>
+          <NavBar></NavBar>
           {children}
         </NextIntlClientProvider>
       </body>
