@@ -12,10 +12,14 @@ module.exports = {
           DEFAULT: "#F7D09E",
           light: "#F0E5C2",
         },
-        background: "#F2F3F4",
+        background: "#C9BDC7",
       },
       screens: {
         xs: "480px",
+      },
+
+      fontFamily: {
+        times: ["var(--font-times)"],
       },
     },
   },
