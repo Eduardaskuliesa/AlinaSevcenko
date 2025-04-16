@@ -29,7 +29,7 @@ const NavBarBody: React.FC<NavBarBodyProps> = ({ isActive, children }) => {
       variants={variants}
       animate={isActive ? "open" : "closed"}
       initial="closed"
-      className="bg-primary rounded-[25px] relative sm:w-auto w-full"
+      className="bg-primary rounded-[25px] relative sm:w-auto w-full "
     >
       {children}
     </motion.div>

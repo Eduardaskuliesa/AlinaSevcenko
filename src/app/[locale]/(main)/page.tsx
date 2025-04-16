@@ -1,18 +1,79 @@
+"use client";
 import { Link } from "@/i18n/navigation";
+import { useTransitionRouter } from "next-view-transitions";
+import Image from "next/image";
+
+export const pageAnimation = () => {
+  document.documentElement.animate(
+    [
+      {
+        opacity: 1,
+        scale: 1,
+        transform: "translateY(0)",
+      },
+      {
+        opacity: 0.1,
+        scale: 0.8,
+        transform: "translateY(-100px)",
+      },
+    ],
+    {
+      duration: 800,
+      easing: "cubic-bezier(0.76, 0, 0.24, 1)",
+      fill: "forwards",
+      pseudoElement: "::view-transition-old(root)",
+    }
+  );
+
+  document.documentElement.animate(
+    [
+      {
+        transform: "translateY(100%)",
+      },
+      {
+        transform: "translateY(0)",
+      },
+    ],
+    {
+      duration: 1000,
+      easing: "cubic-bezier(0.76, 0, 0.24, 1)",
+      fill: "forwards",
+      pseudoElement: "::view-transition-new(root)",
+    }
+  );
+};
 
 export default function Home() {
+  const router = useTransitionRouter();
   return (
     <>
       <main className="bg-background min-h-screen p-12 lg:px-24 relative overflow-hidden">
         <div className="max-w-3xl mx-auto px-6">
-          <div className="bg-primary rounded-t-full h-[400px] w-[500px] mx-auto"></div>
-          <div className="text-7xl font-times font-semibold text-center -mt-6 mb-2">
+          <div className="bg-primary rounded-t-full h-[400px] w-[400px] mx-auto flex relative">
+            <Image
+              objectFit="cover"
+              alt="Alina Photo"
+              src={"/AlinaPhoto.jpg"}
+              fill
+              sizes="100%"
+              priority
+              quality={100}
+              className="w-full h-full rounded-t-full"
+            ></Image>
+          </div>
+          <div className="text-7xl font-times font-semibold text-center mb-2">
             Welcome
           </div>
           <div className="w-full h-1 bg-primary mb-10"></div>
           <div className="flex flex-col items-center gap-6">
             <Link
               href={"/about"}
+              onClick={(e) => {
+                e.preventDefault();
+                router.push("/about", {
+                  onTransitionReady: pageAnimation,
+                });
+              }}
               className="bg-secondary hover:bg-secondary-light transition-colors hover:shadow-lg w-full shadow-md text-center flex flex-col rounded-full"
             >
               <span className=" text-xl font-semibold text-gray-800">
@@ -24,6 +85,12 @@ export default function Home() {
             </Link>
             <Link
               href={"/contact"}
+              onClick={(e) => {
+                e.preventDefault();
+                router.push("/contact", {
+                  onTransitionReady: pageAnimation,
+                });
+              }}
               className="bg-secondary hover:bg-secondary-light hover:shadow-lg transition-colors w-full shadow-md  text-center flex flex-col rounded-full"
             >
               <span className=" text-xl font-semibold text-gray-800">
@@ -33,7 +100,16 @@ export default function Home() {
                 Brief description about me and my methods
               </span>
             </Link>
-            <Link href={'/personal'} className="bg-secondary hover:bg-secondary-light hover:shadow-lg transition-colors w-full shadow-md  text-center flex flex-col rounded-full">
+            <Link
+              href={"/personal"}
+              onClick={(e) => {
+                e.preventDefault();
+                router.push("/personal", {
+                  onTransitionReady: pageAnimation,
+                });
+              }}
+              className="bg-secondary hover:bg-secondary-light hover:shadow-lg transition-colors w-full shadow-md  text-center flex flex-col rounded-full"
+            >
               <span className=" text-xl font-semibold text-gray-800">
                 Personal
               </span>{" "}

@@ -1,6 +1,10 @@
+"use client";
 import { Link } from "@/i18n/navigation";
 import React from "react";
 import { motion } from "motion/react";
+import { useTransitionRouter } from "next-view-transitions";
+import { pageAnimation } from "../../page";
+import page from "../../about/page";
 
 const perspective = {
   initial: {
@@ -33,14 +37,15 @@ const Links = [
   { name: "Personal", href: "/personal" },
 ];
 
-const NavItems = () => {
+const NavItems = ({ setIsActive, isActive }) => {
+  const router = useTransitionRouter();
   return (
     <div className="h-full px-[40px] pt-[100px] pb-[50px] box-border">
       <div className="flex flex-col gap-2">
         {Links.map((link, i) => (
           <div
             key={i}
-            style={{ perspective: "120px", perspectiveOrigin: "bottom" }}
+            style={{ perspective: "120px", perspectiveOrigin: "top" }}
           >
             <motion.div
               variants={perspective}
@@ -49,7 +54,17 @@ const NavItems = () => {
               initial="initial"
               custom={i}
             >
-              <Link className="text-4xl" href={link.href}>
+              <Link
+                onClick={(e) => {
+                  e.preventDefault();
+                  setIsActive(false);
+                  router.push(link.href, {
+                    onTransitionReady: pageAnimation,
+                  });
+                }}
+                className="text-4xl"
+                href={link.href}
+              >
                 {link.name}
               </Link>
             </motion.div>
