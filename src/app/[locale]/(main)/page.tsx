@@ -35,7 +35,7 @@ export const pageAnimation = () => {
       },
     ],
     {
-      duration: 1000,
+      duration: 800,
       easing: "cubic-bezier(0.76, 0, 0.24, 1)",
       fill: "forwards",
       pseudoElement: "::view-transition-new(root)",

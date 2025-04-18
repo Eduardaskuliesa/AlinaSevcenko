@@ -1,6 +1,23 @@
 {
-  "HomePage": {
-    "title": "Главная страница",
-    "description": "Это главная страница, на которой вы можете найти различные функции и ссылки."
+  "RegisterPage": {
+    "title": "Регистрация",
+    "description": "Создайте аккаунт, чтобы получить доступ к платформе",
+    "email": "Эл. почта",
+    "emailPlaceholder": "Укажите свою почту",
+    "password": "Пароль",
+    "passwordPlaceholder": "Придумайте пароль",
+    "requirements": "Требования:",
+    "validEmail": "Норм. почта",
+    "minChars": "8+ символов",
+    "capitalLetter": "1+ большая буква",
+    "agreePrefix": "Я согласен с",
+    "termsLink": "условиями",
+    "and": "и",
+    "privacyLink": "политикой конфиденциальности",
+    "createAccount": "Создайте аккаунт",
+    "or": "или",
+    "googleSignUp": "Через Google",
+    "facebookSignUp": "Через Facebook",
+    "alreadyHaveAccount": "Уже есть аккаунт? Войдите"
   }
 }

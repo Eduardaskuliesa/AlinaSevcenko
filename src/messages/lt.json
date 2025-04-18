@@ -1,6 +1,23 @@
 {
-  "HomePage": {
-    "title": "Pagrindinis puslapis",
-    "description": "Tai yra pagrindinis puslapis, kuriame galite rasti įvairių funkcijų ir nuorodų."
+  "RegisterPage": {
+    "title": "Registracija",
+    "description": "Susikurkite paskyrą, kad galėtumėte prisijungti prie platformos",
+    "email": "El. paštas",
+    "emailPlaceholder": "Įveskite savo el. paštą",
+    "password": "Slaptažodis",
+    "passwordPlaceholder": "Sugalvokite slaptažodį",
+    "requirements": "Reikalavimai:",
+    "validEmail": "Geras el. paštas",
+    "minChars": "8+ simboliai",
+    "capitalLetter": "1+ didžioji raidė",
+    "agreePrefix": "Sutinku su",
+    "termsLink": "sąlygomis",
+    "and": "ir",
+    "privacyLink": "privatumo politika",
+    "createAccount": "Susikurkite paskyrą",
+    "or": "arba",
+    "googleSignUp": "Per Google",
+    "facebookSignUp": "Per Facebook",
+    "alreadyHaveAccount": "Jau turite paskyrą? Prisijunkite"
   }
 }

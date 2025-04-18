@@ -4,7 +4,7 @@ import React from "react";
 import { motion } from "motion/react";
 import { useTransitionRouter } from "next-view-transitions";
 import { pageAnimation } from "../../page";
-import page from "../../about/page";
+
 
 const perspective = {
   initial: {
@@ -57,7 +57,7 @@ const NavItems = ({ setIsActive, isActive }) => {
               <Link
                 onClick={(e) => {
                   e.preventDefault();
-                  setIsActive(false);
+                  setIsActive(!isActive);
                   router.push(link.href, {
                     onTransitionReady: pageAnimation,
                   });

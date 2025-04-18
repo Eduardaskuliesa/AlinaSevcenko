@@ -64,7 +64,9 @@ const NavBar = () => {
         className="bg-primary rounded-[25px] relative"
       >
         <AnimatePresence>
-          {isActive && <NavItems setIsActive={setIsActive} isActive={isActive} />}
+          {isActive && (
+            <NavItems setIsActive={setIsActive} isActive={isActive} />
+          )}
         </AnimatePresence>
       </motion.div>
       <NavButton isActive={isActive} setIsActive={setIsActive} />
