@@ -3,8 +3,12 @@ import { Link } from "@/i18n/navigation";
 import React from "react";
 import { motion } from "motion/react";
 import { useTransitionRouter } from "next-view-transitions";
-import { pageAnimation } from "../../page";
+import { pageAnimation } from "../../pageTransition";
 
+interface NavItemsProps {
+  setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
+  isActive: boolean;
+}
 
 const perspective = {
   initial: {
@@ -37,7 +41,7 @@ const Links = [
   { name: "Personal", href: "/personal" },
 ];
 
-const NavItems = ({ setIsActive, isActive }) => {
+const NavItems: React.FC<NavItemsProps> = ({ setIsActive, isActive }) => {
   const router = useTransitionRouter();
   return (
     <div className="h-full px-[40px] pt-[100px] pb-[50px] box-border">

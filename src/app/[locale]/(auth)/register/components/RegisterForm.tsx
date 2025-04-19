@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import ValidateBox from "./ValidateBox";
-import { Checkbox } from "@/components/ui/checkbox";
 import Divider from "./Divider";
 import SocialLoginButtons from "./SocialLoginButtons";
 import { useTranslations } from "next-intl";
@@ -15,7 +14,7 @@ const RegisterForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [agreeToTerms, setAgreeToTerms] = useState(false);
-
+  const [shouldShakeInvalid, setShouldShakeInvalid] = useState(false);
   // Validation states
   const [isEmailValid, setIsEmailValid] = useState<boolean | null>(null);
   const [isLengthValid, setIsLengthValid] = useState<boolean | null>(null);
@@ -44,7 +43,20 @@ const RegisterForm = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
+
+    // Check validation before proceeding
+    if (!isEmailValid || !isLengthValid || !hasCapital || !agreeToTerms) {
+      setShouldShakeInvalid(true);
+
+      // Reset shake after animation completes
+      setTimeout(() => {
+        setShouldShakeInvalid(false);
+      }, 500);
+
+      return;
+    }
+
+    // Form is valid, proceed with submission
     console.log("Form submitted", { email, password, agreeToTerms });
   };
 
@@ -59,7 +71,6 @@ const RegisterForm = () => {
         </label>
         <Input
           id="email"
-          type="email"
           className="w-full h-12 border-gray-800 lg:text-lg ring-secondary"
           placeholder={t("emailPlaceholder")}
           value={email}
@@ -93,25 +104,25 @@ const RegisterForm = () => {
         </div>
       </div>
 
-      {/* Validation box */}
       <ValidateBox
         isEmailValid={isEmailValid}
         isLengthValid={isLengthValid}
         hasCapital={hasCapital}
+        shouldShakeInvalid={shouldShakeInvalid}
       />
 
-      {/* Terms and conditions checkbox */}
       <div className="mt-4 mb-2">
-        <div className="flex items-start space-x-2">
-          <Checkbox
+        <div className="flex items-center space-x-2">
+          <input
+            type="checkbox"
             id="terms"
             checked={agreeToTerms}
-            onCheckedChange={(checked) => setAgreeToTerms(checked === true)}
-            className="data-[state=checked]:bg-secondary data-[state=checked]:text-gray-800 border-gray-800"
+            onChange={(e) => setAgreeToTerms(e.target.checked)}
+            className="h-4 w-4 rounded border-gray-800 text-secondary focus:ring-secondary"
           />
           <label
             htmlFor="terms"
-            className="text-sm text-gray-700  cursor-pointer"
+            className="text-sm text-gray-700 cursor-pointer"
           >
             {t("agreePrefix")}{" "}
             <a href="#" className="font-bold hover:underline">
