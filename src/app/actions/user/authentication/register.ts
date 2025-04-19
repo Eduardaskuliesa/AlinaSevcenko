@@ -1,3 +1,4 @@
+"use server";
 import { dynamoDb } from "@/services/dynamoDB";
 import { dynamoTableName } from "@/services/dynamoDB";
 import { PutCommand } from "@aws-sdk/lib-dynamodb";
@@ -6,14 +7,14 @@ import bcrypt from "bcryptjs";
 
 export interface RegisterFormData {
   email: string;
-  passsword: string;
+  password: string;
   firstName?: string;
   lastName?: string;
 }
 
-export async function name(formData: RegisterFormData) {
+export async function register(formData: RegisterFormData) {
   try {
-    const hashedPassword = await bcrypt.hash(formData.passsword, 10);
+    const hashedPassword = await bcrypt.hash(formData.password, 10);
 
     const userId = uuidv4();
 
@@ -32,7 +33,7 @@ export async function name(formData: RegisterFormData) {
         createdAt: new Date().toISOString(),
         lastLoginAt: null,
         GSI1PK: formData.email,
-        GSI1SK: "PENDING_VERIFICATION",
+        GSI1SK: "EMAIL",
       },
     });
 

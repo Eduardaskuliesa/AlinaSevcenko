@@ -1,29 +1,9 @@
-
 import { v4 as uuidv4 } from "uuid";
 import { dynamoDb, dynamoTableName } from "@/services/dynamoDB";
-import { PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
+import { PutCommand } from "@aws-sdk/lib-dynamodb";
 
 export async function generateVerificationCode(email: string) {
   try {
-    const checkEmailCommand = new QueryCommand({
-      TableName: dynamoTableName,
-      IndexName: "GSI1",
-      KeyConditionExpression: "GSI1PK = :email AND GSI1SK = :method",
-      ExpressionAttributeValues: {
-        ":email": email,
-        ":method": "EMAIL",
-      },
-    });
-
-    const emailResult = await dynamoDb.send(checkEmailCommand);
-
-    if (emailResult.Items && emailResult.Items.length > 0) {
-      return {
-        success: false,
-        message: "An account with this email already exists",
-      };
-    }
-
     const verificationCode = Math.floor(
       100000 + Math.random() * 900000
     ).toString();
@@ -49,7 +29,7 @@ export async function generateVerificationCode(email: string) {
       success: true,
       message: "Verification code sent to your email",
       tempId: tempId,
-      code: verificationCode, 
+      code: verificationCode,
     };
   } catch (error) {
     console.error("Error generating verification code:", error);

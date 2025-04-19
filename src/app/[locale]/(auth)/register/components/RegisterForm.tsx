@@ -1,11 +1,14 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, AlertCircle, Loader2 } from "lucide-react";
 import ValidateBox from "./ValidateBox";
 import Divider from "./Divider";
 import SocialLoginButtons from "./SocialLoginButtons";
 import { useTranslations } from "next-intl";
+import { userActions } from "@/app/actions/user";
+import { RegisterFormData } from "@/app/actions/user/authentication/register";
 
 const RegisterForm = () => {
   const t = useTranslations("RegisterPage");
@@ -13,9 +16,10 @@ const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [agreeToTerms, setAgreeToTerms] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [shouldShakeInvalid, setShouldShakeInvalid] = useState(false);
-  // Validation states
   const [isEmailValid, setIsEmailValid] = useState<boolean | null>(null);
   const [isLengthValid, setIsLengthValid] = useState<boolean | null>(null);
   const [hasCapital, setHasCapital] = useState<boolean | null>(null);
@@ -25,9 +29,12 @@ const RegisterForm = () => {
       setIsEmailValid(null);
       return;
     }
-
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     setIsEmailValid(emailRegex.test(email));
+
+    if (emailError) {
+      setEmailError("");
+    }
   }, [email]);
 
   useEffect(() => {
@@ -39,43 +46,123 @@ const RegisterForm = () => {
 
     setIsLengthValid(password.length >= 8);
     setHasCapital(/[A-Z]/.test(password));
-  }, [password]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+    if (passwordError) {
+      setPasswordError("");
+    }
+  }, [password, passwordError]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Check validation before proceeding
-    if (!isEmailValid || !isLengthValid || !hasCapital || !agreeToTerms) {
-      setShouldShakeInvalid(true);
+    setEmailError("");
+    setPasswordError("");
 
-      // Reset shake after animation completes
+    let hasError = false;
+
+    if (!email.trim()) {
+      setEmailError(t("emailRequired"));
+      hasError = true;
+    }
+
+    if (!password.trim()) {
+      setPasswordError(t("passwordRequired"));
+      hasError = true;
+    }
+
+    if (hasError) {
+      setShouldShakeInvalid(true);
       setTimeout(() => {
         setShouldShakeInvalid(false);
       }, 500);
-
       return;
     }
 
-    // Form is valid, proceed with submission
-    console.log("Form submitted", { email, password, agreeToTerms });
+    // Verify email format and password requirements
+    if (!isEmailValid || !isLengthValid || !hasCapital) {
+      setShouldShakeInvalid(true);
+      setTimeout(() => {
+        setShouldShakeInvalid(false);
+      }, 500);
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const formData: RegisterFormData = {
+        email,
+        password,
+      };
+
+      const emailCheckResult = await userActions.authentication.checkEmail(
+        email
+      );
+      if (!emailCheckResult.success) {
+        if (emailCheckResult.error === "EMAIL_ALREADY_EXISTS") {
+          console.log("Email already exists:", emailCheckResult.error);
+          setEmailError(t("emailAlreadyExists"));
+        }
+        return;
+      }
+
+      const result = await userActions.authentication.register(formData);
+
+      if (result.success) {
+        console.log("Registration successful:", result.message);
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  const emailInputClasses = `w-full h-12 lg:text-lg ${
+    emailError
+      ? "border-red-500 ring-red-300 focus:ring-red-300 focus:border-red-500"
+      : "border-gray-800 ring-secondary bg-gray-50"
+  }`;
+
+  const passwordInputClasses = `w-full h-12 pr-10 lg:text-lg ${
+    passwordError
+      ? "border-red-500 ring-red-300 focus:ring-red-300 focus:border-red-500"
+      : "border-gray-800 ring-secondary bg-gray-50"
+  }`;
 
   return (
     <form className="flex flex-col" onSubmit={handleSubmit}>
-      <div className="mb-6">
+      <div className="mb-4">
         <label
           htmlFor="email"
           className="block text-sm font-medium text-gray-700 mb-1"
         >
           {t("email")}
         </label>
-        <Input
-          id="email"
-          className="w-full h-12 border-gray-800 lg:text-lg ring-secondary"
-          placeholder={t("emailPlaceholder")}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <div className="relative">
+          <Input
+            id="email"
+            className={emailInputClasses}
+            placeholder={t("emailPlaceholder")}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            aria-invalid={!!emailError}
+            aria-describedby={emailError ? "email-error" : undefined}
+          />
+          {emailError && (
+            <div className="absolute right-3 top-3 text-red-500">
+              <AlertCircle size={20} />
+            </div>
+          )}
+        </div>
+        {emailError && (
+          <p
+            id="email-error"
+            className="mt-1 text-base font-semibold text-red-500"
+          >
+            {emailError}
+          </p>
+        )}
       </div>
 
       <div className="mb-2">
@@ -89,10 +176,12 @@ const RegisterForm = () => {
           <Input
             id="password"
             type={showPassword ? "text" : "password"}
-            className="w-full h-12 border-gray-800 ring-secondary pr-10 lg:text-lg"
+            className={passwordInputClasses}
             placeholder={t("passwordPlaceholder")}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            aria-invalid={!!passwordError}
+            aria-describedby={passwordError ? "password-error" : undefined}
           />
           <button
             type="button"
@@ -102,6 +191,14 @@ const RegisterForm = () => {
             {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
           </button>
         </div>
+        {passwordError && (
+          <p
+            id="password-error"
+            className="mt-1 text-base font-semibold text-red-500"
+          >
+            {passwordError}
+          </p>
+        )}
       </div>
 
       <ValidateBox
@@ -111,41 +208,34 @@ const RegisterForm = () => {
         shouldShakeInvalid={shouldShakeInvalid}
       />
 
-      <div className="mt-4 mb-2">
-        <div className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            id="terms"
-            checked={agreeToTerms}
-            onChange={(e) => setAgreeToTerms(e.target.checked)}
-            className="h-4 w-4 rounded border-gray-800 text-secondary focus:ring-secondary"
-          />
-          <label
-            htmlFor="terms"
-            className="text-sm text-gray-700 cursor-pointer"
-          >
-            {t("agreePrefix")}{" "}
-            <a href="#" className="font-bold hover:underline">
-              {t("termsLink")}
-            </a>{" "}
-            {t("and")}{" "}
-            <a href="#" className="font-bold hover:underline">
-              {t("privacyLink")}
-            </a>
-          </label>
-        </div>
-      </div>
-
       <button
         type="submit"
-        className="w-full h-12 cursor-pointer bg-secondary rounded-lg text-lg text-gray-800 font-medium py-2 px-4 mt-2 hover:bg-secondary-light transition"
-        disabled={!agreeToTerms}
+        className="w-full h-12 cursor-pointer bg-secondary rounded-lg text-lg text-gray-800 font-medium py-2 px-4 mt-2 hover:bg-secondary-light transition flex items-center justify-center"
+        disabled={isLoading}
       >
-        {t("createAccount")}
+        {isLoading ? (
+          <>
+            <Loader2 className="animate-spin mr-2" />
+            {t("loading") || "Loading..."}
+          </>
+        ) : (
+          t("createAccount")
+        )}
       </button>
 
       <Divider />
       <SocialLoginButtons />
+
+      <div className="mt-4 text-sm text-gray-600 text-center">
+        {t("agreePrefix") || "By registering, you agree to our"}{" "}
+        <a href="#" className="font-medium text-gray-800 hover:underline">
+          {t("termsLink") || "Terms of Service"}
+        </a>{" "}
+        {t("and") || "and"}{" "}
+        <a href="#" className="font-medium text-gray-800 hover:underline">
+          {t("privacyLink") || "Privacy Policy"}
+        </a>
+      </div>
     </form>
   );
 };
