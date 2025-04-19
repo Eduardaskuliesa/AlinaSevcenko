@@ -23,5 +23,27 @@
     "googleSignUp": "Через Google",
     "facebookSignUp": "Через Facebook",
     "alreadyHaveAccount": "Уже есть аккаунт? Войдите"
+  },
+  "AuthNavbar": {
+    "home": "Главная",
+    "login": "Войти",
+    "chooseLanguage": "Выберите язык",
+    "register": "Регистрация",
+    "lithuanian": "Литовский",
+    "russian": "Русский"
+  },
+  "LoginPage": {
+    "title": "Вход в платформу",
+    "email": "Эл. почта",
+    "emailPlaceholder": "Введите вашу эл. почту",
+    "emailRequired": "Необходимо указать эл. почту",
+    "password": "Пароль",
+    "passwordPlaceholder": "Введите ваш пароль",
+    "passwordRequired": "Необходимо указать пароль",
+    "forgotPassword": "Забыли пароль?",
+    "login": "Войти",
+    "loading": "Загрузка...",
+    "invalidCredentials": "Неверная эл. почта или пароль",
+    "loginError": "Произошла ошибка при входе в систему"
   }
 }

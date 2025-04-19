@@ -23,5 +23,27 @@
     "googleSignUp": "Per Google",
     "facebookSignUp": "Per Facebook",
     "alreadyHaveAccount": "Jau turite paskyrą? Prisijunkite"
+  },
+  "AuthNavbar": {
+    "home": "Pradžia",
+    "login": "Prisijungti",
+    "chooseLanguage": "Pasirinkite kalbą",
+    "register": "Registruotis",
+    "lithuanian": "Lietuvių",
+    "russian": "Rusų"
+  },
+  "LoginPage": {
+    "title": "Prisijunkite prie platformos",
+    "email": "El. paštas",
+    "emailPlaceholder": "Įveskite savo el. paštą",
+    "emailRequired": "El. paštas yra privalomas",
+    "password": "Slaptažodis",
+    "passwordPlaceholder": "Įveskite savo slaptažodį",
+    "passwordRequired": "Slaptažodis yra privalomas",
+    "forgotPassword": "Pamiršote slaptažodį?",
+    "login": "Prisijungti",
+    "loading": "Kraunasi...",
+    "invalidCredentials": "Neteisingas el. paštas arba slaptažodis",
+    "loginError": "Įvyko klaida bandant prisijungti"
   }
 }
