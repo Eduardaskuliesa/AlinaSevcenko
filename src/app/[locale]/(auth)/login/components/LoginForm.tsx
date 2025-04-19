@@ -4,9 +4,10 @@ import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff, AlertCircle, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { userActions } from "@/app/actions/user";
-import { LoginFormData } from "@/app/actions/user/authentication/login";
+
 import { Link } from "@/i18n/navigation";
+
+import { getSession, signIn } from "next-auth/react";
 
 const LoginForm = () => {
   const t = useTranslations("LoginPage");
@@ -63,17 +64,18 @@ const LoginForm = () => {
     setIsLoading(true);
 
     try {
-      const formData: LoginFormData = {
+      const result = await signIn("credentials", {
         email,
         password,
-      };
+        redirect: false,
+      });
 
-      const result = await userActions.authentication.login(formData);
-
-      if (result.success) {
+      if (result?.ok) {
+        const session = await getSession();
+        console.log("Session:", session);
         console.log("Login successful");
       } else {
-        if (result.error === "INVALID_CREDENTIALS") {
+        if (result?.error === "INVALID_CREDENTIALS") {
           setPasswordError(t("invalidCredentials"));
         }
       }

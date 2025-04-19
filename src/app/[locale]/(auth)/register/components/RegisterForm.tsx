@@ -9,10 +9,12 @@ import SocialLoginButtons from "./SocialLoginButtons";
 import { useTranslations } from "next-intl";
 import { userActions } from "@/app/actions/user";
 import { RegisterFormData } from "@/app/actions/user/authentication/register";
+import { useRouter } from "next/navigation";
+import { emailActions } from "@/app/actions/email";
 
 const RegisterForm = () => {
   const t = useTranslations("RegisterPage");
-
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -78,7 +80,6 @@ const RegisterForm = () => {
       return;
     }
 
-    // Verify email format and password requirements
     if (!isEmailValid || !isLengthValid || !hasCapital) {
       setShouldShakeInvalid(true);
       setTimeout(() => {
@@ -108,8 +109,29 @@ const RegisterForm = () => {
 
       const result = await userActions.authentication.register(formData);
 
-      if (result.success) {
+      if (result.success && result.userId) {
         console.log("Registration successful:", result.message);
+        const verifyToken =
+          await userActions.authentication.generateVerificationToken(
+            result.userId
+          );
+
+        const htmlLang = document.documentElement.lang as string;
+        const userLang =
+          htmlLang === "lt" || htmlLang === "ru"
+            ? (htmlLang as "lt" | "ru")
+            : "lt";
+        const verificationResult =
+          await emailActions.authentication.sendVerificationEmail(
+            email,
+            verifyToken.token ?? "",
+            userLang
+          );
+        if (verificationResult.success) {
+          router.push(
+            `/register?status=pending&email=${encodeURIComponent(email)}`
+          );
+        }
       }
     } catch (error) {
       console.error("Registration error:", error);

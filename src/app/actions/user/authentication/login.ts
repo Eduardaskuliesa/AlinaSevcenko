@@ -45,7 +45,7 @@ export async function login(formData: LoginFormData) {
         message: "Invalid email or password",
       };
     }
-    
+
     const updateCommand = new UpdateCommand({
       TableName: dynamoTableName,
       Key: {
@@ -63,7 +63,7 @@ export async function login(formData: LoginFormData) {
     return {
       success: true,
       message: "Login successful",
-      userId: user.PK.replace("USER#", ""),
+      user: userResult.Items[0],
     };
   } catch (e) {
     console.error("Error logging in:", e);

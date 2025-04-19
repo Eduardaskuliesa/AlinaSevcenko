@@ -40,6 +40,7 @@ export async function register(formData: RegisterFormData) {
     await dynamoDb.send(command);
     return {
       success: true,
+      userId: userId,
       message: "User registered successfully",
     };
   } catch (e) {

@@ -5,7 +5,6 @@ import { QueryCommand } from "@aws-sdk/lib-dynamodb";
 
 export async function checkEmail(email: string) {
   try {
-    console.log("fires");
     const command = new QueryCommand({
       TableName: dynamoTableName,
       IndexName: "GSI1",

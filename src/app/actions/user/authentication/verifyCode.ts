@@ -1,13 +1,14 @@
+"use server";
 import { dynamoTableName, dynamoDb } from "@/services/dynamoDB";
-import { QueryCommand } from "@aws-sdk/lib-dynamodb";
-export async function verifyCode(tempId: string, code: string) {
+import { QueryCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+
+export async function verifyToken(token: string) {
   try {
     const verifyCommand = new QueryCommand({
       TableName: dynamoTableName,
-      KeyConditionExpression: "PK = :pk AND SK = :sk",
+      KeyConditionExpression: "PK = :pk",
       ExpressionAttributeValues: {
-        ":pk": `VERIFICATION#${tempId}`,
-        ":sk": `CODE#${code}`,
+        ":pk": `VERIFICATION#${token}`,
       },
     });
 
@@ -16,8 +17,9 @@ export async function verifyCode(tempId: string, code: string) {
     if (!result.Items || result.Items.length === 0) {
       return {
         success: false,
+        error: "INVALID_VERIFICATION_LINK",
         message:
-          "Invalid verification code. Please try again or request a new code.",
+          "Invalid verification link. Please request a new verification email.",
       };
     }
 
@@ -27,17 +29,62 @@ export async function verifyCode(tempId: string, code: string) {
     if (verificationRecord.ttl < currentTime) {
       return {
         success: false,
-        message: "Verification code has expired. Please request a new code.",
+        error: "VERIFICATION_LINK_EXPIRED",
+        message:
+          "Verification link has expired. Please request a new verification email.",
       };
     }
+
+    if (verificationRecord.verified) {
+      return {
+        success: false,
+        error: "ALREADY_VERIFIED",
+        message: "Email is already verified.",
+      };
+    }
+
+    const userId = verificationRecord.SK.split("#")[1];
+
+    const updateVerificationCommand = new UpdateCommand({
+      TableName: dynamoTableName,
+      Key: {
+        PK: `VERIFICATION#${token}`,
+        SK: verificationRecord.SK,
+      },
+      UpdateExpression: "SET verified = :verified",
+      ExpressionAttributeValues: {
+        ":verified": true,
+      },
+    });
+
+    await dynamoDb.send(updateVerificationCommand);
+
+    const updateUserCommand = new UpdateCommand({
+      TableName: dynamoTableName,
+      Key: {
+        PK: `USER#${userId}`,
+        SK: "PROFILE",
+      },
+      UpdateExpression: "SET #status = :status",
+      ExpressionAttributeNames: {
+        "#status": "status",
+      },
+      ExpressionAttributeValues: {
+        ":status": "VERIFIED",
+      },
+      ReturnValues: "ALL_NEW",
+    });
+
+    const user = await dynamoDb.send(updateUserCommand);
 
     return {
       success: true,
       message: "Email verified successfully",
       email: verificationRecord.email,
+      user: user.Attributes,
     };
   } catch (error) {
-    console.error("Error verifying code:", error);
+    console.error("Error verifying email:", error);
     return {
       success: false,
       message: "Error processing verification. Please try again.",

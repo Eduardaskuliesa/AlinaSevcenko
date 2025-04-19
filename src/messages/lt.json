@@ -45,5 +45,20 @@
     "loading": "Kraunasi...",
     "invalidCredentials": "Neteisingas el. paštas arba slaptažodis",
     "loginError": "Įvyko klaida bandant prisijungti"
+  },
+  "VerifyEmailPage": {
+    "title": "El. pašto patvirtinimas",
+    "verifyingEmail": "Tikrinamas jūsų el. paštas...",
+    "successMessage": "Jūsų el. paštas sėkmingai patvirtintas! Dabar galite prisijungti prie savo paskyros.",
+    "redirecting": "Nukreipiama į prisijungimo puslapį...",
+    "invalidToken": "Patvirtinimo nuoroda yra negaliojanti arba buvo pakeista.",
+    "defaultError": "Tikrinant jūsų el. paštą įvyko klaida. Prašome bandyti dar kartą.",
+    "invalidLinkTitle": "Negaliojanti patvirtinimo nuoroda",
+    "expiredLinkTitle": "Patvirtinimo nuoroda nebegalioja",
+    "errorTitle": "Patvirtinimas nepavyko",
+    "backToRegister": "Grįžti į registraciją",
+    "goToLogin": "Eiti į prisijungimą",
+    "alreadyVerifiedTitle": "El. paštas jau patvirtintas",
+    "alreadyVerified": "Šis el. pašto adresas jau yra patvirtintas."
   }
 }

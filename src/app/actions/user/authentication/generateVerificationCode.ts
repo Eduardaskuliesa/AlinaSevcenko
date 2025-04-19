@@ -1,41 +1,37 @@
+"use server";
 import { v4 as uuidv4 } from "uuid";
 import { dynamoDb, dynamoTableName } from "@/services/dynamoDB";
 import { PutCommand } from "@aws-sdk/lib-dynamodb";
 
-export async function generateVerificationCode(email: string) {
+export async function generateVerificationToken(userId: string) {
   try {
-    const verificationCode = Math.floor(
-      100000 + Math.random() * 900000
-    ).toString();
+    const verificationToken = uuidv4();
 
-    const tempId = uuidv4();
+    const expirationTime = Math.floor(Date.now() / 1000) + 24 * 60 * 60; // 24hours
 
-    const expirationTime = Math.floor(Date.now() / 1000) + 5 * 60;
-
-    const storeCodeCommand = new PutCommand({
+    const storeTokenCommand = new PutCommand({
       TableName: dynamoTableName,
       Item: {
-        PK: `VERIFICATION#${tempId}`,
-        SK: `CODE#${verificationCode}`,
-        email: email,
+        PK: `VERIFICATION#${verificationToken}`,
+        SK: `USER#${userId}`,
         ttl: expirationTime,
         createdAt: new Date().toISOString(),
+        verified: false,
       },
     });
 
-    await dynamoDb.send(storeCodeCommand);
+    await dynamoDb.send(storeTokenCommand);
 
     return {
       success: true,
-      message: "Verification code sent to your email",
-      tempId: tempId,
-      code: verificationCode,
+      message: "Verification email sent",
+      token: verificationToken,
     };
   } catch (error) {
-    console.error("Error generating verification code:", error);
+    console.error("Error generating verification token:", error);
     return {
       success: false,
-      message: "Unable to send verification code. Please try again.",
+      message: "Unable to send verification email. Please try again.",
     };
   }
 }

@@ -1,4 +1,5 @@
 "use client";
+
 import React from "react";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { Globe } from "lucide-react";
@@ -21,6 +22,7 @@ const AuthNavbar = () => {
 
   const isLoginPage = pathname === "/login";
   const isRegisterPage = pathname === "/register";
+  const isVerifyEmailPage = pathname === "/verify-email";
 
   const localeCode = currentLocale.toUpperCase();
 
@@ -79,7 +81,8 @@ const AuthNavbar = () => {
             {t("login")}
           </Link>
         )}
-        {!isRegisterPage && (
+
+        {!isRegisterPage && !isVerifyEmailPage && (
           <Link
             href="/register"
             className="px-4 py-2 bg-secondary rounded-lg font-medium text-gray-800 hover:bg-secondary-light transition"
