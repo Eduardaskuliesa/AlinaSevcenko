@@ -39,7 +39,7 @@ const Links = [
   { name: "About", href: "/about" },
   { name: "Contact", href: "/contact" },
   { name: "Personal", href: "/personal" },
-  { name: "Account", href: "/account", skipTransition: true },
+  { name: "Account", href: "/user/profile", skipTransition: true },
 ];
 
 const NavItems: React.FC<NavItemsProps> = ({ setIsActive, isActive }) => {

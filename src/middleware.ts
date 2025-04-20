@@ -23,7 +23,7 @@ const middleware = withAuth(
       authorized: ({ token, req }) => {
         const pathname = req.nextUrl.pathname;
 
-        const requiresAuth = ["/", "/admin", "/account"].some(
+        const requiresAuth = ["/admin", "/account"].some(
           (path) => pathname.startsWith(path)
         );
         return requiresAuth ? !!token : true;
