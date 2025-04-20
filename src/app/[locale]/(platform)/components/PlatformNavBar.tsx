@@ -1,0 +1,246 @@
+"use client";
+
+import type React from "react";
+
+import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
+import {
+  Heart,
+  ShoppingCart,
+  BookOpen,
+  User,
+  Globe,
+  LogOut,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+
+// Centralized dropdown management
+const PlatformNavBar = () => {
+  // Single state to track which dropdown is open
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Clean up timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Open dropdown immediately
+  const handleMouseEnter = (dropdown: string) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    setOpenDropdown(dropdown);
+  };
+
+  // Close dropdown with delay
+  const handleMouseLeave = () => {
+    timeoutRef.current = setTimeout(() => {
+      setOpenDropdown(null);
+    }, 150);
+  };
+
+  return (
+    <div className="bg-gray-50 border-b-2 border-secondary w-full h-16 flex justify-between px-24 items-center">
+      <div className="font-bold text-xl">Logo</div>
+
+      <div className="flex items-center gap-2">
+        {/* Regular Nav Items */}
+        <Link href="/my-courses/courses">
+          <div className="flex items-center  gap-1.5 p-2  hover:bg-secondary hover:text-orange-900 cursor-pointer rounded-md transition-colors duration-200">
+            <BookOpen className="w-5 h-5" />
+            <span>My courses</span>
+          </div>
+        </Link>
+
+        <Link href="/user/profile">
+          <div className="flex items-center gap-1.5 p-2 hover:bg-secondary hover:text-orange-900  cursor-pointer rounded-md transition-colors duration-200">
+            <User className="w-5 h-5" />
+            <span>My profile</span>
+          </div>
+        </Link>
+
+        {/* Wishlist Dropdown */}
+        <div
+          className="relative"
+          onMouseEnter={() => handleMouseEnter("wishlist")}
+          onMouseLeave={handleMouseLeave}
+        >
+          <div
+            className={cn(
+              "flex items-center p-2 rounded-md cursor-pointer transition-colors duration-200",
+              openDropdown === "wishlist"
+                ? "bg-secondary text-orange-900"
+                : "hover:bg-secondary hover:text-orange-900"
+            )}
+          >
+            <Heart className="w-5 h-5" />
+          </div>
+
+          <div
+            className={cn(
+              "absolute right-0 mt-2 rounded-md shadow-lg bg-white z-10 border border-primary-light  w-64",
+              "transition-all duration-200",
+              openDropdown === "wishlist"
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-1 pointer-events-none invisible"
+            )}
+          >
+            <div className="py-4">
+              <div className="text-center">
+                <h3 className="text-base font-medium mb-2">
+                  Your wishlist is empty
+                </h3>
+                <p className="text-pink-900 font-medium text-base">
+                  Explore coursers
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Cart Dropdown */}
+        <div
+          className="relative"
+          onMouseEnter={() => handleMouseEnter("cart")}
+          onMouseLeave={handleMouseLeave}
+        >
+          <div
+            className={cn(
+              "flex items-center p-2 rounded-md  cursor-pointer transition-colors duration-200",
+              openDropdown === "cart"
+                ? "bg-secondary text-orange-900"
+                : "hover:bg-secondary hover:text-orange-900"
+            )}
+          >
+            <ShoppingCart className="w-5 h-5" />
+          </div>
+
+          <div
+            className={cn(
+              "absolute right-0 mt-2 rounded-md shadow-lg bg-white z-10 border border-primary-light w-64",
+              "transition-all duration-200",
+              openDropdown === "cart"
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-1 pointer-events-none invisible"
+            )}
+          >
+            <div className="py-4">
+              <div className="text-center">
+                <h3 className="text-base font-medium mb-2">
+                  Your cart is empty
+                </h3>
+                <p className="text-pink-900 font-medium text-base">
+                  Keep shoping
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Avatar Dropdown */}
+        <div
+          className="relative"
+          onMouseEnter={() => handleMouseEnter("profile")}
+          onMouseLeave={handleMouseLeave}
+        >
+          <div
+            className={cn(
+              "w-9 h-9 ml-2 rounded-full bg-primary flex items-center justify-center text-white font-medium cursor-pointer",
+              "transition-opacity duration-200",
+              openDropdown === "profile" ? "" : "hover:opacity-90"
+            )}
+          >
+            EK
+          </div>
+
+          <div
+            className={cn(
+              "absolute right-0 mt-2 rounded-md shadow-lg bg-white z-10 border border-primary-light w-64",
+              "transition-all duration-200",
+              openDropdown === "profile"
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-1 pointer-events-none invisible"
+            )}
+          >
+            <div className="py-2">
+              <ProfileMenuItem
+                href="/my-courses/courses"
+                icon={<BookOpen className="w-4 h-4" />}
+                title="My courses"
+              />
+              <ProfileMenuItem
+                href="/my-courses/wishlist"
+                icon={<Heart className="w-4 h-4" />}
+                title="My wishlist"
+              />
+              <ProfileMenuItem
+                href="/cart"
+                icon={<ShoppingCart className="w-4 h-4" />}
+                title="My cart"
+              />
+
+              <div className="h-px bg-gray-200 my-2 mx-3"></div>
+
+              <ProfileMenuItem
+                href="#"
+                icon={<Globe className="w-4 h-4" />}
+                title="Language"
+              />
+
+              <div className="h-px bg-gray-200 my-2 mx-3"></div>
+
+              <ProfileMenuItem
+                href="/profile"
+                icon={<User className="w-4 h-4" />}
+                title="My account"
+              />
+
+              <div className="h-px bg-gray-200 my-2 mx-3"></div>
+
+              <ProfileMenuItem
+                href="/logout"
+                icon={<LogOut className="w-4 h-4" />}
+                title="Logout"
+                className="text-red-500 hover:text-red-700 hover:bg-red-200"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Enhanced profile menu item with better sizing and hover effects
+const ProfileMenuItem = ({
+  href,
+  icon,
+  title,
+  className,
+}: {
+  href: string;
+  icon: React.ReactNode;
+  title: string;
+  className?: string;
+}) => {
+  return (
+    <Link
+      href={href}
+      className={cn(
+        "flex items-center gap-3 px-4 py-2 hover:bg-secondary hover:text-orange-900 mx-2 rounded-md  cursor-pointer transition-colors duration-150",
+        "text-gray-700 font-medium text-sm",
+        className
+      )}
+    >
+      {icon}
+      <span>{title}</span>
+    </Link>
+  );
+};
+
+export default PlatformNavBar;

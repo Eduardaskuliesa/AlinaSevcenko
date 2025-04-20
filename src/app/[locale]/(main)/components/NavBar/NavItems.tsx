@@ -39,6 +39,7 @@ const Links = [
   { name: "About", href: "/about" },
   { name: "Contact", href: "/contact" },
   { name: "Personal", href: "/personal" },
+  { name: "Account", href: "/account", skipTransition: true },
 ];
 
 const NavItems: React.FC<NavItemsProps> = ({ setIsActive, isActive }) => {
@@ -62,9 +63,13 @@ const NavItems: React.FC<NavItemsProps> = ({ setIsActive, isActive }) => {
                 onClick={(e) => {
                   e.preventDefault();
                   setIsActive(!isActive);
-                  router.push(link.href, {
-                    onTransitionReady: pageAnimation,
-                  });
+                  if (link.skipTransition) {
+                    window.location.href = link.href;
+                  } else {
+                    router.push(link.href, {
+                      onTransitionReady: pageAnimation,
+                    });
+                  }
                 }}
                 className="text-4xl"
                 href={link.href}
