@@ -20,6 +20,8 @@ const LoginForm = () => {
   const [formError, setFormError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   useEffect(() => {
     if (emailError) {
       setEmailError("");
@@ -49,6 +51,9 @@ const LoginForm = () => {
 
     if (!email.trim()) {
       setEmailError(t("emailRequired"));
+      hasError = true;
+    } else if (!emailRegex.test(email)) {
+      setEmailError(t("invalidEmailFormat"));
       hasError = true;
     }
 

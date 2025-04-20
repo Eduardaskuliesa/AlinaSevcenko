@@ -3,6 +3,7 @@ import React from "react";
 import RegisterForm from "./components/RegisterForm";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
+import CardWrapper from "../components/CardWrapper";
 
 const Page = () => {
   const t = useTranslations("RegisterPage");
@@ -12,7 +13,7 @@ const Page = () => {
   const email = searchParams.get("email");
 
   return (
-    <div className="bg-gray-100 max-w-xl w-full h-auto rounded-2xl border-2 border-gray-800 px-16 py-10">
+    <CardWrapper>
       <div className="flex flex-col">
         {status === "pending" ? (
           <>
@@ -38,7 +39,7 @@ const Page = () => {
           </>
         )}
       </div>
-    </div>
+    </CardWrapper>
   );
 };
 

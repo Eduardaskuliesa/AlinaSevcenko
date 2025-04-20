@@ -23,6 +23,12 @@ const AuthNavbar = () => {
   const isLoginPage = pathname === "/login";
   const isRegisterPage = pathname === "/register";
   const isVerifyEmailPage = pathname === "/verify-email";
+  const isForgotPasswordPage = pathname === "/forgot-password";
+  const isResetPasswordPage =
+    pathname === "/reset-password" || pathname.startsWith("/reset-password");
+
+  // Check if we're on a page where we shouldn't show login/register buttons
+  const hideAuthButtons = isForgotPasswordPage || isResetPasswordPage;
 
   const localeCode = currentLocale.toUpperCase();
 
@@ -37,7 +43,7 @@ const AuthNavbar = () => {
   };
 
   return (
-    <div className="max-w-3xl w-full flex justify-between items-center px-4 mx-auto h-16 py-2 bg-gray-50 shadow-md border-2 border-gray-800 rounded-2xl">
+    <div className="max-w-3xl w-full flex justify-between items-center px-4 mx-auto h-16 py-2 bg-gray-50 shadow-md border-2 border-gray-800 rounded-md sm:rounded-2xl">
       <Link
         href="/"
         className="px-4 py-2 bg-secondary rounded-lg font-medium text-gray-800 hover:bg-secondary-light transition"
@@ -73,7 +79,7 @@ const AuthNavbar = () => {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {!isLoginPage && (
+        {!hideAuthButtons && !isLoginPage && (
           <Link
             href="/login"
             className="px-4 py-2 bg-secondary rounded-lg font-medium text-gray-800 hover:bg-secondary-light transition"
@@ -82,7 +88,7 @@ const AuthNavbar = () => {
           </Link>
         )}
 
-        {!isRegisterPage && !isVerifyEmailPage && (
+        {!hideAuthButtons && !isRegisterPage && !isVerifyEmailPage && (
           <Link
             href="/register"
             className="px-4 py-2 bg-secondary rounded-lg font-medium text-gray-800 hover:bg-secondary-light transition"

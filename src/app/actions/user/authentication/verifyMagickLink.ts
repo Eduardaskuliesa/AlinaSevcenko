@@ -39,7 +39,6 @@ export async function verifyMagicLinkToken(token: string) {
           "This login link has already been used. Please request a new one.",
       };
     }
-    const userId = tokenRecord.SK.split("#")[1];
 
     const updateTokenCommand = new UpdateCommand({
       TableName: dynamoTableName,
@@ -55,31 +54,9 @@ export async function verifyMagicLinkToken(token: string) {
 
     await dynamoDb.send(updateTokenCommand);
 
-    const getUserCommand = new QueryCommand({
-      TableName: dynamoTableName,
-      KeyConditionExpression: "PK = :pk AND SK = :sk",
-      ExpressionAttributeValues: {
-        ":pk": `USER#${userId}`,
-        ":sk": "PROFILE",
-      },
-    });
-
-    const userResult = await dynamoDb.send(getUserCommand);
-
-    if (!userResult.Items || userResult.Items.length === 0) {
-      return {
-        success: false,
-        error: "USER_NOT_FOUND",
-        message: "User associated with this login link could not be found.",
-      };
-    }
-
-    const user = userResult.Items[0];
-
     return {
       success: true,
-      message: "Login successful",
-      user,
+      message: "Token verified successfully",
     };
   } catch (error) {
     console.error("Error verifying magic link token:", error);

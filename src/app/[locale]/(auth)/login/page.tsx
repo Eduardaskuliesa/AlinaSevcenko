@@ -3,21 +3,23 @@ import React from "react";
 import { useTranslations } from "next-intl";
 import SocialLoginButtons from "../register/components/SocialLoginButtons";
 import LoginForm from "./components/LoginForm";
+import CardHeader from "../components/CardHeader";
+import CardWrapper from "../components/CardWrapper";
 
 const Page = () => {
   const t = useTranslations("LoginPage");
 
   return (
-    <div className="bg-gray-100 max-w-xl w-full h-auto rounded-2xl border-2 border-gray-800 px-16 py-10">
+    <CardWrapper>
       <div className="flex flex-col">
         <div className="space-y-3 mb-6">
-          <h1 className="header text-4xl">{t("title")}</h1>
+          <CardHeader text={t("title")} />
         </div>
         <SocialLoginButtons />
-        <hr className="bg-gray-600 h-0.5 mt-4" />
+        <div className="bg-gray-600 h-0.5 my-4"></div>
         <LoginForm />
       </div>
-    </div>
+    </CardWrapper>
   );
 };
 

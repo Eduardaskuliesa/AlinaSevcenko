@@ -5,8 +5,8 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { CheckCircle, AlertCircle, AlertTriangle, Loader2 } from "lucide-react";
 import { userActions } from "@/app/actions/user";
+import CardWrapper from "../components/CardWrapper";
 
-// Define a more comprehensive type for verification status
 type VerificationStatus =
   | { type: "loading" }
   | { type: "success" }
@@ -88,7 +88,7 @@ const VerifyEmailPage = () => {
   }, [token, router, t]);
 
   return (
-    <div className="bg-gray-100 max-w-xl w-full h-auto rounded-2xl border-2 border-gray-800 px-16 py-10">
+    <CardWrapper>
       <div className="flex flex-col items-center text-center">
         <h1 className="header text-4xl mb-6">{t("title")}</h1>
 
@@ -143,7 +143,7 @@ const VerifyEmailPage = () => {
           </div>
         )}
       </div>
-    </div>
+    </CardWrapper>
   );
 };
 

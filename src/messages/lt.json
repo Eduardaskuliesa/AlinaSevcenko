@@ -60,5 +60,43 @@
     "goToLogin": "Eiti į prisijungimą",
     "alreadyVerifiedTitle": "El. paštas jau patvirtintas",
     "alreadyVerified": "Šis el. pašto adresas jau yra patvirtintas."
+  },
+  "ForgotPasswordPage": {
+    "resetPassword": "Slaptažodžio atkūrimas",
+    "resetInstructions": "Įveskite savo el. pašto adresą ir mes atsiųsime jums nuorodą slaptažodžiui atkurti.",
+    "email": "El. paštas",
+    "emailPlaceholder": "Įveskite savo el. pašto adresą",
+    "emailRequired": "El. paštas yra privalomas",
+    "invalidEmailFormat": "Įveskite teisingą el. pašto adresą",
+    "sendResetLink": "Siųsti atkūrimo nuorodą",
+    "loading": "Kraunama...",
+    "resetLinkSent": "Atkūrimo nuoroda išsiųsta į jūsų el. paštą. Patikrinkite savo gautus laiškus.",
+    "resetLinkError": "Nepavyko išsiųsti atkūrimo nuorodos. Bandykite dar kartą.",
+    "backToLogin": "Grįžti į prisijungimą"
+  },
+  "PasswordResetPage": {
+    "resetPassword": "Slaptažodžio atkūrimas",
+    "verifyingLink": "Tikrinama jūsų atkūrimo nuoroda...",
+    "createNewPassword": "Prašome sukurti naują slaptažodį jūsų paskyrai",
+    "newPassword": "Naujas slaptažodis",
+    "newPasswordPlaceholder": "Įveskite naują slaptažodį",
+    "passwordRequired": "Slaptažodis yra privalomas",
+    "passwordTooShort": "Slaptažodis turi būti bent 8 simbolių ilgio",
+    "passwordNeedsCapital": "Slaptažodyje turi būti bent viena didžioji raidė",
+    "loading": "Kraunama...",
+    "setNewPassword": "Nustatyti naują slaptažodį",
+    "passwordResetSuccess": "Jūsų slaptažodis sėkmingai atnaujintas!",
+    "redirectingToLogin": "Nukreipiama į prisijungimo puslapį...",
+    "invalidToken": "Atkūrimo nuoroda yra negaliojanti arba buvo pakeista.",
+    "expiredLink": "Atkūrimo nuoroda nebegalioja.",
+    "usedLink": "Ši atkūrimo nuoroda jau buvo panaudota.",
+    "defaultError": "Atnaujinant slaptažodį įvyko klaida. Prašome bandyti dar kartą.",
+    "invalidLinkTitle": "Negaliojanti atkūrimo nuoroda",
+    "expiredLinkTitle": "Atkūrimo nuoroda nebegalioja",
+    "usedLinkTitle": "Nuoroda jau panaudota",
+    "errorTitle": "Atkūrimas nepavyko",
+    "requestNewLink": "Prašyti naujos nuorodos",
+    "backToLogin": "Grįžti į prisijungimą",
+    "resetError": "Nepavyko atnaujinti slaptažodžio. Bandykite dar kartą."
   }
 }
