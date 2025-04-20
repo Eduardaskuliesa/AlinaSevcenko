@@ -34,30 +34,6 @@ export const authOptions: NextAuthOptions = {
         };
       },
     }),
-    CredentialsProvider({
-      id: "magic-link",
-      name: "Magic Link",
-      credentials: {
-        token: { label: "Token", type: "text" },
-      },
-      async authorize(credentials) {
-        if (!credentials?.token) return null;
-
-        const result = await userActions.authentication.verifyMagicLinkToken(
-          credentials.token
-        );
-
-        if (!result.success) {
-          throw new Error(result.error);
-        }
-
-        return {
-          id: result?.user?.userId,
-          email: result?.user?.email,
-          role: result?.user?.roles,
-        };
-      },
-    }),
   ],
 
   callbacks: {

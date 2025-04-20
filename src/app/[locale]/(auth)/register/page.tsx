@@ -18,15 +18,17 @@ const Page = () => {
         {status === "pending" ? (
           <>
             <div className="space-y-3 mb-2">
-              <h1 className="header text-4xl">Check your email</h1>
+              <h1 className="header text-4xl">{t("checkEmail")}</h1>
               <p className="text-lg">
-                We&apos;ve just sent you a unique sign-in link to your email:{" "}
+                {t("emailSentMessage")}{" "}
                 <span className="font-medium">{email}</span>
               </p>
             </div>
             <hr className="bg-gray-600 h-0.5 mt-4" />
-            <p className="text-violet-800 mt-6  underline text-sm ">
-              <span className="hover:cursor-pointer">Send another link</span>
+            <p className="text-violet-800 mt-6 underline text-sm ">
+              <span className="hover:cursor-pointer">
+                {t("sendAnotherLink")}
+              </span>
             </p>
           </>
         ) : (

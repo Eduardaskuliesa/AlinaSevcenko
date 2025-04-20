@@ -22,7 +22,10 @@
     "or": "arba",
     "googleSignUp": "Per Google",
     "facebookSignUp": "Per Facebook",
-    "alreadyHaveAccount": "Jau turite paskyrą? Prisijunkite"
+    "alreadyHaveAccount": "Jau turite paskyrą? Prisijunkite",
+    "checkEmail": "Patikrinkite savo el. paštą",
+    "emailSentMessage": "Ką tik išsiuntėme jums unikalią prisijungimo nuorodą į jūsų el. paštą:",
+    "sendAnotherLink": "Siųsti kitą nuorodą"
   },
   "AuthNavbar": {
     "home": "Pradžia",

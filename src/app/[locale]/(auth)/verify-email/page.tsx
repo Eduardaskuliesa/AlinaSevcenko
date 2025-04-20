@@ -1,9 +1,8 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { CheckCircle, AlertCircle, AlertTriangle, Loader2 } from "lucide-react";
+import { CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { userActions } from "@/app/actions/user";
 import CardWrapper from "../components/CardWrapper";
 
@@ -49,7 +48,7 @@ const VerifyEmailPage = () => {
           setStatus({ type: "success" });
           setTimeout(() => {
             router.push("/login");
-          }, 500);
+          }, 1500);
         } else {
           switch (result.error) {
             case "ALREADY_VERIFIED":
@@ -57,7 +56,7 @@ const VerifyEmailPage = () => {
                 type: "error",
                 errorType: "ALREADY_VERIFIED",
               });
-              setMessage(result.message || t("alreadyVerified"));
+              setMessage(t("alreadyVerified"));
               break;
             case "VERIFICATION_LINK_EXPIRED":
               setStatus({
@@ -71,7 +70,7 @@ const VerifyEmailPage = () => {
                 type: "error",
                 errorType: "UNKNOWN_ERROR",
               });
-              setMessage(result.message || t("defaultError"));
+              setMessage(t("defaultError"));
           }
         }
       } catch (error) {
@@ -102,7 +101,8 @@ const VerifyEmailPage = () => {
         {status.type === "success" && (
           <div className="flex flex-col items-center">
             <CheckCircle size={64} className="text-green-500 mb-4" />
-            <p className="text-lg">{t("verificationSuccess")}</p>
+            <p className="text-lg">{t("successMessage")}</p>
+            <p className="text-sm text-gray-500 mt-2">{t("redirecting")}</p>
           </div>
         )}
 
@@ -110,10 +110,11 @@ const VerifyEmailPage = () => {
           <div className="flex flex-col items-center">
             {status.errorType === "ALREADY_VERIFIED" ? (
               <>
-                <AlertTriangle size={64} className="text-yellow-500 mb-4" />
-                <p className="text-lg font-medium text-yellow-600 mb-2">
+                <CheckCircle size={64} className="text-green-500 mb-4" />
+                <p className="text-lg font-medium text-green-700 mb-2">
                   {t("alreadyVerifiedTitle")}
                 </p>
+                <p className="text-base mb-4">{message}</p>
                 <button
                   onClick={() => router.push("/login")}
                   className="bg-secondary hover:bg-secondary-light text-gray-800 font-medium py-2 px-6 rounded-lg transition"

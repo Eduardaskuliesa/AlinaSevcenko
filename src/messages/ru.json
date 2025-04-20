@@ -22,7 +22,10 @@
     "or": "или",
     "googleSignUp": "Через Google",
     "facebookSignUp": "Через Facebook",
-    "alreadyHaveAccount": "Уже есть аккаунт? Войдите"
+    "alreadyHaveAccount": "Уже есть аккаунт? Войдите",
+    "checkEmail": "Проверьте свою почту",
+    "emailSentMessage": "Мы только что отправили вам уникальную ссылку для входа на вашу почту:",
+    "sendAnotherLink": "Отправить другую ссылку"
   },
   "AuthNavbar": {
     "home": "Главная",
