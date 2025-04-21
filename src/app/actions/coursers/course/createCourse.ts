@@ -29,6 +29,12 @@ export interface CourseFormData {
 
 export async function createCourse(initialData: CreateCourseInitialData) {
   try {
+    if (!initialData.authorId || initialData.title) {
+      return {
+        success: false,
+        message: "Missing fields",
+      };
+    }
     const courseId = uuidv4();
     const timestamp = new Date().toISOString();
 

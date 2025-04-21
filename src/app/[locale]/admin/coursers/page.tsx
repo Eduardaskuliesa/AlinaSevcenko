@@ -1,205 +1,140 @@
-"use client";
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { PlusCircle, Search } from "lucide-react";
 
-import { getUploadVideoUrl } from "@/app/actions/s3/getUploadVideoUrl";
-import React, { useState, useRef } from "react";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import CourseCard from "./components/CourseCard";
+import Link from "next/link";
 
-const UploadPage = () => {
-  const [file, setFile] = useState<File | null>(null);
-  const [uploading, setUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [videoUrl, setVideoUrl] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
-      setError(null);
-      setVideoUrl(null); // Reset video URL when a new file is selected
-    }
-  };
-
-  const handleUpload = async () => {
-    if (!file) {
-      setError("Please select a file first");
-      return;
-    }
-
-    try {
-      setUploading(true);
-      setUploadProgress(0);
-
-      // Get presigned URL
-      const { uploadUrl, videoUrl } = await getUploadVideoUrl(
-        file.name,
-        file.type
-      );
-
-      // Upload to S3 directly
-      const xhr = new XMLHttpRequest();
-
-      // Track upload progress
-      xhr.upload.onprogress = (event) => {
-        if (event.lengthComputable) {
-          const percentComplete = Math.round(
-            (event.loaded / event.total) * 100
-          );
-          setUploadProgress(percentComplete);
-        }
-      };
-
-      // Handle completion
-      xhr.onload = () => {
-        if (xhr.status === 200) {
-          setVideoUrl(videoUrl);
-          setUploading(false);
-
-          // Reload video player with the new source
-          if (videoRef.current) {
-            videoRef.current.load();
-          }
-        } else {
-          throw new Error("Upload failed");
-        }
-      };
-
-      // Handle errors
-      xhr.onerror = () => {
-        setError("Upload failed");
-        setUploading(false);
-      };
-
-      // Send the request
-      xhr.open("PUT", uploadUrl);
-      xhr.setRequestHeader("Content-Type", file.type);
-      xhr.send(file);
-    } catch (err) {
-      console.error("Error:", err);
-      setError("Failed to upload video");
-      setUploading(false);
-    }
-  };
+const CoursePage = () => {
+  const courses = [
+    {
+      id: "1",
+      title: "Complete Web Development Bootcamp",
+      price: 99.99,
+      isPublished: true,
+      imageUrl: "/placeholder.svg?height=220&width=400",
+      category: "Development",
+      language: "EN",
+      completionStatus: {
+        title: true,
+        description: true,
+        price: true,
+        category: true,
+        lessons: true,
+        thumbnail: true,
+      },
+      completionPercentage: 100,
+      canBePublished: true,
+    },
+    {
+      id: "2",
+      title: "Advanced React Patterns",
+      price: 79.99,
+      isPublished: false,
+      imageUrl: "/placeholder.svg?height=220&width=400",
+      category: "Programming",
+      language: "LT",
+      completionStatus: {
+        title: true,
+        description: false,
+        price: true,
+        category: true,
+        lessons: false,
+        thumbnail: false,
+      },
+      completionPercentage: 50,
+      canBePublished: false,
+    },
+    {
+      id: "3",
+      title: "UI/UX Design Fundamentals",
+      price: 59.99,
+      isPublished: false,
+      imageUrl: "/placeholder.svg?height=220&width=400",
+      category: "Design",
+      language: "RU",
+      completionStatus: {
+        title: true,
+        description: false,
+        price: false,
+        category: false,
+        lessons: false,
+        thumbnail: false,
+      },
+      completionPercentage: 17,
+      canBePublished: false,
+    },
+  ];
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md mt-10">
-      <h1 className="text-2xl font-bold mb-6">Upload & Stream Video</h1>
+    <div className=" xl:p-6 space-y-6 max-w-7xl">
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold tracking-tight">Courses</h1>
+        <Link href={'coursers/create-course'}>
+          <Button className="flex items-center gap-2">
+            <PlusCircle className="h-4 w-4" />
+            Create Course
+          </Button>
+        </Link>
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="upload-section">
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Select video file
-            </label>
-            <input
-              type="file"
-              accept="video/*"
-              onChange={handleFileChange}
-              className="block w-full text-sm text-gray-500 
-                      file:mr-4 file:py-2 file:px-4
-                      file:rounded-md file:border-0
-                      file:text-sm file:font-semibold
-                      file:bg-blue-50 file:text-blue-700
-                      hover:file:bg-blue-100"
-              disabled={uploading}
-            />
-          </div>
-
-          {file && (
-            <div className="mb-4 text-sm text-gray-600">
-              Selected: {file.name} ({(file.size / (1024 * 1024)).toFixed(2)}{" "}
-              MB)
-            </div>
-          )}
-
-          {uploading && (
-            <div className="mb-4">
-              <div className="h-2 bg-gray-200 rounded-full">
-                <div
-                  className="h-2 bg-blue-600 rounded-full"
-                  style={{ width: `${uploadProgress}%` }}
-                ></div>
-              </div>
-              <p className="text-sm text-gray-600 mt-1">
-                Uploading: {uploadProgress}%
-              </p>
-            </div>
-          )}
-
-          {videoUrl && (
-            <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-md">
-              <p className="text-sm text-green-800">
-                Video uploaded successfully!
-              </p>
-              <a
-                href={videoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm text-blue-600 hover:underline"
-              >
-                Open in new tab
-              </a>
-            </div>
-          )}
-
-          {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
-              <p className="text-sm text-red-800">{error}</p>
-            </div>
-          )}
-
-          <button
-            onClick={handleUpload}
-            disabled={!file || uploading}
-            className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-gray-300 disabled:cursor-not-allowed"
-          >
-            {uploading ? "Uploading..." : "Upload Video"}
-          </button>
+      {/* Search and Filter */}
+      <div className="flex flex-col sm:flex-row gap-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search courses..."
+            className="pl-8 w-full ring-secondary focus-visible:ring-[2px] "
+          />
         </div>
+        <Select defaultValue="all">
+          <SelectTrigger className="w-full sm:w-[180px] focus-visible:ring-[2px] ring-secondary">
+            <SelectValue placeholder="Category" />
+          </SelectTrigger>
+          <SelectContent className="bg-white focus-visible:ring-[2px]">
+            <SelectItem
+              className="hover:bg-secondary cursor-pointer"
+              value="all"
+            >
+              All Categories
+            </SelectItem>
+            <SelectItem
+              className="hover:bg-secondary cursor-pointer"
+              value="development"
+            >
+              Development
+            </SelectItem>
+            <SelectItem
+              className="hover:bg-secondary cursor-pointer"
+              value="programming"
+            >
+              Programming
+            </SelectItem>
+            <SelectItem
+              className="hover:bg-secondary cursor-pointer"
+              value="design"
+            >
+              Design
+            </SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
 
-        <div className="video-player-section">
-          <div className="mb-2">
-            <h2 className="text-lg font-medium text-gray-700">Video Player</h2>
-          </div>
-          {videoUrl ? (
-            <div className="aspect-w-16 aspect-h-9 bg-black rounded-lg overflow-hidden">
-              <video
-                ref={videoRef}
-                controls
-                className="w-full h-full object-contain"
-                playsInline
-              >
-                <source
-                  src={
-                    videoUrl.startsWith("http")
-                      ? videoUrl
-                      : `https://${videoUrl}`
-                  }
-                  type={file?.type || "video/mp4"}
-                />
-                Your browser does not support the video tag.
-              </video>
-            </div>
-          ) : (
-            <div className="aspect-w-16 aspect-h-9 bg-gray-100 rounded-lg flex items-center justify-center">
-              <p className="text-gray-500 text-sm text-center p-4">
-                {uploading
-                  ? "Video is uploading..."
-                  : "Upload a video to play it here"}
-              </p>
-            </div>
-          )}
-
-          {videoUrl && (
-            <div className="mt-3">
-              <p className="text-xs text-gray-500 break-all">
-                Video URL: {videoUrl}
-              </p>
-            </div>
-          )}
-        </div>
+      <div className="grid sm:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6">
+        {courses.map((course) => (
+          <CourseCard key={course.id} course={course} />
+        ))}
       </div>
     </div>
   );
 };
 
-export default UploadPage;
+export default CoursePage;
