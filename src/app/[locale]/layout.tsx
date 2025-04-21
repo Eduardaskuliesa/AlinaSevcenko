@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { geistMono, geistSans } from "@/fonts";
+
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import "./globals.css";
-import { Providers} from "./providers/Providers";
+import { Providers } from "./providers/Providers";
+import { geistSans } from "@/fonts";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -27,9 +28,7 @@ export default async function RootLayout({
 
   return (
     <html lang={locale}>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} font-sans antialiased`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers> {children}</Providers>
         </NextIntlClientProvider>

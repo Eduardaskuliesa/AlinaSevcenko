@@ -20,6 +20,7 @@ module.exports = {
       },
 
       fontFamily: {
+        sans: ["var(--font-geist-sans)"],
         times: ["var(--font-times)"],
       },
     },
