@@ -49,6 +49,7 @@ export async function createCourse(initialData: CreateCourseInitialData) {
       image: "",
       thumbnailImage: "",
       price: 0,
+      sort: 0,
       currency: "EUR",
       language: "lt",
       status: "DRAFT",

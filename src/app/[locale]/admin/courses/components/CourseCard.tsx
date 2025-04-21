@@ -56,7 +56,6 @@ const CourseCard = ({ course }: CourseCardProps) => {
     setIsPublished(!isPublished);
   };
 
-  // Calculate completed steps count
   const totalSteps = Object.keys(course.completionStatus).length;
   const completedSteps = Object.values(course.completionStatus).filter(
     Boolean
@@ -153,8 +152,8 @@ const CourseCard = ({ course }: CourseCardProps) => {
 
       <CardFooter className="flex items-center justify-between mt-auto pt-4">
         <div className="flex items-center space-x-2">
-          <TooltipProvider  delayDuration={0}>
-            <Tooltip >
+          <TooltipProvider delayDuration={0}>
+            <Tooltip>
               <TooltipTrigger className="bg-white" asChild>
                 <div>
                   <Switch
@@ -165,7 +164,11 @@ const CourseCard = ({ course }: CourseCardProps) => {
                   />
                 </div>
               </TooltipTrigger>
-              <TooltipContent side="bottom" align="start" className="bg-gray-200">
+              <TooltipContent
+                side="bottom"
+                align="start"
+                className="bg-gray-200"
+              >
                 {!course.canBePublished
                   ? `Complete all steps to publish (${completedSteps}/${totalSteps})`
                   : isPublished
