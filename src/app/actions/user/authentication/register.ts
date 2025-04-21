@@ -25,6 +25,7 @@ export async function register(formData: RegisterFormData) {
         SK: "PROFILE",
         email: formData.email,
         password: hashedPassword,
+        userId: userId,
         firstName: formData.firstName || "",
         lastName: formData.lastName || "",
         registrationMethod: "EMAIL",

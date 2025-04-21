@@ -78,7 +78,7 @@ const CoursePage = () => {
     <div className=" xl:p-6 space-y-6 max-w-7xl">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight">Courses</h1>
-        <Link href={'coursers/create-course'}>
+        <Link href={'courses/create-course'}>
           <Button className="flex items-center gap-2">
             <PlusCircle className="h-4 w-4" />
             Create Course

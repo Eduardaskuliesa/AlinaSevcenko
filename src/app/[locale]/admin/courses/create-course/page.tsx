@@ -39,14 +39,16 @@ const CreateCoursePage = () => {
     try {
       const formData: CreateCourseInitialData = {
         title: courseName,
-        authorId: session?.user.id ?? "",
+        authorId: session?.user.id || "",
       };
+
+      console.log(session?.user.id);
 
       const result = await coursesAction.courses.createCourse(formData);
 
       if (result.success) {
         toast.success("Course created successfully!");
-        router.push(`/${locale}/admin/coursers/${result.courseId}/info`);
+        router.push(`/${locale}/admin/courses/${result.courseId}/info`);
       } else {
         toast.error(result.message);
         setIsSubmitting(false);
@@ -63,7 +65,7 @@ const CreateCoursePage = () => {
       <Button
         variant="ghost"
         className="mb-6 pl-0 flex items-center hover:bg-gray-200"
-        onClick={() => router.push(`/${locale}/admin/coursers`)}
+        onClick={() => router.push(`/${locale}/admin/courses`)}
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
         Back to courses
@@ -101,7 +103,7 @@ const CreateCoursePage = () => {
               type="button"
               variant="outline"
               className="w-1/3"
-              onClick={() => router.push(`/${locale}/admin/coursers`)}
+              onClick={() => router.push(`/${locale}/admin/courses`)}
             >
               Cancel
             </Button>
