@@ -1,6 +1,6 @@
 "use server";
 
-import { dynamoDb, dynamoTableName } from "@/services/dynamoDB";
+import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import bcrypt from "bcryptjs";

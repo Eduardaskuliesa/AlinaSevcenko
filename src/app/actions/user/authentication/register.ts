@@ -1,6 +1,6 @@
 "use server";
-import { dynamoDb } from "@/services/dynamoDB";
-import { dynamoTableName } from "@/services/dynamoDB";
+import { dynamoDb } from "@/app/services/dynamoDB";
+import { dynamoTableName } from "@/app/services/dynamoDB";
 import { PutCommand } from "@aws-sdk/lib-dynamodb";
 import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcryptjs";

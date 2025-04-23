@@ -1,5 +1,5 @@
 "use server";
-import { dynamoTableName, dynamoDb } from "@/services/dynamoDB";
+import { dynamoTableName, dynamoDb } from "@/app/services/dynamoDB";
 import { QueryCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 
 export async function verifyToken(token: string) {

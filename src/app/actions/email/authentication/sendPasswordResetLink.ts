@@ -1,5 +1,5 @@
 "use server";
-import sesClient from "@/services/simpleEmailService";
+import sesClient from "@/app/services/simpleEmailService";
 import { SendEmailCommand } from "@aws-sdk/client-ses";
 
 type Lang = "lt" | "ru";

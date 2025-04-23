@@ -1,5 +1,5 @@
 "use server";
-import { cloudFrontDomain, s3BucketName, s3Client } from "@/services/s3client";
+import { cloudFrontDomain, s3BucketName, s3Client } from "@/app/services/s3client";
 import { v4 as uuidv4 } from "uuid";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";

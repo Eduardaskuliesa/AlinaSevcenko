@@ -1,31 +1,10 @@
 "use server";
 
-import { dynamoDb } from "@/services/dynamoDB";
-import { dynamoTableName } from "@/services/dynamoDB";
+import { CreateCourseInitialData } from "@/app/types/course";
+import { dynamoDb } from "@/app/services/dynamoDB";
+import { dynamoTableName } from "@/app/services/dynamoDB";
 import { PutCommand } from "@aws-sdk/lib-dynamodb";
 import { v4 as uuidv4 } from "uuid";
-
-export interface CreateCourseInitialData {
-  title: string;
-  authorId: string;
-}
-
-export interface CourseFormData {
-  title?: string;
-  description?: string;
-  shortDescription?: string;
-  image?: string;
-  thumbnailImage?: string;
-  price?: number;
-  currency?: string;
-  language?: string;
-  accessPlans?: {
-    planId: string;
-    name: string;
-    duration: number | null;
-    price: number;
-  }[];
-}
 
 export async function createCourse(initialData: CreateCourseInitialData) {
   try {
@@ -46,7 +25,6 @@ export async function createCourse(initialData: CreateCourseInitialData) {
       title: initialData.title,
       description: "",
       shortDescription: "",
-      image: "",
       thumbnailImage: "",
       price: 0,
       sort: 0,
@@ -74,7 +52,6 @@ export async function createCourse(initialData: CreateCourseInitialData) {
         lessons: false,
         thumbnail: false,
       },
-      completionPercentage: 17,
       canBePublished: false,
     };
 

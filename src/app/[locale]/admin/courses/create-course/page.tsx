@@ -13,9 +13,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { coursesAction } from "@/app/actions/coursers";
-import { CreateCourseInitialData } from "@/app/actions/coursers/course/createCourse";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
+import { CreateCourseInitialData } from "@/app/types/course";
 
 const CreateCoursePage = () => {
   const router = useRouter();

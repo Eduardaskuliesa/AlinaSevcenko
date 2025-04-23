@@ -1,6 +1,6 @@
 "use server";
-import { dynamoDb } from "@/services/dynamoDB";
-import { dynamoTableName } from "@/services/dynamoDB";
+import { dynamoDb } from "@/app/services/dynamoDB";
+import { dynamoTableName } from "@/app/services/dynamoDB";
 import { QueryCommand } from "@aws-sdk/lib-dynamodb";
 
 export async function checkEmail(email: string) {

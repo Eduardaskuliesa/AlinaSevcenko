@@ -1,6 +1,6 @@
 "use server";
 import { v4 as uuidv4 } from "uuid";
-import { dynamoDb, dynamoTableName } from "@/services/dynamoDB";
+import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
 
 export async function generateMagicLinkToken(email: string) {
