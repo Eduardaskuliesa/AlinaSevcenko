@@ -7,8 +7,8 @@ function useMaxToasts(max: number) {
 
   useEffect(() => {
     toasts
-      .filter((t) => t.visible) 
-      .filter((_, i) => i >= max) 
+      .filter((t) => t.visible)
+      .filter((_, i) => i >= max)
       .forEach((t) => toast.dismiss(t.id));
   }, [toasts, max]);
 }
@@ -17,7 +17,7 @@ export function ToasterWithMax({
   limit = 10,
   ...props
 }: React.ComponentProps<typeof Toaster> & {
-    limit?: number;
+  limit?: number;
 }) {
   useMaxToasts(limit);
 

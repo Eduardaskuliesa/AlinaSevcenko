@@ -1,5 +1,4 @@
 "use client";
-
 import React from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -11,19 +10,16 @@ const NavBar = () => {
   const locale = pathSegments[1];
   const courseId = pathSegments[4];
 
-  // Get the current active tab based on the URL pathname
   const getActiveTab = () => {
     if (pathname.includes("/lessons")) return "lessons";
     if (pathname.includes("/settings")) return "settings";
-    return "info"; // Default tab
+    return "info";
   };
 
   const activeTab = getActiveTab();
 
-  // Base URL for the course
   const baseUrl = `/${locale}/admin/courses/${courseId}`;
 
-  // Tab configuration
   const tabs = [
     {
       name: "Info",
@@ -45,7 +41,6 @@ const NavBar = () => {
     },
   ];
 
-  // Generate breadcrumbs based on the current path
   const generateBreadcrumbs = () => {
     const currentTab = tabs.find((tab) => tab.id === activeTab);
 
@@ -63,7 +58,6 @@ const NavBar = () => {
 
   const breadcrumbs = generateBreadcrumbs();
 
-  // Get the current tab name for the heading
   const currentTabName =
     tabs.find((tab) => tab.id === activeTab)?.name || "Info";
 

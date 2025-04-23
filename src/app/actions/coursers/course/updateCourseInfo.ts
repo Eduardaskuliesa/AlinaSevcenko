@@ -2,7 +2,8 @@
 import { Course, CourseUpdateInfoData } from "@/app/types/course";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
-
+import { revalidateTag } from "next/cache";
+// We need to implement course category queryn and fetching.
 export async function updateCourseInfo(
   courseData: CourseUpdateInfoData,
   courseId: Course["courseId"]
@@ -60,6 +61,8 @@ export async function updateCourseInfo(
       dynamoDb.send(updateFieldsCommand),
       dynamoDb.send(updateStatusCommand),
     ]);
+
+    revalidateTag(`course-${courseId}`);
 
     return {
       fieldsUpdate: fieldsResult,

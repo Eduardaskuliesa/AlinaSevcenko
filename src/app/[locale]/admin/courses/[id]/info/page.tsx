@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Save, ArrowRight, Send, Loader } from "lucide-react";
 import toast from "react-hot-toast";
 import { useParams } from "next/navigation";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import CourseTitle from "./CourseTitle";
 import ShortDescription from "./ShortDescription";
 import FullDescription from "./FullDescription";
@@ -26,12 +27,20 @@ const InfoPage: React.FC = () => {
   const params = useParams();
   const courseId = params.id as string;
   const [isSaving, setIsSaving] = useState(false);
+  const queryClient = useQueryClient();
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["course", courseId],
+    queryFn: () => coursesAction.courses.getCourse(courseId),
+  });
+
+  const course = data?.cousre;
 
   const [formData, setFormData] = useState<CourseUpdateInfoData>({
-    courseTitle: "",
-    shortDescription: "",
-    fullDescription: "",
-    thumbnailSrc: "/placeholder.svg",
+    courseTitle: course?.title || "",
+    shortDescription: course?.shortDescription || "",
+    fullDescription: course?.description || "",
+    thumbnailSrc: course?.thumbnailImage || "/placeholder.svg",
     assignedCategories: [],
   });
 
@@ -65,14 +74,14 @@ const InfoPage: React.FC = () => {
       if (updateResult?.error === "TITLE_EMPTY") {
         return toast.error("Course title can't be empty");
       }
-      if(updateResult?.error) {
-        return toast.error('Failed to create course')
+      if (updateResult?.error) {
+        return toast.error("Failed to update course");
       }
+      queryClient.invalidateQueries({ queryKey: ["course", courseId] });
       toast.success("Course saved successfully!");
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("Failed to save course. Please try again.");
-      setIsSaving(false);
+      toast.error("Failed to save course. Please try again.");
     } finally {
       setIsSaving(false);
     }
@@ -87,6 +96,14 @@ const InfoPage: React.FC = () => {
     handleSubmit();
     // Additional publish logic
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader className="animate-spin h-8 w-8 text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -115,6 +132,7 @@ const InfoPage: React.FC = () => {
           size="lg"
           className="flex items-center gap-2"
           onClick={handleSaveAndContinue}
+          disabled={isSaving}
         >
           <Save size={18} />
           <ArrowRight size={18} />
@@ -124,6 +142,7 @@ const InfoPage: React.FC = () => {
           size="lg"
           className="flex items-center gap-2 bg-primary text-white hover:bg-primary/90"
           onClick={handlePublish}
+          disabled={isSaving}
         >
           <Send size={18} />
           <span>Publish</span>

@@ -5,10 +5,11 @@ import { dynamoDb } from "@/app/services/dynamoDB";
 import { dynamoTableName } from "@/app/services/dynamoDB";
 import { PutCommand } from "@aws-sdk/lib-dynamodb";
 import { v4 as uuidv4 } from "uuid";
+import { logger } from "@/app/utils/logger";
 
 export async function createCourse(initialData: CreateCourseInitialData) {
   try {
-    console.log(initialData)
+    console.log(initialData);
     if (!initialData.authorId || !initialData.title) {
       return {
         success: false,
@@ -69,7 +70,7 @@ export async function createCourse(initialData: CreateCourseInitialData) {
       completionPercentage: 17,
     };
   } catch (e) {
-    console.error("Error creating course:", e);
+    logger.error("Failed to create course", e);
     return {
       success: false,
       message: "Error creating course",
