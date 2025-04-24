@@ -15,6 +15,7 @@ export async function updateCourseInfo(
       };
     }
     const timestamp = new Date().toISOString();
+    const DEFAULT_PLACEHOLDER = "/placeholder.svg";
     const updateFieldsCommand = new UpdateCommand({
       TableName: dynamoTableName,
       Key: {
@@ -39,7 +40,10 @@ export async function updateCourseInfo(
     });
 
     const descriptionComplete = Boolean(courseData.fullDescription?.trim());
-    const thumbnailComplete = Boolean(courseData.thumbnailSrc?.trim());
+    const thumbnailComplete =
+      courseData.thumbnailSrc &&
+      courseData.thumbnailSrc.trim() &&
+      courseData.thumbnailSrc !== DEFAULT_PLACEHOLDER;
 
     const updateStatusCommand = new UpdateCommand({
       TableName: dynamoTableName,

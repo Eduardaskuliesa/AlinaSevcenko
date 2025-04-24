@@ -12,6 +12,8 @@ import CategorySelector from "./CategorySelector";
 import ThumbnailUploader from "./ThumbnailUploader";
 import { Category, CourseUpdateInfoData } from "@/app/types/course";
 import { coursesAction } from "@/app/actions/coursers";
+import { getPresignedUploadUrl } from "@/app/actions/s3/getPresignedUploadUrl";
+import { InfoIcon } from "lucide-react";
 
 const InfoPage: React.FC = () => {
   const defaultUnassignedCategories: Category[] = [
@@ -28,6 +30,8 @@ const InfoPage: React.FC = () => {
   const courseId = params.id as string;
   const [isSaving, setIsSaving] = useState(false);
   const queryClient = useQueryClient();
+
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["course", courseId],
@@ -60,23 +64,92 @@ const InfoPage: React.FC = () => {
     setFormData((prev) => ({ ...prev, thumbnailSrc }));
   };
 
+  const handleThumbnailFileSelect = (file: File | null) => {
+    setThumbnailFile(file);
+  };
+
   const handleCategoriesChange = (assignedCategories: Category[]) => {
     setFormData((prev) => ({ ...prev, assignedCategories }));
   };
 
   const handleSubmit = async () => {
+    const hasFormChanges =
+      course?.title !== formData.courseTitle ||
+      course?.shortDescription !== formData.shortDescription ||
+      course?.description !== formData.fullDescription ||
+      course?.thumbnailImage !== formData.thumbnailSrc;
+
+    const hasThumbnailFileChange = thumbnailFile !== null;
+
+    if (!hasFormChanges && !hasThumbnailFileChange) {
+      return toast("No changes were made to save", {
+        icon: <InfoIcon className="h-5 w-5 text-yellow-500" />,
+      });
+    }
+
     setIsSaving(true);
     try {
+      const updatedFormData = { ...formData };
+
+      if (!formData.courseTitle) {
+        return toast.error("Course title can't be empty");
+      }
+
+      if (thumbnailFile) {
+        const toastId = toast.loading("Preparing to upload...", {
+          position: "bottom-right",
+        });
+
+        try {
+          toast.loading("Generating upload URL...", { id: toastId });
+          const response = await getPresignedUploadUrl(
+            thumbnailFile.name,
+            thumbnailFile.type,
+            true
+          );
+
+          toast.loading("Uploading to server...", { id: toastId });
+
+          const uploadResult = await fetch(response.uploadUrl, {
+            method: "PUT",
+            body: thumbnailFile,
+            headers: {
+              "Content-Type": thumbnailFile.type,
+            },
+          });
+
+          if (!uploadResult.ok) {
+            throw new Error("Failed to upload thumbnail to S3");
+          }
+
+          toast.success("Image successfully uploaded to server", {
+            id: toastId,
+            position: "bottom-right",
+            duration: 3000,
+          });
+
+          updatedFormData.thumbnailSrc = response.mediaUrl;
+        } catch (error) {
+          console.error("Error uploading thumbnail:", error);
+          toast.error("Failed to upload thumbnail", {
+            id: toastId,
+            position: "bottom-right",
+          });
+        }
+      }
+
       const updateResult = await coursesAction.courses.updateCourseInfo(
-        formData,
+        updatedFormData,
         courseId
       );
+
       if (updateResult?.error === "TITLE_EMPTY") {
         return toast.error("Course title can't be empty");
       }
       if (updateResult?.error) {
         return toast.error("Failed to update course");
       }
+
       queryClient.invalidateQueries({ queryKey: ["course", courseId] });
       toast.success("Course saved successfully!");
     } catch (error) {
@@ -150,7 +223,6 @@ const InfoPage: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Left Column */}
         <div>
           <CourseTitle
             initialValue={formData.courseTitle}
@@ -177,6 +249,7 @@ const InfoPage: React.FC = () => {
           <ThumbnailUploader
             initialThumbnail={formData.thumbnailSrc}
             onChange={handleThumbnailChange}
+            onFileSelect={handleThumbnailFileSelect}
           />
         </div>
       </div>

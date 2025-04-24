@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
   experimental: {
     viewTransition: true,
   },
+  images: {
+    domains: ["d1qu0ys0a2oc3d.cloudfront.net"],
+  },
 };
 
 export default withNextIntl(nextConfig);

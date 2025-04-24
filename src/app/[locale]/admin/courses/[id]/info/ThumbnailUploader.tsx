@@ -5,14 +5,17 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Upload } from "lucide-react";
 
+
 interface ThumbnailUploaderProps {
   initialThumbnail?: string;
   onChange: (thumbnailSrc: string) => void;
+  onFileSelect: (file: File | null) => void;
 }
 
 const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
   initialThumbnail = "/placeholder.svg",
   onChange,
+  onFileSelect,
 }) => {
   const [thumbnailSrc, setThumbnailSrc] = useState<string>(initialThumbnail);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -27,6 +30,7 @@ const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
         onChange(result);
       };
       reader.readAsDataURL(file);
+      onFileSelect(file);
     }
   };
 
@@ -40,6 +44,7 @@ const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
     const defaultThumbnail = "/placeholder.svg";
     setThumbnailSrc(defaultThumbnail);
     onChange(defaultThumbnail);
+    onFileSelect(null);
   };
 
   return (
@@ -59,8 +64,8 @@ const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
             <Image
               src={thumbnailSrc}
               alt="Course thumbnail"
-              layout="fill"
-              objectFit="cover"
+              className="object-cover"
+              fill
             />
           </div>
 
