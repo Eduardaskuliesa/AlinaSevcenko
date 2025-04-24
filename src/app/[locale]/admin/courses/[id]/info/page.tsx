@@ -107,7 +107,7 @@ const InfoPage: React.FC = () => {
       return toast("No changes were made to save", {
         icon: (
           <InfoIcon
-            className="h-5 w-5 text-yellow-500 scale-100 transition-transform
+            className="h-5 w-5 text-yellow-500 animate-icon-warning
         "
           />
         ),
@@ -189,7 +189,9 @@ const InfoPage: React.FC = () => {
       }
       setThumbnailFile(null);
       queryClient.invalidateQueries({ queryKey: ["course", courseId] });
-      toast.success("Course saved successfully!");
+      toast.success("Course saved successfully!", {
+        duration: 200000,
+      });
     } catch (error) {
       console.error("Error submitting form:", error);
       toast.error("Failed to save course. Please try again.");

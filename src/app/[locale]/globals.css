@@ -3,29 +3,49 @@
 @tailwind utilities;
 
 :root {
-    --font-times: 'Times New Roman', Times, serif;
+  --font-times: "Times New Roman", Times, serif;
 }
 
 body {
-    background: rgba(0, 0, 0, 0.826);
+  background: rgba(0, 0, 0, 0.826);
+}
+
+::view-transition-group(root) {
+  z-index: auto !important;
+}
+
+::view-transition-image-pair(root) {
+  isolation: isolate;
+  will-change: transform, opacity, scale;
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 2;
+  animation: none !important;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+  animation: none !important;
+}
+
+@keyframes iconBounce {
+  0% {
+    transform: scale(0.6);
   }
-  
-  ::view-transition-group(root) {
-    z-index: auto !important;
+  40% {
+    transform: scale(1.15) translateY(-1px);
   }
-  
-  ::view-transition-image-pair(root) {
-    isolation: isolate;
-    will-change: transform, opacity, scale;
-    z-index: 1;
+  70% {
+    transform: scale(0.95) translateY(1px);
   }
-  
-  ::view-transition-new(root) {
-    z-index: 2;
-    animation: none !important;
+  100% {
+    transform: scale(1) translateY(0);
   }
-  
-  ::view-transition-old(root) {
-    z-index: 1;
-    animation: none !important;
-  }
+}
+
+.animate-icon-warning {
+  animation: iconBounce 0.4s cubic-bezier(0.21, 1.02, 0.73, 1) forwards;
+  will-change: transform;
+}
