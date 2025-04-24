@@ -36,7 +36,7 @@ export async function updateCourseInfo(
         ":thumbnailImage": courseData.thumbnailSrc,
         ":updatedAt": timestamp,
       },
-      ReturnValues: "UPDATED_NEW",
+      ReturnValues: "ALL_NEW",
     });
 
     const descriptionComplete = Boolean(courseData.fullDescription?.trim());

@@ -5,7 +5,6 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Upload } from "lucide-react";
 
-
 interface ThumbnailUploaderProps {
   initialThumbnail?: string;
   onChange: (thumbnailSrc: string) => void;
@@ -27,7 +26,6 @@ const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
       reader.onload = (e) => {
         const result = e.target?.result as string;
         setThumbnailSrc(result);
-        onChange(result);
       };
       reader.readAsDataURL(file);
       onFileSelect(file);

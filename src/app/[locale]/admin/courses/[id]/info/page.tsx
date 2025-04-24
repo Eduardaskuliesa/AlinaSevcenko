@@ -73,17 +73,44 @@ const InfoPage: React.FC = () => {
   };
 
   const handleSubmit = async () => {
+    const hasThumbnailFileChange = thumbnailFile !== null;
     const hasFormChanges =
       course?.title !== formData.courseTitle ||
       course?.shortDescription !== formData.shortDescription ||
       course?.description !== formData.fullDescription ||
       course?.thumbnailImage !== formData.thumbnailSrc;
 
-    const hasThumbnailFileChange = thumbnailFile !== null;
+    console.log("Comparison values:", {
+      courseTitle: {
+        course: course?.title,
+        form: formData.courseTitle,
+        isDifferent: course?.title !== formData.courseTitle,
+      },
+      shortDescription: {
+        course: course?.shortDescription,
+        form: formData.shortDescription,
+        isDifferent: course?.shortDescription !== formData.shortDescription,
+      },
+      description: {
+        course: course?.description,
+        form: formData.fullDescription,
+        isDifferent: course?.description !== formData.fullDescription,
+      },
+      thumbnailImage: {
+        course: course?.thumbnailImage,
+        form: formData.thumbnailSrc,
+        isDifferent: course?.thumbnailImage !== formData.thumbnailSrc,
+      },
+    });
 
     if (!hasFormChanges && !hasThumbnailFileChange) {
       return toast("No changes were made to save", {
-        icon: <InfoIcon className="h-5 w-5 text-yellow-500" />,
+        icon: (
+          <InfoIcon
+            className="h-5 w-5 text-yellow-500 scale-100 transition-transform
+        "
+          />
+        ),
       });
     }
 
@@ -96,9 +123,7 @@ const InfoPage: React.FC = () => {
       }
 
       if (thumbnailFile) {
-        const toastId = toast.loading("Preparing to upload...", {
-          position: "bottom-right",
-        });
+        const toastId = toast.loading("Preparing to upload...", {});
 
         try {
           toast.loading("Generating upload URL...", { id: toastId });
@@ -108,7 +133,10 @@ const InfoPage: React.FC = () => {
             true
           );
 
-          toast.loading("Uploading to server...", { id: toastId });
+          toast.loading("Uploading to server...", {
+            id: toastId,
+            position: "bottom-right",
+          });
 
           const uploadResult = await fetch(response.uploadUrl, {
             method: "PUT",
@@ -125,7 +153,6 @@ const InfoPage: React.FC = () => {
           toast.success("Image successfully uploaded to server", {
             id: toastId,
             position: "bottom-right",
-            duration: 3000,
           });
 
           updatedFormData.thumbnailSrc = response.mediaUrl;
@@ -150,6 +177,17 @@ const InfoPage: React.FC = () => {
         return toast.error("Failed to update course");
       }
 
+      const updatedCourse = updateResult?.fieldsUpdate?.Attributes;
+      if (updatedCourse) {
+        setFormData({
+          courseTitle: updatedCourse.title || "",
+          shortDescription: updatedCourse.shortDescription || "",
+          fullDescription: updatedCourse.description || "",
+          thumbnailSrc: updatedCourse.thumbnailImage || "/placeholder.svg",
+          assignedCategories: updatedCourse.categories || [],
+        });
+      }
+      setThumbnailFile(null);
       queryClient.invalidateQueries({ queryKey: ["course", courseId] });
       toast.success("Course saved successfully!");
     } catch (error) {
