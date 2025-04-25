@@ -21,7 +21,7 @@ const LessonPage: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto">
-      <div className="flex justify-between  mb-8 gap-4">
+      <div className="flex justify-between  mb-8">
         <div className="flex justify-start">
           <Button
             onClick={handleAddLesson}
@@ -33,7 +33,7 @@ const LessonPage: React.FC = () => {
             <span>Add new lesson</span>
           </Button>
         </div>
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-end gap-4">
           <Button
             variant="outline"
             size="lg"
@@ -47,7 +47,6 @@ const LessonPage: React.FC = () => {
             size="lg"
             className="flex items-center gap-2"
           >
-            <Save size={18} />
             <ArrowRight size={18} />
             <span>Save & Continue</span>
           </Button>

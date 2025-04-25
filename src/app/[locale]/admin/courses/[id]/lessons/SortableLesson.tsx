@@ -30,7 +30,6 @@ const SortableLesson: React.FC<SortableLessonProps> = ({ lesson, index }) => {
     zIndex: isDragging ? 10 : 1,
   };
 
-  // Don't render content until store is hydrated to prevent hydration mismatch
   if (!hydrated) {
     return (
       <Skeleton className="p-4  rounded-md shadow-sm border mb-2 border-gray-200 flex items-center justify-end">
@@ -43,11 +42,13 @@ const SortableLesson: React.FC<SortableLessonProps> = ({ lesson, index }) => {
     <div
       ref={setNodeRef}
       style={style}
-      className={`p-4 bg-white rounded-md hover:cursor-pointer shadow-sm border mb-2 ${
+      className={`p-4 bg-white rounded-md  ${
+        isDragging ? "hover:cursor-grabbing" : "hover:cursor-pointer"
+      } shadow-sm border mb-2 ${
         selectedLesson?.id === lesson.id
           ? "border-primary border"
           : isDragging
-          ? "border-primary border-2"
+          ? "border-primary border-2 cursor-grab"
           : "border-gray-200 hover:border-primary"
       } transition-colors`}
       onClick={() => setSelectedLesson(lesson.id)}

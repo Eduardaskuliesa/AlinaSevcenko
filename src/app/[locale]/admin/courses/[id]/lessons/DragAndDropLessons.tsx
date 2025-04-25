@@ -59,7 +59,7 @@ const DragAndDropLessons = () => {
 
   return (
     <div ref={containerRef} className="w-full overflow-y-auto relative">
-      <div className="border-2 max-h-[500px] overflow-auto rounded-md shadow-md p-2">
+      <div className="border-2 max-h-[500px] h-full overflow-auto rounded-md shadow-md p-2">
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}

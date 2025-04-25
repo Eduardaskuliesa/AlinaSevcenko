@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Save, ArrowRight, Send, Loader } from "lucide-react";
 import toast from "react-hot-toast";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import CourseTitle from "./CourseTitle";
 import ShortDescription from "./ShortDescription";
@@ -14,6 +14,13 @@ import { Category, CourseUpdateInfoData } from "@/app/types/course";
 import { coursesAction } from "@/app/actions/coursers";
 import { getPresignedUploadUrl } from "@/app/actions/s3/getPresignedUploadUrl";
 import { InfoIcon } from "lucide-react";
+import { artificialDelay } from "@/app/utils/artificialDelay";
+
+type SaveActionState =
+  | "idle"
+  | "saving"
+  | "saving-and-continuing"
+  | "publishing";
 
 const InfoPage: React.FC = () => {
   const defaultUnassignedCategories: Category[] = [
@@ -28,8 +35,9 @@ const InfoPage: React.FC = () => {
 
   const params = useParams();
   const courseId = params.id as string;
-  const [isSaving, setIsSaving] = useState(false);
+  const [actionState, setActionState] = useState<SaveActionState>("idle");
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
 
@@ -114,7 +122,7 @@ const InfoPage: React.FC = () => {
       });
     }
 
-    setIsSaving(true);
+    setActionState("saving");
     try {
       const updatedFormData = { ...formData };
 
@@ -132,7 +140,7 @@ const InfoPage: React.FC = () => {
             thumbnailFile.type,
             true
           );
-
+          artificialDelay(1);
           toast.loading("Uploading to server...", {
             id: toastId,
             position: "bottom-right",
@@ -189,25 +197,33 @@ const InfoPage: React.FC = () => {
       }
       setThumbnailFile(null);
       queryClient.invalidateQueries({ queryKey: ["course", courseId] });
-      toast.success("Course saved successfully!", {
-        duration: 200000,
-      });
+      toast.success("Course saved successfully!", {});
     } catch (error) {
       console.error("Error submitting form:", error);
       toast.error("Failed to save course. Please try again.");
     } finally {
-      setIsSaving(false);
+      setActionState("idle");
+      return {
+        success: true,
+      };
     }
   };
 
-  const handleSaveAndContinue = () => {
-    handleSubmit();
-    // Navigate to next page or handle continuation logic
+  const handleSaveAndContinue = async () => {
+    setActionState("saving-and-continuing");
+    const result = await handleSubmit();
+    if (result) {
+      const nextPath = `/${params.locale}/admin/courses/${courseId}/lessons`;
+      router.push(nextPath);
+    } else {
+      setActionState("idle");
+    }
   };
 
-  const handlePublish = () => {
-    handleSubmit();
-    // Additional publish logic
+  const handlePublish = async () => {
+    setActionState("publishing");
+    await handleSubmit();
+    setActionState("idle");
   };
 
   if (isLoading) {
@@ -226,9 +242,9 @@ const InfoPage: React.FC = () => {
           size="lg"
           className="flex items-center gap-2"
           onClick={handleSubmit}
-          disabled={isSaving}
+          disabled={actionState !== "idle"}
         >
-          {isSaving ? (
+          {actionState === "saving" ? (
             <>
               <Loader size={18} className="animate-spin" />
               <span>Saving...</span>
@@ -245,20 +261,37 @@ const InfoPage: React.FC = () => {
           size="lg"
           className="flex items-center gap-2"
           onClick={handleSaveAndContinue}
-          disabled={isSaving}
+          disabled={actionState !== "idle"}
         >
-          <Save size={18} />
-          <ArrowRight size={18} />
-          <span>Save & Continue</span>
+          {actionState === "saving-and-continuing" ? (
+            <>
+              <Loader size={18} className="animate-spin" />
+              <span>Save & Continue</span>
+            </>
+          ) : (
+            <>
+              <ArrowRight size={18} />
+              <span>Save & Continue</span>
+            </>
+          )}
         </Button>
         <Button
           size="lg"
           className="flex items-center gap-2 bg-primary text-white hover:bg-primary/90"
           onClick={handlePublish}
-          disabled={isSaving}
+          disabled={actionState !== "idle"}
         >
-          <Send size={18} />
-          <span>Publish</span>
+          {actionState === "publishing" ? (
+            <>
+              <Loader size={18} className="animate-spin" />
+              <span>Publishing...</span>
+            </>
+          ) : (
+            <>
+              <Send size={18} />
+              <span>Publish</span>
+            </>
+          )}
         </Button>
       </div>
 
