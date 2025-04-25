@@ -50,3 +50,11 @@ export interface CourseUpdateInfoData {
   thumbnailSrc: string;
   assignedCategories: Category[];
 }
+
+export interface Lesson {
+  id: string;
+  title: string;
+  shortDescription?: string;
+  videoUrl?: string;
+  order?: number;
+}
