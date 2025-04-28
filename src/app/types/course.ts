@@ -12,6 +12,12 @@ export interface Course {
   language: string;
   status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
   lessonCount: number;
+  lessonsOrder?: [
+    {
+      lessonId: string;
+      order: number;
+    }
+  ];
   authorId: string;
   accessPlans: {
     planId: string;

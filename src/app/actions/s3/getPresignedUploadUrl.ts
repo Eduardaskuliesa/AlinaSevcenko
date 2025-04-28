@@ -14,13 +14,17 @@ export async function getPresignedUploadUrl(
   isPhoto: boolean = false
 ) {
   try {
+    if (!fileName || !fileType) {
+      return {
+        success: false,
+        message: "Missing fields",
+      };
+    }
+
     const id = uuidv4();
     const mediaType = isPhoto ? "photos" : "videos";
     const s3Key = `${mediaType}/${id}/${fileName}`;
 
-    console.log("isPhoto:", isPhoto);
-    console.log("mediaType:", mediaType);
-    console.log("s3Key:", s3Key);
     const command = new PutObjectCommand({
       Bucket: s3BucketName,
       Key: s3Key,

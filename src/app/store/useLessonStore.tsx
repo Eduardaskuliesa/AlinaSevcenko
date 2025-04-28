@@ -7,6 +7,7 @@ import { artificialDelay } from "../utils/artificialDelay";
 export type LocalLesson = {
   lessonId: string;
   title: string;
+  isDirty?: boolean;
   shortDesc?: string;
   duration?: number;
   videoUrl?: string;
@@ -29,7 +30,9 @@ interface LessonState {
   addLesson: (lesson: Omit<LocalLesson, "id" | "order">) => void;
   updateLesson: (id: string, updates: Partial<Omit<LocalLesson, "id">>) => void;
   deleteLesson: (id: string) => void;
+
   reorderLessons: (activeId: string, overId: string) => void;
+  markAllSaved: () => void;
 }
 
 export const useLessonStore = create<LessonState>()(
@@ -68,12 +71,14 @@ export const useLessonStore = create<LessonState>()(
       updateLesson: (id, updates) =>
         set((state) => {
           const updatedLessons = state.lessons.map((lesson) =>
-            lesson.lessonId === id ? { ...lesson, ...updates } : lesson
+            lesson.lessonId === id
+              ? { ...lesson, ...updates, isDirty: true }
+              : lesson
           );
 
           const updatedSelectedLesson =
             state.selectedLessonId === id
-              ? { ...state.selectedLesson, ...updates }
+              ? { ...state.selectedLesson, ...updates, isDirty: true }
               : state.selectedLesson;
 
           return {
@@ -109,17 +114,38 @@ export const useLessonStore = create<LessonState>()(
             (lesson) => lesson.lessonId === overId
           );
 
+          if (oldIndex === newIndex) return state;
+
           const reorderedLessons = arrayMove(state.lessons, oldIndex, newIndex);
 
-          const updatedLessons = reorderedLessons.map((lesson, index) => ({
-            ...lesson,
-            order: index,
-          }));
+          const minIndex = Math.min(oldIndex, newIndex);
+          const maxIndex = Math.max(oldIndex, newIndex);
+
+          const updatedLessons = reorderedLessons.map((lesson, index) => {
+            if (index >= minIndex && index <= maxIndex) {
+              return {
+                ...lesson,
+                order: index,
+                isDirty: true,
+              };
+            }
+            return {
+              ...lesson,
+              order: index,
+            };
+          });
 
           return {
             lessons: updatedLessons,
           };
         }),
+      markAllSaved: () =>
+        set((state) => ({
+          lessons: state.lessons.map((lesson) => ({
+            ...lesson,
+            isDirty: false,
+          })),
+        })),
     })),
     {
       name: "lesson-storage",

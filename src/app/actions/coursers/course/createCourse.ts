@@ -32,6 +32,7 @@ export async function createCourse(initialData: CreateCourseInitialData) {
       currency: "EUR",
       language: "lt",
       status: "DRAFT",
+      lessonOrder: [],
       lessonCount: 0,
       authorId: initialData.authorId,
       accessPlans: [

@@ -3,6 +3,7 @@ import { dynamoDb } from "@/app/services/dynamoDB";
 import { dynamoTableName } from "@/app/services/dynamoDB";
 import { Course } from "@/app/types/course";
 import { PutCommand, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { revalidateTag } from "next/cache";
 import { v4 as uuidv4 } from "uuid";
 
 export async function createLesson(courseId: Course["courseId"]) {
@@ -25,8 +26,10 @@ export async function createLesson(courseId: Course["courseId"]) {
       };
     }
 
+    const course = courseResult.Item;
     const lessonId = uuidv4();
     const timestamp = new Date().toISOString();
+    const currentLessonCount = course.lessonCount || 0;
 
     const createLessonCommand = new PutCommand({
       TableName: dynamoTableName,
@@ -46,6 +49,13 @@ export async function createLesson(courseId: Course["courseId"]) {
 
     await dynamoDb.send(createLessonCommand);
 
+    const currentLessonOrder = course.lessonOrder || [];
+
+    const newLessonOrder = [
+      ...currentLessonOrder,
+      { lessonId: lessonId, sort: currentLessonCount },
+    ];
+
     const updateCourseCommand = new UpdateCommand({
       TableName: dynamoTableName,
       Key: {
@@ -53,16 +63,18 @@ export async function createLesson(courseId: Course["courseId"]) {
         SK: `COURSE#${courseId}`,
       },
       UpdateExpression:
-        "SET lessonCount = if_not_exists(lessonCount, :zero) + :one, updatedAt = :timestamp",
+        "SET lessonCount = :lessonCount, lessonOrder = :lessonOrder, updatedAt = :timestamp, completionStatus.lessons = :lessonComplete",
       ExpressionAttributeValues: {
-        ":zero": 0,
-        ":one": 1,
+        ":lessonComplete": true,
+        ":lessonCount": currentLessonCount + 1,
+        ":lessonOrder": newLessonOrder,
         ":timestamp": timestamp,
       },
     });
 
     await dynamoDb.send(updateCourseCommand);
 
+    revalidateTag(`course-${courseId}`);
     return {
       success: true,
       lessonId,

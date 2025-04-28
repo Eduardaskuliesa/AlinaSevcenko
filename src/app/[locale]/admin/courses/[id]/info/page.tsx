@@ -84,14 +84,12 @@ const InfoPage: React.FC = () => {
       course?.thumbnailImage !== formData.thumbnailSrc;
 
     if (!hasFormChanges && !hasThumbnailFileChange) {
-      return toast("No changes were made to save", {
+      toast("No changes were made to save", {
         icon: (
-          <InfoIcon
-            className="h-5 w-5 text-yellow-500 animate-icon-warning
-        "
-          />
+          <InfoIcon className="h-5 w-5 text-yellow-500 animate-icon-warning" />
         ),
       });
+      return { success: false };
     }
 
     setActionState("saving");
@@ -99,7 +97,8 @@ const InfoPage: React.FC = () => {
       const updatedFormData = { ...formData };
 
       if (!formData.courseTitle) {
-        return toast.error("Course title can't be empty");
+        toast.error("Course title can't be empty");
+        return { success: false };
       }
 
       if (thumbnailFile) {
@@ -114,11 +113,22 @@ const InfoPage: React.FC = () => {
             thumbnailFile.type,
             true
           );
+          if (!response.success && !response.uploadUrl) {
+            toast.error("Failed to generate upload URL", {
+              id: toastId,
+              position: "bottom-right",
+            });
+            return { success: false };
+          }
           artificialDelay(1);
           toast.loading("Uploading to server...", {
             id: toastId,
             position: "bottom-right",
           });
+
+          if (!response.uploadUrl) {
+            throw new Error("Upload URL is undefined");
+          }
 
           const uploadResult = await fetch(response.uploadUrl, {
             method: "PUT",
@@ -144,6 +154,7 @@ const InfoPage: React.FC = () => {
             id: toastId,
             position: "bottom-right",
           });
+          return { success: false };
         }
       }
 
@@ -153,10 +164,12 @@ const InfoPage: React.FC = () => {
       );
 
       if (updateResult?.error === "TITLE_EMPTY") {
-        return toast.error("Course title can't be empty");
+        toast.error("Course title can't be empty");
+        return { success: false };
       }
       if (updateResult?.error) {
-        return toast.error("Failed to update course");
+        toast.error("Failed to update course");
+        return { success: false };
       }
 
       const updatedCourse = updateResult?.fieldsUpdate?.Attributes;
@@ -172,21 +185,20 @@ const InfoPage: React.FC = () => {
       setThumbnailFile(null);
       queryClient.invalidateQueries({ queryKey: ["course", courseId] });
       toast.success("Course saved successfully!", {});
+      return { success: true };
     } catch (error) {
       console.error("Error submitting form:", error);
       toast.error("Failed to save course. Please try again.");
+      return { success: false };
     } finally {
       setActionState("idle");
-      return {
-        success: true,
-      };
     }
   };
 
   const handleSaveAndContinue = async () => {
     setActionState("saving-and-continuing");
     const result = await handleSubmit();
-    if (result) {
+    if (result.success) {
       const nextPath = `/${params.locale}/admin/courses/${courseId}/lessons`;
       router.push(nextPath);
     } else {

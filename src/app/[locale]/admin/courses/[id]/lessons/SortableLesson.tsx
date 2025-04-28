@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { GripVertical, Loader2 } from "lucide-react";
+import { GripVertical, Loader2, Trash2 } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 
 import { LocalLesson, useLessonStore } from "@/app/store/useLessonStore";
@@ -42,7 +42,7 @@ const SortableLesson: React.FC<SortableLessonProps> = ({ lesson, index }) => {
     <div
       ref={setNodeRef}
       style={style}
-      className={`p-4 bg-white rounded-md  ${
+      className={`p-4 bg-white group rounded-md group  ${
         isDragging ? "hover:cursor-grabbing" : "hover:cursor-pointer"
       } shadow-sm border mb-2 ${
         selectedLesson?.lessonId === lesson.lessonId
@@ -55,20 +55,24 @@ const SortableLesson: React.FC<SortableLessonProps> = ({ lesson, index }) => {
     >
       <div className="flex items-center justify-between w-full">
         <div className="flex items-center">
+          <div
+            {...attributes}
+            {...listeners}
+            data-drag-handle="true"
+            className="cursor-grab active:cursor-grabbing hover:text-primary"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <GripVertical size={18} className="text-gray-800 mr-2" />
+          </div>
+
           <div className="mr-2 text-gray-800 w-6 border ring-2 ring-secondary-light h-6 flex items-center justify-center font-medium bg-primary-light rounded-full">
             {index + 1}
           </div>
           <h3 className="font-medium">{lesson.title}</h3>
         </div>
-        <div
-          {...attributes}
-          {...listeners}
-          data-drag-handle="true"
-          className="cursor-grab active:cursor-grabbing hover:text-primary"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <GripVertical size={18} className="text-gray-800" />
-        </div>
+        {selectedLesson?.lessonId === lesson.lessonId && (
+          <Trash2 className="h-5 w-5 text-slate-600 hover:text-slate-900" />
+        )}
       </div>
     </div>
   );

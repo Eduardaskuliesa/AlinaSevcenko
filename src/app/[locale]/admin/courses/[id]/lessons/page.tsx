@@ -1,7 +1,14 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Save, ArrowRight, Send, PlusCircle, Loader2 } from "lucide-react";
+import {
+  Save,
+  ArrowRight,
+  Send,
+  PlusCircle,
+  Loader2,
+  InfoIcon,
+} from "lucide-react";
 import React, { useEffect, useState } from "react";
 import DragAndDropLessons from "./DragAndDropLessons";
 
@@ -11,11 +18,14 @@ import { useGetCourseId } from "@/app/hooks/useGetCourseId";
 import { SaveActionState } from "@/app/types/actions";
 import { coursesAction } from "@/app/actions/coursers";
 import toast from "react-hot-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 const LessonPage: React.FC = () => {
-  const { addLesson, lessons } = useLessonStore();
+  const { addLesson, lessons, markAllSaved } = useLessonStore();
   const { courseId } = useGetCourseId();
   const [isStateAction, setIsStateAction] = useState<SaveActionState>("idle");
+  const queryClient = useQueryClient();
+
 
   const handleAddLesson = async () => {
     setIsStateAction("adding-lesson");
@@ -37,6 +47,7 @@ const LessonPage: React.FC = () => {
           isPreview: false,
         });
         toast.success("Lesson created successfully");
+        queryClient.invalidateQueries({ queryKey: ["course", courseId] });
       }
     } catch (error) {
       console.error("Error creating lesson", error);
@@ -46,11 +57,51 @@ const LessonPage: React.FC = () => {
     }
   };
 
-  // const handleSave = async () => {
-  //   setIsSaveAction("saving");
-  //   try {
-  //   } catch (error) {}
-  // };
+  const handleSave = async () => {
+    setIsStateAction("saving");
+    try {
+      const lessonsToSave = lessons.filter((lesson) => lesson.isDirty);
+      if (lessonsToSave.length === 0) {
+        return toast("No changes were made to save", {
+          icon: (
+            <InfoIcon
+              className="h-5 w-5 text-yellow-500 animate-icon-warning
+          "
+            />
+          ),
+        });
+      }
+      if (lessonsToSave.some((lesson) => lesson.isDirty)) {
+        const lessonOrder = lessons.map((lesson) => ({
+          lessonId: lesson.lessonId,
+          sort: lesson.order || 0,
+        }));
+
+        const updateOrderResult = await coursesAction.lessons.updateLessonOrder(
+          courseId,
+          lessonOrder
+        );
+
+        if (updateOrderResult.success) {
+          toast.success("Lesson order updated successfully");
+          queryClient.invalidateQueries({ queryKey: ["course", courseId] });
+        } else {
+          toast.error("Failed to update lesson order");
+        }
+      }
+      markAllSaved();
+    } catch (error) {
+      console.error("Error saving lessons", error);
+      toast.error("Error saving lessons");
+    } finally {
+      setIsStateAction("idle");
+    }
+  };
+
+  const handleSaveAndContinue = async () => {
+    setIsStateAction('saving-and-continuing')
+    const result = await handleSave();
+  }
 
   useEffect(() => {
     console.log(lessons, courseId);
@@ -80,12 +131,23 @@ const LessonPage: React.FC = () => {
         </div>
         <div className="flex justify-end gap-4">
           <Button
+            onClick={handleSave}
+            disabled={isStateAction !== "idle"}
             variant="outline"
             size="lg"
             className="flex items-center gap-2"
           >
-            <Save size={18} />
-            <span>Save</span>
+            {isStateAction === "saving" ? (
+              <>
+                <Loader2 size={18} className="animate-spin" />
+                <span>Saving...</span>
+              </>
+            ) : (
+              <>
+                <Save size={18} />
+                <span>Save</span>
+              </>
+            )}
           </Button>
           <Button
             variant="outline"
