@@ -22,14 +22,14 @@ const LessonsBasicInfo = () => {
   const handleDescriptionChange = (value: string) => {
     setDescription(value);
     if (selectedLessonId) {
-      updateLesson(selectedLessonId, { shortDescription: value });
+      updateLesson(selectedLessonId, { shortDesc: value });
     }
   };
 
   const handleAccessTypeChange = (isFree: boolean) => {
     setIsFreePreview(isFree);
     if (selectedLessonId) {
-      updateLesson(selectedLessonId, { isFreePreview: isFree });
+      updateLesson(selectedLessonId, { isPreview: isFree });
     }
   };
 
@@ -62,7 +62,7 @@ const LessonsBasicInfo = () => {
             Select a lesson from the list to edit its details.
           </p>
           <p className="text-gray-400 text-sm">
-            Or add a new lesson using the "Add new lesson" button.
+            Or add a new lesson using the &quot;Add new lesson&quot; button.
           </p>
         </div>
       )}

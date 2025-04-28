@@ -52,9 +52,14 @@ export interface CourseUpdateInfoData {
 }
 
 export interface Lesson {
-  id: string;
+  PK: string;
+  SK: string;
+  lessonId: string;
   title: string;
-  shortDescription?: string;
-  videoUrl?: string;
-  order?: number;
+  shortDesc: string;
+  videoUrl: string;
+  duration: number;
+  isPreview: boolean;
+  createdAt: string;
+  updatedAt: string;
 }

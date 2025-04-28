@@ -68,12 +68,12 @@ const DragAndDropLessons = () => {
           modifiers={modifiers}
         >
           <SortableContext
-            items={lessons.map((lesson) => lesson.id)}
+            items={lessons.map((lesson) => lesson.lessonId)}
             strategy={verticalListSortingStrategy}
           >
             <div>
               {lessons.map((lesson, index) => (
-                <SortableLesson key={lesson.id} lesson={lesson} index={index} />
+                <SortableLesson key={lesson.lessonId} lesson={lesson} index={index} />
               ))}
             </div>
           </SortableContext>

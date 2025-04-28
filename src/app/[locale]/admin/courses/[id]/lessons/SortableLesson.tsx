@@ -2,12 +2,12 @@
 import React from "react";
 import { GripVertical, Loader2 } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
-import { Lesson } from "@/app/types/course";
-import { useLessonStore } from "@/app/store/useLessonStore";
+
+import { LocalLesson, useLessonStore } from "@/app/store/useLessonStore";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface SortableLessonProps {
-  lesson: Lesson;
+  lesson: LocalLesson;
   index: number;
 }
 
@@ -20,7 +20,7 @@ const SortableLesson: React.FC<SortableLessonProps> = ({ lesson, index }) => {
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: lesson.id });
+  } = useSortable({ id: lesson.lessonId });
 
   const style = {
     transform: transform
@@ -45,13 +45,13 @@ const SortableLesson: React.FC<SortableLessonProps> = ({ lesson, index }) => {
       className={`p-4 bg-white rounded-md  ${
         isDragging ? "hover:cursor-grabbing" : "hover:cursor-pointer"
       } shadow-sm border mb-2 ${
-        selectedLesson?.id === lesson.id
+        selectedLesson?.lessonId === lesson.lessonId
           ? "border-primary border"
           : isDragging
           ? "border-primary border-2 cursor-grab"
           : "border-gray-200 hover:border-primary"
       } transition-colors`}
-      onClick={() => setSelectedLesson(lesson.id)}
+      onClick={() => setSelectedLesson(lesson.lessonId)}
     >
       <div className="flex items-center justify-between w-full">
         <div className="flex items-center">

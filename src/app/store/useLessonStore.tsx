@@ -4,28 +4,30 @@ import { arrayMove } from "@dnd-kit/sortable";
 import { immer } from "zustand/middleware/immer";
 import { artificialDelay } from "../utils/artificialDelay";
 
-export type Lesson = {
-  id: string;
+export type LocalLesson = {
+  lessonId: string;
   title: string;
-  shortDescription?: string;
+  shortDesc?: string;
+  duration?: number;
   videoUrl?: string;
+  isPreview?: boolean;
   order?: number;
 };
 
 interface LessonState {
   // State
-  lessons: Lesson[];
+  lessons: LocalLesson[];
   selectedLessonId: string | null;
   hydrated: boolean;
 
   // Selectors
-  selectedLesson: Lesson | null;
+  selectedLesson: LocalLesson | null;
 
   // Actions
   setHydrated: (hydrated: boolean) => void;
   setSelectedLesson: (lessonId: string) => void;
-  addLesson: (lesson: Omit<Lesson, "id" | "order">) => void;
-  updateLesson: (id: string, updates: Partial<Omit<Lesson, "id">>) => void;
+  addLesson: (lesson: Omit<LocalLesson, "id" | "order">) => void;
+  updateLesson: (id: string, updates: Partial<Omit<LocalLesson, "id">>) => void;
   deleteLesson: (id: string) => void;
   reorderLessons: (activeId: string, overId: string) => void;
 }
@@ -33,37 +35,7 @@ interface LessonState {
 export const useLessonStore = create<LessonState>()(
   persist(
     immer((set) => ({
-      // Initial state
-      lessons: [
-        {
-          id: "lesson-1",
-          title: "Introduction to Course",
-          shortDescription: "Welcome to the course!",
-          videoUrl: "",
-          order: 0,
-        },
-        {
-          id: "lesson-2",
-          title: "Basic Concepts",
-          shortDescription: "Learn the fundamentals",
-          videoUrl: "",
-          order: 1,
-        },
-        {
-          id: "lesson-3",
-          title: "Advanced Techniques",
-          shortDescription: "Taking it to the next level",
-          videoUrl: "",
-          order: 2,
-        },
-        {
-          id: "lesson-4",
-          title: "Final Project",
-          shortDescription: "Put everything together",
-          videoUrl: "",
-          order: 3,
-        },
-      ],
+      lessons: [],
       selectedLessonId: null,
       selectedLesson: null,
       hydrated: false,
@@ -76,22 +48,18 @@ export const useLessonStore = create<LessonState>()(
       setSelectedLesson: (lessonId: string) =>
         set((state) => ({
           selectedLesson:
-            state.lessons.find((lesson) => lesson.id === lessonId) || null,
+            state.lessons.find((lesson) => lesson.lessonId === lessonId) ||
+            null,
           selectedLessonId: lessonId,
         })),
 
       addLesson: (lesson) =>
         set((state) => {
-          const newId = `lesson-${state.lessons.length + 1}`;
-          const newOrder = state.lessons.length;
-
           return {
             lessons: [
               ...state.lessons,
               {
                 ...lesson,
-                id: newId,
-                order: newOrder,
               },
             ],
           };
@@ -100,15 +68,16 @@ export const useLessonStore = create<LessonState>()(
       updateLesson: (id, updates) =>
         set((state) => ({
           lessons: state.lessons.map((lesson) =>
-            lesson.id === id ? { ...lesson, ...updates } : lesson
+            lesson.lessonId === id ? { ...lesson, ...updates } : lesson
           ),
         })),
 
       deleteLesson: (id) =>
         set((state) => {
-          const newLessons = state.lessons.filter((lesson) => lesson.id !== id);
+          const newLessons = state.lessons.filter(
+            (lesson) => lesson.lessonId !== id
+          );
 
-          // Update order after deletion
           const updatedLessons = newLessons.map((lesson, index) => ({
             ...lesson,
             order: index,
@@ -116,7 +85,6 @@ export const useLessonStore = create<LessonState>()(
 
           return {
             lessons: updatedLessons,
-            // If we deleted the selected lesson, clear selection
             selectedLessonId:
               state.selectedLessonId === id ? null : state.selectedLessonId,
           };
@@ -125,10 +93,10 @@ export const useLessonStore = create<LessonState>()(
       reorderLessons: (activeId, overId) =>
         set((state) => {
           const oldIndex = state.lessons.findIndex(
-            (lesson) => lesson.id === activeId
+            (lesson) => lesson.lessonId === activeId
           );
           const newIndex = state.lessons.findIndex(
-            (lesson) => lesson.id === overId
+            (lesson) => lesson.lessonId === overId
           );
 
           const reorderedLessons = arrayMove(state.lessons, oldIndex, newIndex);

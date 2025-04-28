@@ -1,26 +1,17 @@
 "use server";
 import { dynamoDb } from "@/app/services/dynamoDB";
 import { dynamoTableName } from "@/app/services/dynamoDB";
+import { Course } from "@/app/types/course";
 import { PutCommand, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { v4 as uuidv4 } from "uuid";
 
-export interface LessonFormData {
-  courseId: string;
-  title: string;
-  content?: string;
-  videoUrl?: string;
-  position?: number;
-  duration?: number;
-  isPreview?: boolean;
-}
-
-export async function createLesson(formData: LessonFormData) {
+export async function createLesson(courseId: Course["courseId"]) {
   try {
     const checkCourseCommand = new GetCommand({
       TableName: dynamoTableName,
       Key: {
         PK: "COURSE",
-        SK: `COURSE#${formData.courseId}`,
+        SK: `COURSE#${courseId}`,
       },
     });
 
@@ -40,15 +31,14 @@ export async function createLesson(formData: LessonFormData) {
     const createLessonCommand = new PutCommand({
       TableName: dynamoTableName,
       Item: {
-        PK: `COURSE#${formData.courseId}`,
+        PK: `COURSE#${courseId}`,
         SK: `LESSON#${lessonId}`,
         lessonId: lessonId,
-        title: formData.title,
-        content: formData.content || "",
-        videoUrl: formData.videoUrl || "",
-        position: formData.position || 0,
-        duration: formData.duration || 0,
-        isPreview: formData.isPreview || false,
+        title: "New Lesson",
+        shortDesc: "",
+        videoUrl: "",
+        duration: 0,
+        isPreview: false,
         createdAt: timestamp,
         updatedAt: timestamp,
       },
@@ -60,7 +50,7 @@ export async function createLesson(formData: LessonFormData) {
       TableName: dynamoTableName,
       Key: {
         PK: "COURSE",
-        SK: `COURSE#${formData.courseId}`,
+        SK: `COURSE#${courseId}`,
       },
       UpdateExpression:
         "SET lessonCount = if_not_exists(lessonCount, :zero) + :one, updatedAt = :timestamp",
@@ -75,7 +65,8 @@ export async function createLesson(formData: LessonFormData) {
 
     return {
       success: true,
-      lessonId: lessonId,
+      lessonId,
+      title: "New Lesson",
       message: "Lesson created successfully",
     };
   } catch (e) {

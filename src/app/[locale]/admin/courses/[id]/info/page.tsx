@@ -15,12 +15,9 @@ import { coursesAction } from "@/app/actions/coursers";
 import { getPresignedUploadUrl } from "@/app/actions/s3/getPresignedUploadUrl";
 import { InfoIcon } from "lucide-react";
 import { artificialDelay } from "@/app/utils/artificialDelay";
+import { SaveActionState } from "@/app/types/actions";
 
-type SaveActionState =
-  | "idle"
-  | "saving"
-  | "saving-and-continuing"
-  | "publishing";
+
 
 const InfoPage: React.FC = () => {
   const defaultUnassignedCategories: Category[] = [
