@@ -1,5 +1,5 @@
 import { useLessonStore } from "@/app/store/useLessonStore";
-import React, { useState } from "react";
+import React from "react";
 import LessonTitle from "./LessonTitle";
 import LessonShortDescription from "./LessonShortDescription";
 import LessonAccessType from "./LessonAccessType";
@@ -8,28 +8,22 @@ import { Loader } from "lucide-react";
 const LessonsBasicInfo = () => {
   const { selectedLesson, selectedLessonId, updateLesson, hydrated } =
     useLessonStore();
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [isFreePreview, setIsFreePreview] = useState(false);
 
   const handleTitleChange = (value: string) => {
-    setTitle(value);
     if (selectedLessonId) {
       updateLesson(selectedLessonId, { title: value });
     }
   };
 
   const handleDescriptionChange = (value: string) => {
-    setDescription(value);
     if (selectedLessonId) {
       updateLesson(selectedLessonId, { shortDesc: value });
     }
   };
 
-  const handleAccessTypeChange = (isFree: boolean) => {
-    setIsFreePreview(isFree);
+  const handleAccessTypeChange = (preview: boolean) => {
     if (selectedLessonId) {
-      updateLesson(selectedLessonId, { isPreview: isFree });
+      updateLesson(selectedLessonId, { isPreview: preview });
     }
   };
 
@@ -46,13 +40,16 @@ const LessonsBasicInfo = () => {
     <div className=" min-h-[500px] w-full px-4 overflow-y-auto">
       {selectedLesson ? (
         <div>
-          <LessonTitle initialValue={title} onChange={handleTitleChange} />
+          <LessonTitle
+            initialValue={selectedLesson.title}
+            onChange={handleTitleChange}
+          />
           <LessonShortDescription
-            initialValue={description}
+            initialValue={selectedLesson.shortDesc || ""}
             onChange={handleDescriptionChange}
           />
           <LessonAccessType
-            initialValue={isFreePreview}
+            initialValue={selectedLesson.isPreview || false}
             onChange={handleAccessTypeChange}
           />
         </div>

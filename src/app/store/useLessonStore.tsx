@@ -66,11 +66,21 @@ export const useLessonStore = create<LessonState>()(
         }),
 
       updateLesson: (id, updates) =>
-        set((state) => ({
-          lessons: state.lessons.map((lesson) =>
+        set((state) => {
+          const updatedLessons = state.lessons.map((lesson) =>
             lesson.lessonId === id ? { ...lesson, ...updates } : lesson
-          ),
-        })),
+          );
+
+          const updatedSelectedLesson =
+            state.selectedLessonId === id
+              ? { ...state.selectedLesson, ...updates }
+              : state.selectedLesson;
+
+          return {
+            lessons: updatedLessons,
+            selectedLesson: updatedSelectedLesson,
+          };
+        }),
 
       deleteLesson: (id) =>
         set((state) => {
@@ -101,7 +111,6 @@ export const useLessonStore = create<LessonState>()(
 
           const reorderedLessons = arrayMove(state.lessons, oldIndex, newIndex);
 
-          // Update order after reordering
           const updatedLessons = reorderedLessons.map((lesson, index) => ({
             ...lesson,
             order: index,

@@ -1,28 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useLayoutEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Lock, Unlock } from "lucide-react";
 
 interface LessonAccessTypeProps {
-  initialValue?: boolean; // true = free, false = paid
+  initialValue?: boolean;
   onChange: (isFree: boolean) => void;
 }
 
 const LessonAccessType: React.FC<LessonAccessTypeProps> = ({
-  initialValue = false,
+  initialValue,
   onChange,
 }) => {
-  const [isFree, setIsFree] = useState(initialValue);
+  const [isFree, setIsFree] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  const handleSetFree = () => {
-    setIsFree(true);
-    onChange(true);
-  };
+  useLayoutEffect(() => {
+    if (initialValue !== undefined) {
+      setIsFree(initialValue);
+      setIsInitialized(true);
+    }
+  }, [initialValue]);
 
-  const handleSetPaid = () => {
-    setIsFree(false);
-    onChange(false);
-  };
+  if (!isInitialized) {
+    return null;
+  }
 
   return (
     <div className="mb-8">
@@ -40,8 +42,10 @@ const LessonAccessType: React.FC<LessonAccessTypeProps> = ({
         <Button
           type="button"
           variant={isFree ? "default" : "ghost"}
-          onClick={handleSetFree}
-          className={`flex-1 bg-gray-100 ${isFree ? "bg-primary text-white" : ""}`}
+          onClick={() => onChange(true)}
+          className={`flex-1 bg-gray-100 ${
+            isFree ? "bg-primary text-white" : ""
+          }`}
         >
           <Unlock size={16} className="mr-2" />
           Free Preview
@@ -49,8 +53,10 @@ const LessonAccessType: React.FC<LessonAccessTypeProps> = ({
         <Button
           type="button"
           variant={!isFree ? "default" : "ghost"}
-          onClick={handleSetPaid}
-          className={`flex-1 bg-gray-100 ${!isFree ? "bg-primary text-white" : ""}`}
+          onClick={() => onChange(false)}
+          className={`flex-1 bg-gray-100 ${
+            !isFree ? "bg-primary text-white" : ""
+          }`}
         >
           <Lock size={16} className="mr-2" />
           Paid Access

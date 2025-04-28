@@ -9,7 +9,7 @@ interface LessonTitleProps {
 }
 
 const LessonTitle: React.FC<LessonTitleProps> = ({
-  initialValue = "",
+  initialValue,
   onChange,
 }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -17,8 +17,6 @@ import { InfoIcon } from "lucide-react";
 import { artificialDelay } from "@/app/utils/artificialDelay";
 import { SaveActionState } from "@/app/types/actions";
 
-
-
 const InfoPage: React.FC = () => {
   const defaultUnassignedCategories: Category[] = [
     { id: 1, name: "Web Development" },
@@ -85,29 +83,6 @@ const InfoPage: React.FC = () => {
       course?.description !== formData.fullDescription ||
       course?.thumbnailImage !== formData.thumbnailSrc;
 
-    console.log("Comparison values:", {
-      courseTitle: {
-        course: course?.title,
-        form: formData.courseTitle,
-        isDifferent: course?.title !== formData.courseTitle,
-      },
-      shortDescription: {
-        course: course?.shortDescription,
-        form: formData.shortDescription,
-        isDifferent: course?.shortDescription !== formData.shortDescription,
-      },
-      description: {
-        course: course?.description,
-        form: formData.fullDescription,
-        isDifferent: course?.description !== formData.fullDescription,
-      },
-      thumbnailImage: {
-        course: course?.thumbnailImage,
-        form: formData.thumbnailSrc,
-        isDifferent: course?.thumbnailImage !== formData.thumbnailSrc,
-      },
-    });
-
     if (!hasFormChanges && !hasThumbnailFileChange) {
       return toast("No changes were made to save", {
         icon: (
@@ -128,7 +103,9 @@ const InfoPage: React.FC = () => {
       }
 
       if (thumbnailFile) {
-        const toastId = toast.loading("Preparing to upload...", {});
+        const toastId = toast.loading("Generating upload URL...", {
+          position: "bottom-right",
+        });
 
         try {
           toast.loading("Generating upload URL...", { id: toastId });
