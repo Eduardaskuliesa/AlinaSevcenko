@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { arrayMove } from "@dnd-kit/sortable";
 import { immer } from "zustand/middleware/immer";
-import { artificialDelay } from "../utils/artificialDelay";
+
 
 export type LocalLesson = {
   lessonId: string;
@@ -89,14 +89,27 @@ export const useLessonStore = create<LessonState>()(
 
       deleteLesson: (id) =>
         set((state) => {
+          const deletedIndex = state.lessons.findIndex(
+            (lesson) => lesson.lessonId === id
+          );
+          
           const newLessons = state.lessons.filter(
             (lesson) => lesson.lessonId !== id
           );
 
-          const updatedLessons = newLessons.map((lesson, index) => ({
-            ...lesson,
-            order: index,
-          }));
+          const updatedLessons = newLessons.map((lesson, index) => {
+            const originalIndex = state.lessons.findIndex(
+              (l) => l.lessonId === lesson.lessonId
+            );
+            
+            const isDirtyDueToReordering = originalIndex > deletedIndex;
+            
+            return {
+              ...lesson,
+              order: index,
+              isDirty: isDirtyDueToReordering || lesson.isDirty || false,
+            };
+          });
 
           return {
             lessons: updatedLessons,
@@ -156,7 +169,6 @@ export const useLessonStore = create<LessonState>()(
       onRehydrateStorage() {
         return (state, error) => {
           if (!error) {
-            artificialDelay(2);
             state?.setHydrated(true);
           }
         };
