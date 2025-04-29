@@ -82,6 +82,7 @@ const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
 
             <div className="flex gap-3 mt-4">
               <Button
+                
                 variant="outline"
                 size="sm"
                 onClick={triggerFileInput}
@@ -92,7 +93,7 @@ const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-xs text-red-500 hover:text-red-600 hover:bg-red-50"
+                className="text-xs text-red-500 hover:text-red-600 hover:bg-red-100 bg-red-50"
                 onClick={handleRemove}
               >
                 Remove

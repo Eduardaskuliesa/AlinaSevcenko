@@ -92,7 +92,6 @@ const InfoPage: React.FC = () => {
       return { success: false };
     }
 
-    setActionState("saving");
     try {
       const updatedFormData = { ...formData };
 
@@ -196,7 +195,6 @@ const InfoPage: React.FC = () => {
   };
 
   const handleSaveAndContinue = async () => {
-    setActionState("saving-and-continuing");
     const result = await handleSubmit();
     if (result.success) {
       const nextPath = `/${params.locale}/admin/courses/${courseId}/lessons`;
@@ -227,7 +225,10 @@ const InfoPage: React.FC = () => {
           variant="outline"
           size="lg"
           className="flex items-center gap-2"
-          onClick={handleSubmit}
+          onClick={() => {
+            setActionState("saving");
+            handleSubmit();
+          }}
           disabled={actionState !== "idle"}
         >
           {actionState === "saving" ? (
@@ -246,13 +247,16 @@ const InfoPage: React.FC = () => {
           variant="outline"
           size="lg"
           className="flex items-center gap-2"
-          onClick={handleSaveAndContinue}
+          onClick={() => {
+            setActionState("saving-and-continuing");
+            handleSaveAndContinue();
+          }}
           disabled={actionState !== "idle"}
         >
           {actionState === "saving-and-continuing" ? (
             <>
               <Loader size={18} className="animate-spin" />
-              <span>Save & Continue</span>
+              <span>Saving...</span>
             </>
           ) : (
             <>

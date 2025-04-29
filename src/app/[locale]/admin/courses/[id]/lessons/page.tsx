@@ -9,7 +9,7 @@ import {
   Loader2,
   InfoIcon,
 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import DragAndDropLessons from "./DragAndDropLessons";
 
 import LessonsBasicInfo from "./LessonsBasicInfo";
@@ -19,13 +19,15 @@ import { SaveActionState } from "@/app/types/actions";
 import { coursesAction } from "@/app/actions/coursers";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { useParams, useRouter } from "next/navigation";
 
 const LessonPage: React.FC = () => {
   const { addLesson, lessons, markAllSaved } = useLessonStore();
   const { courseId } = useGetCourseId();
   const [isStateAction, setIsStateAction] = useState<SaveActionState>("idle");
   const queryClient = useQueryClient();
-
+  const router = useRouter();
+  const params = useParams();
 
   const handleAddLesson = async () => {
     setIsStateAction("adding-lesson");
@@ -58,11 +60,10 @@ const LessonPage: React.FC = () => {
   };
 
   const handleSave = async () => {
-    setIsStateAction("saving");
     try {
       const lessonsToSave = lessons.filter((lesson) => lesson.isDirty);
       if (lessonsToSave.length === 0) {
-        return toast("No changes were made to save", {
+        toast("No changes were made to save", {
           icon: (
             <InfoIcon
               className="h-5 w-5 text-yellow-500 animate-icon-warning
@@ -70,6 +71,7 @@ const LessonPage: React.FC = () => {
             />
           ),
         });
+        return { success: false };
       }
       if (lessonsToSave.some((lesson) => lesson.isDirty)) {
         const lessonOrder = lessons.map((lesson) => ({
@@ -87,25 +89,31 @@ const LessonPage: React.FC = () => {
           queryClient.invalidateQueries({ queryKey: ["course", courseId] });
         } else {
           toast.error("Failed to update lesson order");
+          return { success: false };
         }
       }
+
       markAllSaved();
+      return { success: true };
     } catch (error) {
       console.error("Error saving lessons", error);
       toast.error("Error saving lessons");
+      return { success: false };
     } finally {
       setIsStateAction("idle");
     }
   };
 
   const handleSaveAndContinue = async () => {
-    setIsStateAction('saving-and-continuing')
     const result = await handleSave();
-  }
+    if (result.success) {
+      const nextPath = `/${params.locale}/admin/courses/${courseId}/settings`;
+      router.push(nextPath);
+    } else {
+      setIsStateAction("idle");
+    }
+  };
 
-  useEffect(() => {
-    console.log(lessons, courseId);
-  }, [lessons, courseId]);
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex justify-between  mb-8">
@@ -131,7 +139,10 @@ const LessonPage: React.FC = () => {
         </div>
         <div className="flex justify-end gap-4">
           <Button
-            onClick={handleSave}
+            onClick={() => {
+              handleSave();
+              setIsStateAction("saving");
+            }}
             disabled={isStateAction !== "idle"}
             variant="outline"
             size="lg"
@@ -150,14 +161,29 @@ const LessonPage: React.FC = () => {
             )}
           </Button>
           <Button
+            onClick={() => {
+              handleSaveAndContinue();
+              setIsStateAction("saving-and-continuing");
+            }}
+            disabled={isStateAction !== "idle"}
             variant="outline"
             size="lg"
             className="flex items-center gap-2"
           >
-            <ArrowRight size={18} />
-            <span>Save & Continue</span>
+            {isStateAction === "saving-and-continuing" ? (
+              <>
+                <Loader2 className="animate-spin" size={18} />
+                <span>Saving...</span>
+              </>
+            ) : (
+              <>
+                <ArrowRight size={18} />
+                <span>Save & Continue</span>
+              </>
+            )}
           </Button>
           <Button
+            disabled={isStateAction !== "idle"}
             size="lg"
             className="flex items-center gap-2 bg-primary text-white hover:bg-primary/90"
           >

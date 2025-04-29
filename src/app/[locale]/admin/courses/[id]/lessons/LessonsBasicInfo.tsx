@@ -4,6 +4,7 @@ import LessonTitle from "./LessonTitle";
 import LessonShortDescription from "./LessonShortDescription";
 import LessonAccessType from "./LessonAccessType";
 import { Loader } from "lucide-react";
+import LessonVideoUpload from "./LessonsVideoUpload";
 
 const LessonsBasicInfo = () => {
   const { selectedLesson, selectedLessonId, updateLesson, hydrated } =
@@ -52,6 +53,7 @@ const LessonsBasicInfo = () => {
             initialValue={selectedLesson.isPreview || false}
             onChange={handleAccessTypeChange}
           />
+          <LessonVideoUpload></LessonVideoUpload>
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center h-[400px] text-center">

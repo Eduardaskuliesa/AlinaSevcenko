@@ -35,9 +35,6 @@ export async function getPresignedUploadUrl(
 
     const mediaUrl = `https://${cloudFrontDomain}/${mediaType}/${id}/${fileName}`;
 
-    console.log(uploadUrl);
-    console.log(mediaUrl);
-
     return {
       success: true,
       message: "Upload URL generated successfully",
