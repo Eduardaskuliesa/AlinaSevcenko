@@ -45,6 +45,7 @@ const LessonsBasicInfo = () => {
             initialValue={selectedLesson.title}
             onChange={handleTitleChange}
           />
+          <LessonVideoUpload></LessonVideoUpload>
           <LessonShortDescription
             initialValue={selectedLesson.shortDesc || ""}
             onChange={handleDescriptionChange}
@@ -53,7 +54,6 @@ const LessonsBasicInfo = () => {
             initialValue={selectedLesson.isPreview || false}
             onChange={handleAccessTypeChange}
           />
-          <LessonVideoUpload></LessonVideoUpload>
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center h-[400px] text-center">

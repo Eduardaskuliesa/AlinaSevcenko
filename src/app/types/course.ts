@@ -56,6 +56,7 @@ export interface CourseUpdateInfoData {
   thumbnailSrc: string;
   assignedCategories: Category[];
 }
+export type LessonsStatus = "waiting" | "preparing" | "ready";
 
 export interface Lesson {
   PK: string;
@@ -65,6 +66,9 @@ export interface Lesson {
   shortDesc: string;
   videoUrl: string;
   duration: number;
+  assetId: string | null;
+  playbackId: string | null;
+  status: LessonsStatus;
   isPreview: boolean;
   createdAt: string;
   updatedAt: string;

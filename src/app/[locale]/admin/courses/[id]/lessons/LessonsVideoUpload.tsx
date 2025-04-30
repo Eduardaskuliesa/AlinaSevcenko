@@ -1,202 +1,187 @@
 "use client";
 
-import { getPresignedUploadUrl } from "@/app/actions/s3/getPresignedUploadUrl";
-import React, { useState, useRef } from "react";
+import { useState } from "react";
+import MuxPlayer from "@mux/mux-player-react";
+import MuxUploader, {
+  MuxUploaderStatus,
+  MuxUploaderFileSelect,
+  MuxUploaderDrop,
+  MuxUploaderProgress,
+} from "@mux/mux-uploader-react";
+import { muxActions } from "@/app/actions/mux";
+import { Button } from "@/components/ui/button";
+import { Film, PlusCircleIcon } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
+import { useLessonStore } from "@/app/store/useLessonStore";
+import { useGetCourseId } from "@/app/hooks/useGetCourseId";
+import toast from "react-hot-toast";
 
 const LessonVideoUpload = () => {
-  const [file, setFile] = useState<File | null>(null);
-  const [uploading, setUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [videoUrl, setVideoUrl] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoStatus, setVideoStatus] = useState<string>("waiting");
+  const [playbackId, setPlaybackId] = useState<string | null>(null);
+  const { selectedLessonId } = useLessonStore();
+  const { courseId } = useGetCourseId();
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const selectedFile = e.target.files[0];
-      setFile(selectedFile);
-      setError(null);
-      
-      // Create a local preview URL for the selected video
-      const objectUrl = URL.createObjectURL(selectedFile);
-      setPreviewUrl(objectUrl);
-      
-      // Reset the video URL from previous uploads
-      setVideoUrl(null);
-      
-      return () => {
-        // Clean up the object URL when component unmounts or when file changes
-        URL.revokeObjectURL(objectUrl);
-      };
-    }
-  };
-
-  const handleUpload = async () => {
-    if (!file) {
-      setError("Please select a file first");
-      return;
-    }
-
+  const getUploadUrl = async () => {
     try {
-      setUploading(true);
-      setUploadProgress(0);
-
-      // Get presigned URL
-      const { uploadUrl, mediaUrl } = await getPresignedUploadUrl(
-        file.name,
-        file.type
+      if (!selectedLessonId) {
+        toast.error("Selected lesson ID is required");
+        return;
+      }
+      const { uploadUrl } = await muxActions.createUploadUrl(
+        selectedLessonId,
+        courseId
       );
+      if (!uploadUrl) {
+        throw new Error("Failed to retrieve upload URL");
+      }
 
-      // Upload to S3 directly
-      const xhr = new XMLHttpRequest();
-
-      // Track upload progress
-      xhr.upload.onprogress = (event) => {
-        if (event.lengthComputable) {
-          const percentComplete = Math.round(
-            (event.loaded / event.total) * 100
-          );
-          setUploadProgress(percentComplete);
-        }
-      };
-
-      // Handle completion
-      xhr.onload = () => {
-        if (xhr.status === 200) {
-          setVideoUrl(mediaUrl ?? "");
-          setUploading(false);
-          
-          // If we have a video element ref, load the new video
-          if (videoRef.current) {
-            videoRef.current.load();
-          }
-        } else {
-          throw new Error("Upload failed");
-        }
-      };
-
-      // Handle errors
-      xhr.onerror = () => {
-        setError("Upload failed");
-        setUploading(false);
-      };
-
-      // Send the request
-      xhr.open("PUT", uploadUrl ?? "");
-      xhr.setRequestHeader("Content-Type", file.type);
-      xhr.send(file);
-    } catch (err) {
-      console.error("Error:", err);
-      setError("Failed to upload video");
-      setUploading(false);
+      return uploadUrl;
+    } catch (error) {
+      console.error("Upload URL error:", error);
+      throw error;
     }
   };
 
-  // Function to render the video player
-  const renderVideoPlayer = () => {
-    const currentVideoUrl = videoUrl || previewUrl;
-    
-    if (!currentVideoUrl) return null;
-    
-    return (
-      <div className="mb-6 mt-4">
-        <h2 className="text-lg font-medium mb-2">
-          {videoUrl ? "Uploaded Video" : "Preview"}
-        </h2>
-        <div className="aspect-video bg-black rounded-lg overflow-hidden">
-          <video 
-            ref={videoRef}
-            className="w-full h-full" 
-            controls
-            src={currentVideoUrl}
-            controlsList="nodownload"
-            playsInline
-          >
-            Your browser does not support the video tag.
-          </video>
-        </div>
-        {videoUrl && (
-          <p className="text-sm text-gray-500 mt-2">
-            This video is now available at your S3 bucket
-          </p>
-        )}
-      </div>
-    );
+  const handleUploadSuccess = () => {
+    console.log("Upload successful!");
+    setVideoStatus("preparing");
+
+    // In a real app, you'd poll for status
+    // For demo, we'll simulate the video becoming ready after 3 seconds
+    setTimeout(() => {
+      setVideoStatus("ready");
+      setPlaybackId("demo-playback-id"); // In production, get this from your API
+    }, 3000);
   };
 
   return (
-    <div className="mx-auto p-6 bg-white rounded-lg shadow-md mt-10">
-      <h1 className="text-2xl font-bold mb-6">Upload Video</h1>
-
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Select video file
-        </label>
-        <input
-          type="file"
-          accept="video/*"
-          onChange={handleFileChange}
-          className="block w-full text-sm text-gray-500 
-                   file:mr-4 file:py-2 file:px-4
-                   file:rounded-md file:border-0
-                   file:text-sm file:font-semibold
-                   file:bg-blue-50 file:text-blue-700
-                   hover:file:bg-blue-100"
-          disabled={uploading}
-        />
-      </div>
-
-      {file && (
-        <div className="mb-4 text-sm text-gray-600">
-          Selected: {file.name} ({(file.size / (1024 * 1024)).toFixed(2)} MB)
-        </div>
-      )}
-
-      {/* Render video player */}
-      {renderVideoPlayer()}
-
-      {uploading && (
-        <div className="mb-4">
-          <div className="h-2 bg-gray-200 rounded-full">
-            <div
-              className="h-2 bg-blue-600 rounded-full"
-              style={{ width: `${uploadProgress}%` }}
-            ></div>
-          </div>
-          <p className="text-sm text-gray-600 mt-1">
-            Uploading: {uploadProgress}%
-          </p>
-        </div>
-      )}
-
-      {videoUrl && !previewUrl && (
-        <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-md">
-          <p className="text-sm text-green-800">Video uploaded successfully!</p>
-          <a
-            href={videoUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-blue-600 hover:underline"
-          >
-            View video
-          </a>
-        </div>
-      )}
-
-      {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
-          <p className="text-sm text-red-800">{error}</p>
-        </div>
-      )}
-
-      <button
-        onClick={handleUpload}
-        disabled={!file || uploading}
-        className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-gray-300 disabled:cursor-not-allowed"
+    <div className="mb-8">
+      <Label
+        htmlFor="lessonVideo"
+        className="text-base font-semibold flex items-center gap-2 mb-2"
       >
-        {uploading ? "Uploading..." : "Upload Video"}
-      </button>
+        <div className="bg-primary w-8 h-8 rounded-full flex items-center justify-center ring-4 ring-secondary/20">
+          <Film size={16} className="text-white" />
+        </div>
+        Lesson Video
+      </Label>
+
+      <div className="border-2 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-secondary focus-within:border-transparent transition-all bg-white">
+        <div className="w-full">
+          <div className="flex flex-1 flex-col gap-3 p-4">
+            <div className="flex items-center justify-between">
+              {videoStatus === "ready" && (
+                <div className="flex flex-1 items-center justify-end gap-3">
+                  <MuxUploader
+                    noDrop
+                    noProgress
+                    noRetry
+                    noStatus
+                    className="hidden"
+                    id="my-uploader"
+                    endpoint={getUploadUrl as () => Promise<string>}
+                    onSuccess={handleUploadSuccess}
+                  ></MuxUploader>
+
+                  <div className="w-full flex-1">
+                    <MuxUploaderStatus
+                      muxUploader="my-uploader"
+                      className="text-sm text-gray-600"
+                    ></MuxUploaderStatus>
+                    <MuxUploaderProgress
+                      type="bar"
+                      muxUploader="my-uploader"
+                      className="w-full [--progress-bar-fill-color:#998ea7] [--progress-bar-height:6px]"
+                    ></MuxUploaderProgress>
+                  </div>
+
+                  <MuxUploaderFileSelect muxUploader="my-uploader">
+                    <Button variant={"default"} className="gap-1 text-gray-100">
+                      <PlusCircleIcon className="h-3.5 w-3.5" />
+                      <span className="text-base">Change</span>
+                    </Button>
+                  </MuxUploaderFileSelect>
+                </div>
+              )}
+            </div>
+
+            <div
+              className={cn(
+                "flex aspect-video min-h-48 grow items-center justify-center rounded-md bg-gray-100",
+                videoStatus === "preparing" && "bg-gray-900 animate-pulse"
+              )}
+            >
+              {videoStatus === "ready" && playbackId && (
+                <MuxPlayer
+                  accentColor="#998ea7"
+                  className="aspect-[16/9] overflow-hidden rounded-md"
+                  playbackId={playbackId}
+                />
+              )}
+
+              {videoStatus === "preparing" && (
+                <div className="text-white">
+                  <h4 className="text-xl font-semibold">Processing...</h4>
+                  <p className="mt-3 text-sm">This might take a few minutes!</p>
+                </div>
+              )}
+
+              {videoStatus === "waiting" && (
+                <MuxUploaderDrop
+                  overlay
+                  overlayText="Drop to upload"
+                  muxUploader="my-uploader"
+                  className="h-full w-full rounded-md border border-dashed border-gray-700 [--overlay-background-color:#998ea7]"
+                >
+                  <MuxUploader
+                    noDrop
+                    noProgress
+                    noRetry
+                    noStatus
+                    id="my-uploader"
+                    className="hidden"
+                    endpoint={getUploadUrl as () => Promise<string>}
+                    onSuccess={handleUploadSuccess}
+                  ></MuxUploader>
+                  <p slot="heading" className="text-xl font-semibold">
+                    Drop a video file here to upload
+                  </p>
+                  <span
+                    slot="separator"
+                    className="mt-2 text-sm italic text-muted-foreground"
+                  >
+                    — or —
+                  </span>
+                  <div className="w-full">
+                    <MuxUploaderStatus muxUploader="my-uploader"></MuxUploaderStatus>
+                    <MuxUploaderProgress
+                      className="text-sm font-semibold text-gray-800 sm:text-base"
+                      muxUploader="my-uploader"
+                      type="percentage"
+                    ></MuxUploaderProgress>
+                    <MuxUploaderProgress
+                      type="bar"
+                      muxUploader="my-uploader"
+                      className="[--progress-bar-fill-color:#998ea7] [--progress-bar-height:8px] sm:[--progress-bar-height:10px]"
+                    ></MuxUploaderProgress>
+                  </div>
+                  <MuxUploaderFileSelect
+                    muxUploader="my-uploader"
+                    className="mt-4"
+                  >
+                    <Button variant={"default"} className="gap-1">
+                      <PlusCircleIcon className="h-3.5 w-3.5" />
+                      <span className="text-base">Select a file</span>
+                    </Button>
+                  </MuxUploaderFileSelect>
+                </MuxUploaderDrop>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
