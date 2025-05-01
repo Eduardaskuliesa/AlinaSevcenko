@@ -19,6 +19,7 @@ export async function createUploadUrl(
     });
     const upload = await mux.video.uploads.create({
       cors_origin: process.env.NEXTAUTH_URL || "http://localhost:3000",
+
       new_asset_settings: {
         playback_policies: ["signed"],
         passthrough: passthrough,

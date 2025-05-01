@@ -5,15 +5,15 @@ import { logger } from "@/app/utils/logger";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { revalidatePath, revalidateTag } from "next/cache";
 
-export interface AddAssetPlaybackIdData {
+export interface AddDurationData {
   lessonId: Lesson["lessonId"];
   courseId: Course["courseId"];
-  assetId: Lesson["assetId"];
-  playbackId: Lesson["playbackId"];
+  duration: Lesson["duration"];
   status: Lesson["status"];
 }
 
-export async function addAssetPlaybackId(data: AddAssetPlaybackIdData) {
+export async function addLessonDuration(data: AddDurationData) {
+  console.log("CourseID:", data.courseId);
   try {
     const updateLessonCommand = new UpdateCommand({
       TableName: dynamoTableName,
@@ -22,14 +22,14 @@ export async function addAssetPlaybackId(data: AddAssetPlaybackIdData) {
         SK: `LESSON#${data.lessonId}`,
       },
       UpdateExpression:
-        "SET assetId = :assetId, playbackId = :playbackId, #status = :status, updatedAt = :updatedAt",
+        "SET #duration = :duration, #status = :status, updatedAt = :updatedAt",
       ExpressionAttributeNames: {
         "#status": "status",
+        "#duration": "duration",
       },
       ExpressionAttributeValues: {
         ":status": data.status,
-        ":assetId": data.assetId,
-        ":playbackId": data.playbackId,
+        ":duration": data.duration,
         ":updatedAt": new Date().toISOString(),
       },
 
@@ -41,13 +41,9 @@ export async function addAssetPlaybackId(data: AddAssetPlaybackIdData) {
     revalidateTag(`course-${data.courseId}`);
     const path = `admin/courses/${data.courseId}/lessons`;
     revalidatePath(path);
-    logger.success(
-      `Asset ID: ${data.assetId} and Playback ID: ${data.playbackId} added to lesson ${data.lessonId}`
-    );
+
     return {
       success: true,
-      assetId: data.assetId,
-      playbackId: data.playbackId,
     };
   } catch (error) {
     logger.error("Error adding asset and playback ID:", error);

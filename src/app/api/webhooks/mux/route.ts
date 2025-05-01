@@ -1,5 +1,6 @@
 import { coursesAction } from "@/app/actions/coursers";
 import { AddAssetPlaybackIdData } from "@/app/actions/coursers/lesson/addAssetPlaybackId";
+import { AddDurationData } from "@/app/actions/coursers/lesson/addLessonDuration";
 import { passthroughData } from "@/app/actions/mux/upload";
 import { mux } from "@/app/services/mux";
 
@@ -51,6 +52,18 @@ export async function POST(req: Request) {
       console.log("Duration:", data.duration);
       console.log("Lesson ID:", data.passthrough as passthroughData);
       console.log("aspectRatio:", data.aspect_ratio);
+      const passthrough = JSON.parse(data.passthrough) as passthroughData;
+
+      const updateData: AddDurationData = {
+        lessonId: passthrough.lessonId,
+        courseId: passthrough.courseId,
+        duration: data.duration,
+        status: data.status,
+      };
+      const lesson = await coursesAction.lessons.addLessonDuration(updateData);
+      if (!lesson.success) {
+        return new Response("Error updating lesson", { status: 400 });
+      }
       break;
     }
     default: {

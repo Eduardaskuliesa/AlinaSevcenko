@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import MuxPlayer from "@mux/mux-player-react";
 import MuxUploader, {
-  MuxUploaderStatus,
   MuxUploaderFileSelect,
   MuxUploaderDrop,
   MuxUploaderProgress,
+  MuxUploaderStatus,
 } from "@mux/mux-uploader-react";
 import { muxActions } from "@/app/actions/mux";
 import { Button } from "@/components/ui/button";
@@ -16,12 +16,83 @@ import { cn } from "@/lib/utils";
 import { useLessonStore } from "@/app/store/useLessonStore";
 import { useGetCourseId } from "@/app/hooks/useGetCourseId";
 import toast from "react-hot-toast";
+import { coursesAction } from "@/app/actions/coursers";
+import { LessonsStatus } from "@/app/types/course";
+import { createSignToken } from "@/app/actions/mux/createSignToken";
 
 const LessonVideoUpload = () => {
-  const [videoStatus, setVideoStatus] = useState<string>("waiting");
-  const [playbackId, setPlaybackId] = useState<string | null>(null);
   const { selectedLessonId } = useLessonStore();
   const { courseId } = useGetCourseId();
+  const [videoStatus, setVideoStatus] = useState<LessonsStatus>("ready");
+  const [playbackId, setPlaybackId] = useState<string | null>(
+    "cRKsM1d2v18601Nu7nldnJeab009RvoljYEM01Sd1uGhjQ"
+  );
+  const [assetId, setAssetId] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [token1, setToken1] = useState<string | null>(null);
+  const [token2, setToken2] = useState<string | null>(null);
+
+  const [isPolling, setIsPolling] = useState(false);
+  const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    const generateToken = async () => {
+      const token = await createSignToken(
+        "cRKsM1d2v18601Nu7nldnJeab009RvoljYEM01Sd1uGhjQ"
+      );
+      setToken(token?.thumbnailToken || "");
+      setToken1(token?.playbackToken || "");
+      setToken2(token?.storyboardToken || "");
+      console.log("Token:", token?.thumbnailToken);
+    };
+
+    generateToken();
+  }, []);
+
+  useEffect(() => {
+    console.log("Polling effect triggered. isPolling:", isPolling);
+
+    if (pollingIntervalRef.current) {
+      clearInterval(pollingIntervalRef.current);
+      pollingIntervalRef.current = null;
+    }
+
+    if (isPolling && selectedLessonId && courseId) {
+      const checkVideoStatus = async () => {
+        try {
+          const currentLesson = await coursesAction.lessons.getLesson(
+            courseId,
+            selectedLessonId
+          );
+          console.log("Current lesson status:", currentLesson.status);
+
+          // SET ALL STATES HERE as requested
+          if (currentLesson) {
+            setVideoStatus(currentLesson.status);
+            setPlaybackId(currentLesson.playbackId);
+            setAssetId(currentLesson.assetId);
+            console.log("Current lesson status:", currentLesson.status);
+            if (currentLesson.status === "ready") {
+              setIsPolling(false);
+              toast.success("Video processing complete!");
+            }
+          }
+        } catch (error) {
+          console.error("Error checking video status:", error);
+        }
+      };
+
+      checkVideoStatus();
+      pollingIntervalRef.current = setInterval(checkVideoStatus, 5000);
+    }
+
+    return () => {
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+        pollingIntervalRef.current = null;
+      }
+    };
+  }, [isPolling, selectedLessonId, courseId]);
 
   const getUploadUrl = async () => {
     try {
@@ -45,15 +116,8 @@ const LessonVideoUpload = () => {
   };
 
   const handleUploadSuccess = () => {
-    console.log("Upload successful!");
-    setVideoStatus("preparing");
-
-    // In a real app, you'd poll for status
-    // For demo, we'll simulate the video becoming ready after 3 seconds
-    setTimeout(() => {
-      setVideoStatus("ready");
-      setPlaybackId("demo-playback-id"); // In production, get this from your API
-    }, 3000);
+    setIsPolling(true);
+    toast.success("Upload successful! Processing video...");
   };
 
   return (
@@ -113,11 +177,17 @@ const LessonVideoUpload = () => {
                 videoStatus === "preparing" && "bg-gray-900 animate-pulse"
               )}
             >
-              {videoStatus === "ready" && playbackId && (
+              {videoStatus === "ready" && playbackId && token && (
                 <MuxPlayer
+                  tokens={{
+                    thumbnail: token,
+                    playback: token1,
+                    storyboard: token2,
+                  }}
+                  streamType="on-demand"
                   accentColor="#998ea7"
                   className="aspect-[16/9] overflow-hidden rounded-md"
-                  playbackId={playbackId}
+                  playbackId={"cRKsM1d2v18601Nu7nldnJeab009RvoljYEM01Sd1uGhjQ"}
                 />
               )}
 
