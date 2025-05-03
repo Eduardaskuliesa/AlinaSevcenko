@@ -1,6 +1,5 @@
 "use client";
-
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import MuxPlayer from "@mux/mux-player-react";
 import MuxUploader, {
   MuxUploaderFileSelect,
@@ -23,31 +22,23 @@ import { createSignToken } from "@/app/actions/mux/createSignToken";
 const LessonVideoUpload = () => {
   const { selectedLessonId } = useLessonStore();
   const { courseId } = useGetCourseId();
-  const [videoStatus, setVideoStatus] = useState<LessonsStatus>("ready");
-  const [playbackId, setPlaybackId] = useState<string | null>(
-    "cRKsM1d2v18601Nu7nldnJeab009RvoljYEM01Sd1uGhjQ"
-  );
-  const [assetId, setAssetId] = useState<string | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-  const [token1, setToken1] = useState<string | null>(null);
-  const [token2, setToken2] = useState<string | null>(null);
+  const [videoStatus, setVideoStatus] = useState<LessonsStatus>("waiting");
+  const [playbackId, setPlaybackId] = useState<string | null>(null);
+
+  const [thumbnailToken, setThumbnailToken] = useState<string | null>(null);
+  const [playbackToken, setPlaybackToken] = useState<string | null>(null);
+  const [storyboardToken, setStoryboardToken] = useState<string | null>(null);
 
   const [isPolling, setIsPolling] = useState(false);
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
-    const generateToken = async () => {
-      const token = await createSignToken(
-        "cRKsM1d2v18601Nu7nldnJeab009RvoljYEM01Sd1uGhjQ"
-      );
-      setToken(token?.thumbnailToken || "");
-      setToken1(token?.playbackToken || "");
-      setToken2(token?.storyboardToken || "");
-      console.log("Token:", token?.thumbnailToken);
-    };
-
-    generateToken();
-  }, []);
+  const generateToken = useCallback(async () => {
+    const token = await createSignToken(playbackId);
+    setThumbnailToken(token?.thumbnailToken || "");
+    setPlaybackToken(token?.playbackToken || "");
+    setStoryboardToken(token?.storyboardToken || "");
+    console.log("Token:", token?.thumbnailToken);
+  }, [playbackId]);
 
   useEffect(() => {
     console.log("Polling effect triggered. isPolling:", isPolling);
@@ -66,13 +57,13 @@ const LessonVideoUpload = () => {
           );
           console.log("Current lesson status:", currentLesson.status);
 
-          // SET ALL STATES HERE as requested
           if (currentLesson) {
             setVideoStatus(currentLesson.status);
             setPlaybackId(currentLesson.playbackId);
-            setAssetId(currentLesson.assetId);
+
             console.log("Current lesson status:", currentLesson.status);
             if (currentLesson.status === "ready") {
+              generateToken();
               setIsPolling(false);
               toast.success("Video processing complete!");
             }
@@ -92,7 +83,7 @@ const LessonVideoUpload = () => {
         pollingIntervalRef.current = null;
       }
     };
-  }, [isPolling, selectedLessonId, courseId]);
+  }, [isPolling, selectedLessonId, courseId, generateToken]);
 
   const getUploadUrl = async () => {
     try {
@@ -177,19 +168,23 @@ const LessonVideoUpload = () => {
                 videoStatus === "preparing" && "bg-gray-900 animate-pulse"
               )}
             >
-              {videoStatus === "ready" && playbackId && token && (
-                <MuxPlayer
-                  tokens={{
-                    thumbnail: token,
-                    playback: token1,
-                    storyboard: token2,
-                  }}
-                  streamType="on-demand"
-                  accentColor="#998ea7"
-                  className="aspect-[16/9] overflow-hidden rounded-md"
-                  playbackId={"cRKsM1d2v18601Nu7nldnJeab009RvoljYEM01Sd1uGhjQ"}
-                />
-              )}
+              {videoStatus === "ready" &&
+                playbackId &&
+                playbackToken &&
+                thumbnailToken &&
+                storyboardToken && (
+                  <MuxPlayer
+                    tokens={{
+                      thumbnail: thumbnailToken,
+                      playback: playbackToken,
+                      storyboard: storyboardToken,
+                    }}
+                    streamType="on-demand"
+                    accentColor="#998ea7"
+                    className="aspect-[16/9] overflow-hidden rounded-md"
+                    playbackId={playbackId}
+                  />
+                )}
 
               {videoStatus === "preparing" && (
                 <div className="text-white">

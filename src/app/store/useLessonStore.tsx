@@ -3,7 +3,6 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import { arrayMove } from "@dnd-kit/sortable";
 import { immer } from "zustand/middleware/immer";
 
-
 export type LocalLesson = {
   lessonId: string;
   title: string;
@@ -92,7 +91,7 @@ export const useLessonStore = create<LessonState>()(
           const deletedIndex = state.lessons.findIndex(
             (lesson) => lesson.lessonId === id
           );
-          
+
           const newLessons = state.lessons.filter(
             (lesson) => lesson.lessonId !== id
           );
@@ -101,9 +100,9 @@ export const useLessonStore = create<LessonState>()(
             const originalIndex = state.lessons.findIndex(
               (l) => l.lessonId === lesson.lessonId
             );
-            
+
             const isDirtyDueToReordering = originalIndex > deletedIndex;
-            
+
             return {
               ...lesson,
               order: index,
@@ -115,6 +114,8 @@ export const useLessonStore = create<LessonState>()(
             lessons: updatedLessons,
             selectedLessonId:
               state.selectedLessonId === id ? null : state.selectedLessonId,
+            selectedLesson:
+              state.selectedLessonId === id ? null : state.selectedLesson, // Add this line
           };
         }),
 
