@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { arrayMove } from "@dnd-kit/sortable";
 import { immer } from "zustand/middleware/immer";
+import { LessonsStatus } from "../types/course";
 
 export type LocalLesson = {
   lessonId: string;
@@ -12,6 +13,7 @@ export type LocalLesson = {
   videoUrl?: string;
   isPreview?: boolean;
   order?: number;
+  status?: LessonsStatus;
 };
 
 interface LessonState {
@@ -61,6 +63,7 @@ export const useLessonStore = create<LessonState>()(
             lessons: [
               ...state.lessons,
               {
+                status: "waiting",
                 ...lesson,
               },
             ],
@@ -166,6 +169,7 @@ export const useLessonStore = create<LessonState>()(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         lessons: state.lessons,
+        selectedLessonId: state.selectedLessonId,
       }),
       onRehydrateStorage() {
         return (state, error) => {

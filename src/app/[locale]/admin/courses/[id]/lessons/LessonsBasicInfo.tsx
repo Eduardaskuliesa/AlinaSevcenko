@@ -16,6 +16,12 @@ const LessonsBasicInfo = () => {
     }
   };
 
+  const handleVideoUrlChange = (value: string) => {
+    if (selectedLessonId) {
+      updateLesson(selectedLessonId, { videoUrl: value });
+    }
+  };
+
   const handleDescriptionChange = (value: string) => {
     if (selectedLessonId) {
       updateLesson(selectedLessonId, { shortDesc: value });
@@ -45,7 +51,10 @@ const LessonsBasicInfo = () => {
             initialValue={selectedLesson.title}
             onChange={handleTitleChange}
           />
-          <LessonVideoUpload></LessonVideoUpload>
+          <LessonVideoUpload
+            onChange={handleVideoUrlChange}
+            initialValue={selectedLesson.videoUrl || ""}
+          />
           <LessonShortDescription
             initialValue={selectedLesson.shortDesc || ""}
             onChange={handleDescriptionChange}

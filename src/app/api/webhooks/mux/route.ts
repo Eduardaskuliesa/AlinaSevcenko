@@ -42,7 +42,7 @@ export async function POST(req: Request) {
       const lesson = await coursesAction.lessons.addAssetPlaybackId(updateData);
 
       if (!lesson.success) {
-        return new Response("Error updating lesson", { status: 400 });
+        return new Response("Error updating lesson", { status: 200 });
       }
 
       break;
@@ -62,7 +62,7 @@ export async function POST(req: Request) {
       };
       const lesson = await coursesAction.lessons.addLessonDuration(updateData);
       if (!lesson.success) {
-        return new Response("Error updating lesson", { status: 400 });
+        return new Response("Error updating lesson", { status: 200 });
       }
       break;
     }

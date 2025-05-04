@@ -1,113 +1,72 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { BookOpen, FolderTree, LucideIcon } from "lucide-react";
+
+interface NavItemProps {
+  href: string;
+  icon: LucideIcon;
+  label: string;
+  isActive: boolean;
+}
+
+const NavItem = ({ href, icon: Icon, label, isActive }: NavItemProps) => {
+  return (
+    <Link
+      href={href}
+      className={`flex items-center  px-4 py-3 gap-3 ${
+        isActive
+          ? "bg-primary-light/40 text-slate-800 border-l-4 rounded-r-sm border-primary"
+          : "text-gray-600 hover:bg-gray-50 border-l-4 border-transparent"
+      }`}
+    >
+      <Icon
+        className={isActive ? "text-slate-800" : "text-gray-600"}
+        size={20}
+      />
+      <span className="font-medium">{label}</span>
+    </Link>
+  );
+};
 
 const Sidebar = () => {
-  const [expandedMenu, setExpandedMenu] = useState<string | null>(null);
+  const pathname = usePathname();
+  const locale = pathname.split("/")[1];
 
-  const toggleMenu = (menu: string) => {
-    if (expandedMenu === menu) {
-      setExpandedMenu(null);
-    } else {
-      setExpandedMenu(menu);
-    }
+  const isActive = (path: string) => {
+    const localizedPath = `/${locale}${path}`;
+    return pathname.startsWith(localizedPath);
   };
 
   return (
-    <div
-      className={`fixed w-48 shadow-lg border-r-2 h-screen border-primary top-0 left-0 bg-gray-50 p-4 transition-all duration-300`}
-    >
-      <div className="flex flex-col space-y-6">
-        <div className="text-xl font-bold text-primary mb-6">Admin Portal</div>
-
-        {/* Courses Menu */}
-        <div className="flex flex-col">
-          <button
-            onClick={() => toggleMenu("courses")}
-            className="flex items-center justify-between text-gray-700 hover:text-primary font-medium"
-          >
-            <span>Courses</span>
-            <svg
-              className={`w-4 h-4 transition-transform ${
-                expandedMenu === "courses" ? "rotate-180" : ""
-              }`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </button>
-
-          {expandedMenu === "courses" && (
-            <div className="ml-4 mt-2 flex flex-col space-y-2">
-              <Link
-                href="/admin/courses"
-                className="text-gray-600 hover:text-primary"
-              >
-                Course Listing
-              </Link>
-              <Link
-                href="/admin/courses/create"
-                className="text-gray-600 hover:text-primary"
-              >
-                Create Course
-              </Link>
-            </div>
-          )}
+    <div className="fixed w-48 h-screen bg-gray border-r-2 border-primary shadow-sm">
+      <div className="flex flex-col h-full">
+        {/* Logo Section */}
+        <div className="h-16 flex items-center px-6 border-b border-primary/20">
+          <h1 className="text-xl font-bold text-primary">Admin Portal</h1>
         </div>
 
-        {/* Categories Menu */}
-        <div className="flex flex-col">
-          <button
-            onClick={() => toggleMenu("categories")}
-            className="flex items-center justify-between text-gray-700 hover:text-primary font-medium"
-          >
-            <span>Categories</span>
-            <svg
-              className={`w-4 h-4 transition-transform ${
-                expandedMenu === "categories" ? "rotate-180" : ""
-              }`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </button>
+        {/* Navigation Links */}
+        <nav className="flex-1 px-2 py-6 space-y-2">
+          <NavItem
+            href={`/${locale}/admin/courses`}
+            icon={BookOpen}
+            label="Courses"
+            isActive={isActive("/admin/courses")}
+          />
 
-          {expandedMenu === "categories" && (
-            <div className="ml-4 mt-2 flex flex-col space-y-2">
-              <Link
-                href="/admin/categories"
-                className="text-gray-600 hover:text-primary"
-              >
-                Category Listing
-              </Link>
-              <Link
-                href="/admin/categories/create"
-                className="text-gray-600 hover:text-primary"
-              >
-                Create Category
-              </Link>
-              <Link
-                href="/admin/categories/assign"
-                className="text-gray-600 hover:text-primary"
-              >
-                Assign Courses
-              </Link>
-            </div>
-          )}
+          <NavItem
+            href={`/${locale}/admin/categories`}
+            icon={FolderTree}
+            label="Categories"
+            isActive={isActive("/admin/categories")}
+          />
+        </nav>
+
+        {/* Footer */}
+        <div className="p-6 border-t border-primary/20">
+          <p className="text-sm text-gray-500">© 2024 Admin Portal</p>
         </div>
       </div>
     </div>

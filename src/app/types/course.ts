@@ -44,10 +44,7 @@ export interface CreateCourseInitialData {
   authorId: string;
 }
 
-export interface Category {
-  id: number;
-  name: string;
-}
+
 
 export interface CourseUpdateInfoData {
   courseTitle: string;
@@ -70,6 +67,19 @@ export interface Lesson {
   playbackId: string | null;
   status: LessonsStatus;
   isPreview: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type Language = "lt" | "ru";
+
+export interface Category {
+  PK: string;
+  SK: string;
+  categoryId: string;
+  title: string;
+  language: Language;
+  description: string;
   createdAt: string;
   updatedAt: string;
 }

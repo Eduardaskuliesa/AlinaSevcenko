@@ -14,6 +14,7 @@ export interface AddDurationData {
 
 export async function addLessonDuration(data: AddDurationData) {
   console.log("CourseID:", data.courseId);
+  console.log("Duration:", data.duration);
   try {
     const updateLessonCommand = new UpdateCommand({
       TableName: dynamoTableName,
