@@ -10,6 +10,14 @@ export interface Course {
   sort: number;
   currency: string;
   language: string;
+  categories: [
+    {
+      categoryId: string;
+      title: string;
+      language: Language;
+    }
+  ];
+
   status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
   lessonCount: number;
   lessonsOrder?: [
@@ -44,15 +52,14 @@ export interface CreateCourseInitialData {
   authorId: string;
 }
 
-
-
 export interface CourseUpdateInfoData {
   courseTitle: string;
   shortDescription: string;
   fullDescription: string;
   thumbnailSrc: string;
-  assignedCategories: Category[];
+  assignedCategories: Pick<Category, "categoryId" | "title" | "language">[];
 }
+
 export type LessonsStatus = "waiting" | "preparing" | "ready";
 
 export interface Lesson {

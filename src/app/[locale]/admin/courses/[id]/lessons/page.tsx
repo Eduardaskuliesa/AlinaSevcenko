@@ -1,5 +1,4 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import {
   Save,
@@ -71,7 +70,8 @@ const LessonPage: React.FC = () => {
             />
           ),
         });
-        return { success: false };
+        setIsStateAction("idle");
+        return { success: true };
       }
       if (lessonsToSave.some((lesson) => lesson.isDirty)) {
         const lessonOrder = lessons.map((lesson) => ({

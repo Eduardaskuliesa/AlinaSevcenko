@@ -4,6 +4,7 @@ import AlertComponent from "./AlertComponent";
 import { coursesAction } from "@/app/actions/coursers";
 import { getQueryClient } from "@/app/lib/getQueryClient";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { categoryActions } from "@/app/actions/category";
 
 interface CourseIdLayoutProps {
   children: React.ReactNode;
@@ -23,6 +24,11 @@ export default async function CourseIdLayout({
   await queryClient.prefetchQuery({
     queryKey: ["course", courseId],
     queryFn: () => coursesAction.courses.getCourse(courseId),
+  });
+
+  await queryClient.prefetchQuery({
+    queryKey: ["categories"],
+    queryFn: () => categoryActions.getCategories(),
   });
 
   return (

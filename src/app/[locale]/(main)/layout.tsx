@@ -1,5 +1,5 @@
 import NavBar from "./components/NavBar";
-import { ViewTransitions } from "next-view-transitions";
+
 
 export default function MainLayout({
   children,
@@ -7,9 +7,9 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ViewTransitions>
+    <>
       <NavBar />
       {children}
-    </ViewTransitions>
+    </>
   );
 }

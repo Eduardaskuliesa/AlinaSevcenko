@@ -16,40 +16,45 @@ import { getPresignedUploadUrl } from "@/app/actions/s3/getPresignedUploadUrl";
 import { InfoIcon } from "lucide-react";
 import { artificialDelay } from "@/app/utils/artificialDelay";
 import { SaveActionState } from "@/app/types/actions";
+import { categoryActions } from "@/app/actions/category";
 
 const InfoPage: React.FC = () => {
-  const defaultUnassignedCategories: Category[] = [
-    { id: 1, name: "Web Development" },
-    { id: 2, name: "UI/UX Design" },
-    { id: 3, name: "Digital Marketing" },
-    { id: 4, name: "Business" },
-    { id: 5, name: "Programming" },
-    { id: 6, name: "Data Science" },
-    { id: 7, name: "Mobile Development" },
-  ];
-
   const params = useParams();
   const courseId = params.id as string;
   const [actionState, setActionState] = useState<SaveActionState>("idle");
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
-
-  const { data, isLoading } = useQuery({
+  const { data: courseData, isLoading: isCourseLoading } = useQuery({
     queryKey: ["course", courseId],
     queryFn: () => coursesAction.courses.getCourse(courseId),
   });
 
-  const course = data?.cousre;
+  const { data: categoriesData, isLoading: isCategoriesLoading } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => categoryActions.getCategories(),
+  });
+
+  const course = courseData?.cousre;
+  const allCategories = (categoriesData?.categories as Category[]) || [];
 
   const [formData, setFormData] = useState<CourseUpdateInfoData>({
     courseTitle: course?.title || "",
     shortDescription: course?.shortDescription || "",
     fullDescription: course?.description || "",
     thumbnailSrc: course?.thumbnailImage || "/placeholder.svg",
-    assignedCategories: [],
+    assignedCategories: course?.categories || [],
   });
+
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+
+  const assignedCategories = formData.assignedCategories;
+  const unassignedCategories = allCategories.filter(
+    (category) =>
+      !assignedCategories.some(
+        (assigned) => assigned.categoryId === category.categoryId
+      )
+  );
 
   const handleTitleChange = (value: string) => {
     setFormData((prev) => ({ ...prev, courseTitle: value }));
@@ -77,11 +82,13 @@ const InfoPage: React.FC = () => {
 
   const handleSubmit = async () => {
     const hasThumbnailFileChange = thumbnailFile !== null;
+
     const hasFormChanges =
       course?.title !== formData.courseTitle ||
       course?.shortDescription !== formData.shortDescription ||
       course?.description !== formData.fullDescription ||
-      course?.thumbnailImage !== formData.thumbnailSrc;
+      course?.thumbnailImage !== formData.thumbnailSrc ||
+      course?.categories?.length !== formData.assignedCategories.length;
 
     if (!hasFormChanges && !hasThumbnailFileChange) {
       toast("No changes were made to save", {
@@ -89,7 +96,8 @@ const InfoPage: React.FC = () => {
           <InfoIcon className="h-5 w-5 text-yellow-500 animate-icon-warning" />
         ),
       });
-      return { success: false };
+      setActionState("idle");
+      return { success: true };
     }
 
     try {
@@ -210,7 +218,7 @@ const InfoPage: React.FC = () => {
     setActionState("idle");
   };
 
-  if (isLoading) {
+  if (isCourseLoading || isCategoriesLoading || !course) {
     return (
       <div className="flex justify-center items-center h-64">
         <Loader className="animate-spin h-8 w-8 text-primary" />
@@ -298,8 +306,8 @@ const InfoPage: React.FC = () => {
           />
 
           <CategorySelector
-            initialUnassignedCategories={defaultUnassignedCategories}
-            initialAssignedCategories={formData.assignedCategories}
+            initialUnassignedCategories={unassignedCategories}
+            initialAssignedCategories={assignedCategories as Category[]}
             onChange={handleCategoriesChange}
           />
         </div>
