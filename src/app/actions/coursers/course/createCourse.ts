@@ -35,14 +35,7 @@ export async function createCourse(initialData: CreateCourseInitialData) {
       lessonOrder: [],
       lessonCount: 0,
       authorId: initialData.authorId,
-      accessPlans: [
-        {
-          planId: "PLAN#DEFAULT",
-          name: "Lifetime Access",
-          duration: null,
-          price: 0,
-        },
-      ],
+      accessPlans: [],
       createdAt: timestamp,
       updatedAt: timestamp,
       publishedAt: null,

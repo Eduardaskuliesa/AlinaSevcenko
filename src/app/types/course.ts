@@ -43,7 +43,8 @@ export interface Course {
   canBePublished: boolean;
 }
 
-export interface CoursePlan {
+export interface AccessPlan {
+  id: string;
   name: string;
   price: number;
   duration: number;
