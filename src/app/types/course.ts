@@ -27,12 +27,7 @@ export interface Course {
     }
   ];
   authorId: string;
-  accessPlans: {
-    planId: string;
-    name: string;
-    duration: number | null;
-    price: number;
-  }[];
+  accessPlans: CoursePlan[];
   createdAt: string;
   updatedAt: string;
   publishedAt: string | null;
@@ -44,7 +39,15 @@ export interface Course {
     lessons: boolean;
     thumbnail: boolean;
   };
+
   canBePublished: boolean;
+}
+
+export interface CoursePlan {
+  name: string;
+  price: number;
+  duration: number;
+  isActive: boolean;
 }
 
 export interface CreateCourseInitialData {

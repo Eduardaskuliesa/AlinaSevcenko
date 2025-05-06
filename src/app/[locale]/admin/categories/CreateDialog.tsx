@@ -1,4 +1,3 @@
-// CategoryDialog.tsx
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,6 +30,7 @@ export const CreateDialog: React.FC<CategoryDialogProps> = ({
   open,
   onOpenChange,
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -41,7 +41,7 @@ export const CreateDialog: React.FC<CategoryDialogProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    setIsLoading(true);
     try {
       const result = await categoryActions.createCategory({
         title: formData.title,
@@ -60,6 +60,8 @@ export const CreateDialog: React.FC<CategoryDialogProps> = ({
     } catch (error) {
       toast.error("An unexpected error occurred");
       console.error("Error creating category:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -120,13 +122,16 @@ export const CreateDialog: React.FC<CategoryDialogProps> = ({
 
           <div className="flex justify-end gap-3 mt-6">
             <Button
+              disabled={isLoading}
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
             >
               Cancel
             </Button>
-            <Button type="submit">Create Category</Button>
+            <Button disabled={isLoading} type="submit">
+              {isLoading ? "Creating..." : "Create"}{" "}
+            </Button>
           </div>
         </form>
       </DialogContent>
