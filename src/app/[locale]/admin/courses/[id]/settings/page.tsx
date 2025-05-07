@@ -1,8 +1,7 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
-import { InfoIcon, Loader2, Save, Send } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { CircleXIcon, InfoIcon, Loader2, Save, Send } from "lucide-react";
+import React, { useState } from "react";
 import { CoursePlanCard } from "./PlanCard";
 import { AddPlanButton } from "./AddPlanButton";
 import {
@@ -51,16 +50,45 @@ const CourseSettingsPage: React.FC = () => {
   });
   const [actionState, setActionState] = useState<SaveActionState>("idle");
 
+  const course = courseData?.cousre;
   const plans = courseData?.cousre?.accessPlans || [];
-
-  useEffect(() => {
-    console.log("Course data:", courseData?.cousre);
-  }, [courseData]);
 
   const [language, setLanguage] = useState<string>(
     courseData?.cousre?.language || "lt"
   );
   const [isPlanDialogOpen, setIsPlanDialogOpen] = useState(false);
+
+  const handlePublish = async (isPublished: boolean) => {
+    setActionState("publishing");
+    try {
+      const result = await coursesAction.courses.publishCourse(
+        courseId,
+        isPublished
+      );
+      if (result?.error === "COURSE_NOT_FOUND") {
+        toast.error("Course not found");
+        setActionState("idle");
+        queryClient.invalidateQueries({ queryKey: ["course", courseId] });
+        router.refresh();
+        return;
+      }
+      if (result?.error === "COURSE_NOT_COMPLETED") {
+        setActionState("idle");
+        toast.error("Course is not completed yet");
+        return;
+      }
+      if (result?.success) {
+        setActionState("idle");
+        toast.success("Course published successfully");
+        queryClient.invalidateQueries({ queryKey: ["course", courseId] });
+      }
+    } catch (error) {
+      console.error("Error publishing course", error);
+      toast.error("Error publishing course");
+    } finally {
+      setActionState("idle");
+    }
+  };
 
   const handleSave = async () => {
     setActionState("saving");
@@ -121,10 +149,6 @@ const CourseSettingsPage: React.FC = () => {
     } finally {
       setLoadingPlanIds((prev) => ({ ...prev, toggle: null }));
     }
-  };
-
-  const handleEditPlan = async (planId: string) => {
-    console.log(`Editing plan ${planId}`);
   };
 
   const handleDeletePlan = (planId: string) => {
@@ -208,18 +232,55 @@ const CourseSettingsPage: React.FC = () => {
           >
             <span>Save & Publish</span>
           </Button>
-          <Button
-            size="lg"
-            className="flex items-center gap-2 bg-primary text-white hover:bg-primary/90"
-          >
-            <Send size={18} />
-            <span>Publish</span>
-          </Button>
+          {course?.isPublished ? (
+            <Button
+              size="lg"
+              className="flex items-center gap-2 text-white"
+              onClick={() => {
+                setActionState("unpublishing");
+                handlePublish(false);
+              }}
+              disabled={actionState !== "idle"}
+            >
+              {actionState === "unpublishing" ? (
+                <>
+                  <Loader2 size={18} className="animate-spin" />
+                  <span>Unpublishing...</span>
+                </>
+              ) : (
+                <>
+                  <CircleXIcon size={18} />
+                  <span>Unpublish</span>
+                </>
+              )}
+            </Button>
+          ) : (
+            <Button
+              size="lg"
+              className="flex items-center gap-2 bg-primary text-white hover:bg-primary/90"
+              onClick={() => {
+                setActionState("publishing");
+                handlePublish(true);
+              }}
+              disabled={actionState !== "idle"}
+            >
+              {actionState === "publishing" ? (
+                <>
+                  <Loader2 size={18} className="animate-spin" />
+                  <span>Publishing...</span>
+                </>
+              ) : (
+                <>
+                  <Send size={18} />
+                  <span>Publish</span>
+                </>
+              )}
+            </Button>
+          )}
         </div>
       </div>
 
       <div className="grid grid-cols-12 gap-6">
-        {/* Left column - Course plans */}
         <div className="col-span-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {isCourseLoading ? (
@@ -241,7 +302,6 @@ const CourseSettingsPage: React.FC = () => {
                     plan={plan}
                     isToggleLoading={loadingPlanIds.toggle === plan.id}
                     onToggle={handleTogglePlan}
-                    onEdit={handleEditPlan}
                     onDelete={handleDeletePlan}
                   />
                 ))}

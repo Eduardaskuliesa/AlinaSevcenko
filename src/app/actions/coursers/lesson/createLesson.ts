@@ -26,6 +26,14 @@ export async function createLesson(courseId: Course["courseId"]) {
       };
     }
 
+    if (courseResult.Item.isPublished) {
+      return {
+        success: false,
+        message: "Course is already published. Cannot update course info.",
+        error: "COURSE_PUBLISHED",
+      };
+    }
+
     const course = courseResult.Item;
     const lessonId = uuidv4();
     const timestamp = new Date().toISOString();

@@ -26,12 +26,26 @@ const AlertComponent = () => {
   }
 
   const completionStatus = course.completionStatus || {};
+  const isPublished = course.isPublished
   const canBePublsihed = Object.values(completionStatus).every(
     (status) => status === true
   );
 
   const completedSteps = Object.values(completionStatus).filter(Boolean).length;
   const totalSteps = Object.keys(completionStatus).length;
+
+  if(isPublished){
+    return (
+      <div className="bg-primary-light/50 p-3 rounded-md">
+        <div className="flex items-center">
+          <CheckCircle className="h-5 w-5 text-gray-800 mr-3 flex-shrink-0" />
+          <p className="text-gray-800 font-medium">
+            This course is published
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (canBePublsihed) {
     return (

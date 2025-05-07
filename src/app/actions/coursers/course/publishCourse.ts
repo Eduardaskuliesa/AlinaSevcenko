@@ -4,10 +4,7 @@ import { Course } from "@/app/types/course";
 import { GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { revalidateTag } from "next/cache";
 
-export async function updateLessonOrder(
-  courseId: Course["courseId"],
-  lessonOrder: Array<{ lessonId: string; sort: number }>
-) {
+export async function publishCourse(courseId: string, isPublished: boolean) {
   try {
     const getCommand = new GetCommand({
       TableName: dynamoTableName,
@@ -16,46 +13,54 @@ export async function updateLessonOrder(
         SK: `COURSE#${courseId}`,
       },
     });
+
     const course = (await dynamoDb.send(getCommand)).Item as Course;
     if (!course) {
       return {
         success: false,
-        error: "COURSE_NOT_FOUND",
+        error: `COURSE_NOT_FOUND`,
       };
     }
-    if (course.isPublished) {
+
+    const canBePublsihed = Object.values(course.completionStatus).every(
+      (status) => status === true
+    );
+
+    if (!canBePublsihed && isPublished) {
       return {
         success: false,
-        error: "COURSE_PUBLISHED",
-        message: "Course is already published. Cannot update course info.",
+        error: `COURSE_NOT_COMPLETED`,
+        message: "Course cannot be published until all modules are completed",
       };
     }
-    const updateCourseCommand = new UpdateCommand({
+
+    const timestamp = new Date().toISOString();
+    const updateCommand = new UpdateCommand({
       TableName: dynamoTableName,
       Key: {
         PK: "COURSE",
         SK: `COURSE#${courseId}`,
       },
-      UpdateExpression:
-        "SET lessonOrder = :lessonOrder, updatedAt = :timestamp",
+      UpdateExpression: `
+                SET isPublished = :isPublished,
+                    updatedAt = :updatedAt
+            `,
       ExpressionAttributeValues: {
-        ":lessonOrder": lessonOrder,
-        ":timestamp": new Date().toISOString(),
+        ":isPublished": isPublished,
+        ":updatedAt": timestamp,
       },
     });
 
-    await dynamoDb.send(updateCourseCommand);
+    await dynamoDb.send(updateCommand);
     revalidateTag(`course-${courseId}`);
+
     return {
       success: true,
-      message: "Lesson order updated successfully",
     };
-  } catch (e) {
-    console.error("Error updating lesson order:", e);
+  } catch (error) {
+    console.error(`Error publishing course ${courseId}`, error);
     return {
-      success: false,
-      message: "Error updating lesson order",
-      error: "SERVER_ERROR",
+      error: error,
     };
   }
 }

@@ -1,18 +1,16 @@
 "use client";
-
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Loader, Pencil, Trash2 } from "lucide-react";
+import { Loader, Trash2 } from "lucide-react";
 import { AccessPlan } from "@/app/types/course";
 
 export interface CoursePlanCardProps {
   plan: AccessPlan;
   isToggleLoading?: boolean;
   onToggle: (id: string, isActive: boolean) => void;
-  onEdit: (id: string) => void;
   onDelete: (id: string) => void;
   className?: string;
 }
@@ -21,7 +19,6 @@ export const CoursePlanCard: React.FC<CoursePlanCardProps> = ({
   plan,
   isToggleLoading,
   onToggle,
-  onEdit,
   onDelete,
   className = "",
 }) => {
@@ -74,16 +71,6 @@ export const CoursePlanCard: React.FC<CoursePlanCardProps> = ({
           </div>
 
           <div className="flex items-center justify-between pt-4 border-t">
-            <Button
-              variant="outline"
-              size="sm"
-              className="flex items-center gap-1"
-              onClick={() => onEdit(plan.id)}
-            >
-              <Pencil size={14} />
-              <span>Edit</span>
-            </Button>
-
             <Button
               variant="ghost"
               size="sm"

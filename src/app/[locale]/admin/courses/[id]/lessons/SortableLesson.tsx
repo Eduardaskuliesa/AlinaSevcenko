@@ -46,6 +46,10 @@ const SortableLesson: React.FC<SortableLessonProps> = ({ lesson, index }) => {
         courseId,
         lesson.lessonId
       );
+      if (response.error === "COURSE_PUBLISHED") {
+        toast.error("Course is already published. Cannot update course info.");
+        return;
+      }
       if (!response) {
         toast.error("Failed to delete lesson.");
         return;

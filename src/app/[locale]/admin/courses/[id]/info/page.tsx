@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Save, ArrowRight, Send, Loader } from "lucide-react";
+import { Save, ArrowRight, Send, Loader, CircleXIcon } from "lucide-react";
 import toast from "react-hot-toast";
 import { useParams, useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -170,6 +170,12 @@ const InfoPage: React.FC = () => {
         courseId
       );
 
+      if (updateResult?.error === "COURSE_PUBLISHED") {
+        toast.error("Course is already published. Cannot update course info.");
+        setActionState("idle");
+        return { success: false };
+      }
+
       if (updateResult?.error === "TITLE_EMPTY") {
         toast.error("Course title can't be empty");
         return { success: false };
@@ -212,11 +218,35 @@ const InfoPage: React.FC = () => {
     }
   };
 
-  const handlePublish = async () => {
-    setActionState("publishing");
-    await handleSubmit();
-    setActionState("idle");
+  const handlePublish = async (isPublished: boolean) => {
+    try {
+      const result = await coursesAction.courses.publishCourse(courseId, isPublished);
+      if (result?.error === "COURSE_NOT_FOUND") {
+        toast.error("Course not found");
+        setActionState("idle");
+        queryClient.invalidateQueries({ queryKey: ["course", courseId] });
+        router.refresh();
+        return;
+      }
+      if (result?.error === "COURSE_NOT_COMPLETED") {
+        setActionState("idle");
+        toast.error("Course is not completed yet");
+        return;
+      }
+      if (result?.success) {
+        setActionState("idle");
+        toast.success("Course published successfully");
+        queryClient.invalidateQueries({ queryKey: ["course", courseId] });
+      }
+    } catch (error) {
+      console.error("Error publishing course", error);
+      toast.error("Error publishing course");
+    } finally {
+      setActionState("idle");
+    }
   };
+
+  
 
   if (isCourseLoading || isCategoriesLoading || !course) {
     return (
@@ -273,24 +303,51 @@ const InfoPage: React.FC = () => {
             </>
           )}
         </Button>
-        <Button
-          size="lg"
-          className="flex items-center gap-2 bg-primary text-white hover:bg-primary/90"
-          onClick={handlePublish}
-          disabled={actionState !== "idle"}
-        >
-          {actionState === "publishing" ? (
-            <>
-              <Loader size={18} className="animate-spin" />
-              <span>Publishing...</span>
-            </>
-          ) : (
-            <>
-              <Send size={18} />
-              <span>Publish</span>
-            </>
-          )}
-        </Button>
+        {course?.isPublished ? (
+          <Button
+            size="lg"
+            className="flex items-center gap-2 text-white"
+            onClick={() => {
+              setActionState("unpublishing");
+              handlePublish(false);
+            }}
+            disabled={actionState !== "idle"}
+          >
+            {actionState === "unpublishing" ? (
+              <>
+                <Loader size={18} className="animate-spin" />
+                <span>Unpublishing...</span>
+              </>
+            ) : (
+              <>
+                <CircleXIcon size={18} />
+                <span>Unpublish</span>
+              </>
+            )}
+          </Button>
+        ) : (
+          <Button
+            size="lg"
+            className="flex items-center gap-2 bg-primary text-white hover:bg-primary/90"
+            onClick={() => {
+              setActionState("publishing");
+              handlePublish(true);
+            }}
+            disabled={actionState !== "idle"}
+          >
+            {actionState === "publishing" ? (
+              <>
+                <Loader size={18} className="animate-spin" />
+                <span>Publishing...</span>
+              </>
+            ) : (
+              <>
+                <Send size={18} />
+                <span>Publish</span>
+              </>
+            )}
+          </Button>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

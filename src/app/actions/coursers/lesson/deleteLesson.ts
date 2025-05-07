@@ -31,6 +31,14 @@ export async function deleteLesson(
       };
     }
 
+    if (courseResult.Item.isPublished) {
+      return {
+        success: false,
+        message: "Course is already published. Cannot update course info.",
+        error: "COURSE_PUBLISHED",
+      };
+    }
+
     const course = courseResult.Item;
     const currentLessonCount = course.lessonCount || 0;
     const currentLessonOrder = course.lessonOrder || [];

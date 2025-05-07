@@ -39,6 +39,8 @@ export interface Course {
     lessons: boolean;
     thumbnail: boolean;
   };
+
+  isPublished: boolean;
 }
 
 export interface AccessPlan {

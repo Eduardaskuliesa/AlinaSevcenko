@@ -7,6 +7,7 @@ import {
   PlusCircle,
   Loader2,
   InfoIcon,
+  CircleXIcon,
 } from "lucide-react";
 import React, { useState } from "react";
 import DragAndDropLessons from "./DragAndDropLessons";
@@ -17,13 +18,19 @@ import { useGetCourseId } from "@/app/hooks/useGetCourseId";
 import { SaveActionState } from "@/app/types/actions";
 import { coursesAction } from "@/app/actions/coursers";
 import toast from "react-hot-toast";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 
 const LessonPage: React.FC = () => {
   const { addLesson, lessons, markAllSaved } = useLessonStore();
   const { courseId } = useGetCourseId();
   const [isStateAction, setIsStateAction] = useState<SaveActionState>("idle");
+
+  const { data: courseData } = useQuery({
+    queryKey: ["course", courseId],
+    queryFn: () => coursesAction.courses.getCourse(courseId),
+  });
+  const course = courseData?.cousre;
   const queryClient = useQueryClient();
   const router = useRouter();
   const params = useParams();
@@ -32,6 +39,11 @@ const LessonPage: React.FC = () => {
     setIsStateAction("adding-lesson");
     try {
       const lesson = await coursesAction.lessons.createLesson(courseId);
+
+      if (lesson.error === "COURSE_PUBLISHED") {
+        toast.error("Course is already published. Cannot update course info.");
+        return;
+      }
 
       if (lesson.error === "COURSE_NOT_FOUND") {
         toast.error("Course not found");
@@ -62,6 +74,7 @@ const LessonPage: React.FC = () => {
     try {
       const lessonsToSave = lessons.filter((lesson) => lesson.isDirty);
       if (lessonsToSave.length === 0) {
+        setIsStateAction("idle");
         toast("No changes were made to save", {
           icon: (
             <InfoIcon
@@ -70,7 +83,6 @@ const LessonPage: React.FC = () => {
             />
           ),
         });
-        setIsStateAction("idle");
         return { success: true };
       }
       if (lessonsToSave.some((lesson) => lesson.isDirty)) {
@@ -83,6 +95,13 @@ const LessonPage: React.FC = () => {
           courseId,
           lessonOrder
         );
+
+        if (updateOrderResult.error === "COURSE_PUBLISHED") {
+          toast.error(
+            "Course is already published. Cannot update course info."
+          );
+          return { success: false };
+        }
 
         if (updateOrderResult.success) {
           toast.success("Lesson order updated successfully");
@@ -114,6 +133,34 @@ const LessonPage: React.FC = () => {
     }
   };
 
+  const handlePublish = async (isPublished: boolean) => {
+    try {
+      const result = await coursesAction.courses.publishCourse(courseId, isPublished);
+      if (result?.error === "COURSE_NOT_FOUND") {
+        toast.error("Course not found");
+        setIsStateAction("idle");
+        queryClient.invalidateQueries({ queryKey: ["course", courseId] });
+        router.refresh();
+        return;
+      }
+      if (result?.error === "COURSE_NOT_COMPLETED") {
+        setIsStateAction("idle");
+        toast.error("Course is not completed yet");
+        return;
+      }
+      if (result?.success) {
+        setIsStateAction("idle");
+        toast.success("Course published successfully");
+        queryClient.invalidateQueries({ queryKey: ["course", courseId] });
+      }
+    } catch (error) {
+      console.error("Error publishing course", error);
+      toast.error("Error publishing course");
+    } finally {
+      setIsStateAction("idle");
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex justify-between  mb-8">
@@ -141,7 +188,6 @@ const LessonPage: React.FC = () => {
           <Button
             onClick={() => {
               handleSave();
-              setIsStateAction("saving");
             }}
             disabled={isStateAction !== "idle"}
             variant="outline"
@@ -182,14 +228,51 @@ const LessonPage: React.FC = () => {
               </>
             )}
           </Button>
-          <Button
-            disabled={isStateAction !== "idle"}
-            size="lg"
-            className="flex items-center gap-2 bg-primary text-white hover:bg-primary/90"
-          >
-            <Send size={18} />
-            <span>Publish</span>
-          </Button>
+          {course?.isPublished ? (
+            <Button
+              size="lg"
+              className="flex items-center gap-2 text-white"
+              onClick={() => {
+                setIsStateAction("unpublishing");
+                handlePublish(false);
+              }}
+              disabled={isStateAction !== "idle"}
+            >
+              {isStateAction === "unpublishing" ? (
+                <>
+                  <Loader2 size={18} className="animate-spin" />
+                  <span>Unpublishing...</span>
+                </>
+              ) : (
+                <>
+                  <CircleXIcon size={18} />
+                  <span>Unpublish</span>
+                </>
+              )}
+            </Button>
+          ) : (
+            <Button
+              size="lg"
+              className="flex items-center gap-2 bg-primary text-white hover:bg-primary/90"
+              onClick={() => {
+                setIsStateAction("publishing");
+                handlePublish(true);
+              }}
+              disabled={isStateAction !== "idle"}
+            >
+              {isStateAction === "publishing" ? (
+                <>
+                  <Loader2 size={18} className="animate-spin" />
+                  <span>Publishing...</span>
+                </>
+              ) : (
+                <>
+                  <Send size={18} />
+                  <span>Publish</span>
+                </>
+              )}
+            </Button>
+          )}
         </div>
       </div>
       <div className="flex gap-6">

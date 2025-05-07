@@ -1,7 +1,7 @@
 "use server";
 import { Course, CourseUpdateInfoData } from "@/app/types/course";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
-import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { revalidateTag } from "next/cache";
 import { logger } from "@/app/utils/logger";
 
@@ -13,6 +13,28 @@ export async function updateCourseInfo(
     if (!courseData.courseTitle || !courseData.courseTitle.trim()) {
       return {
         error: "TITLE_EMPTY",
+      };
+    }
+
+    const getCommand = new GetCommand({
+      TableName: dynamoTableName,
+      Key: {
+        PK: "COURSE",
+        SK: `COURSE#${courseId}`,
+      },
+    });
+    const course = (await dynamoDb.send(getCommand)).Item as Course;
+    if (!course) {
+      return {
+        success: false,
+        error: "COURSE_NOT_FOUND",
+      };
+    }
+    if (course.isPublished) {
+      return {
+        success: false,
+        error: "COURSE_PUBLISHED",
+        message: "Course is already published. Cannot update course info.",
       };
     }
 

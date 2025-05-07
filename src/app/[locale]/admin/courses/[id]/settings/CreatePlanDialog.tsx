@@ -68,7 +68,6 @@ export const CreatePlanDialog: React.FC<CreatePlanDialogProps> = ({
         console.error("Error creating plan:", result.error);
       } else {
         toast.success("Plan created successfully");
-        // Reset form
         setFormData({
           name: "",
           duration: 30,
