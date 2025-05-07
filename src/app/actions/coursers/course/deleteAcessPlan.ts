@@ -42,7 +42,6 @@ export async function deleteAccessPlan(
       };
     }
 
-    // Check if this is the last plan and course is published
     if (currentPlans.length === 1 && isPublished) {
       return {
         success: false,
@@ -51,27 +50,47 @@ export async function deleteAccessPlan(
       };
     }
 
-    // If we get here, we can delete the plan
+    const planToDelete = currentPlans[planIndex];
+    const otherActivePlans = currentPlans.filter(
+      (plan: AccessPlan) => plan.isActive && plan.id !== planId
+    );
+    const isLastActivePlan =
+      planToDelete.isActive && otherActivePlans.length === 0;
+
     const updatedPlans = [
       ...currentPlans.slice(0, planIndex),
       ...currentPlans.slice(planIndex + 1),
     ];
 
-    // Update the course with the plan removed
+    let updateExpression = `
+      SET accessPlans = :updatedPlans,
+          updatedAt = :updatedAt
+    `;
+
+    const expressionAttributeValues: {
+      ":updatedPlans": AccessPlan[];
+      ":updatedAt": string;
+      ":priceStatus"?: boolean;
+    } = {
+      ":updatedPlans": updatedPlans,
+      ":updatedAt": new Date().toISOString(),
+    };
+
+    if (isLastActivePlan && !isPublished) {
+      updateExpression += `,
+        completionStatus.price = :priceStatus
+      `;
+      expressionAttributeValues[":priceStatus"] = false;
+    }
+
     const updateCommand = new UpdateCommand({
       TableName: dynamoTableName,
       Key: {
         PK: "COURSE",
         SK: `COURSE#${courseId}`,
       },
-      UpdateExpression: `
-          SET accessPlans = :updatedPlans,
-              updatedAt = :updatedAt
-        `,
-      ExpressionAttributeValues: {
-        ":updatedPlans": updatedPlans,
-        ":updatedAt": new Date().toISOString(),
-      },
+      UpdateExpression: updateExpression,
+      ExpressionAttributeValues: expressionAttributeValues,
       ReturnValues: "ALL_NEW",
     });
 

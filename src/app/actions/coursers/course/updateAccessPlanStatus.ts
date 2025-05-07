@@ -43,27 +43,43 @@ export async function toggleAccessPlanStatus(
       };
     }
 
-    if (!isActive && isPublished) {
-      const activePlansCount = currentPlans.filter(
-        (plan: AccessPlan) => plan.isActive && plan.id !== planId
-      ).length;
+    const activePlansCount = currentPlans.filter(
+      (plan: AccessPlan) => plan.isActive && plan.id !== planId
+    ).length;
 
-      if (activePlansCount === 0) {
-        return {
-          success: false,
-          error: `LAST_PLAN_PUBLISHED`,
-          message:
-            "Cannot deactivate the last active plan of a published course",
-        };
-      }
+    if (!isActive && activePlansCount === 0 && isPublished) {
+      return {
+        success: false,
+        error: `LAST_PLAN_PUBLISHED`,
+        message: "Cannot deactivate the last active plan of a published course",
+      };
     }
 
     const updatedPlans = [...currentPlans];
-
     updatedPlans[planIndex] = {
       ...updatedPlans[planIndex],
       isActive,
     };
+
+    let updateExpression =
+      "SET accessPlans = :updatedPlans, updatedAt = :updatedAt";
+
+    const expressionAttributeValues: {
+      ":updatedPlans": AccessPlan[];
+      ":updatedAt": string;
+      ":titleStatus"?: boolean;
+    } = {
+      ":updatedPlans": updatedPlans,
+      ":updatedAt": new Date().toISOString(),
+    };
+
+    if (!isActive && activePlansCount === 0 && !isPublished) {
+      updateExpression += ", completionStatus.title = :titleStatus";
+      expressionAttributeValues[":titleStatus"] = false;
+    } else if (isActive && activePlansCount === 0) {
+      updateExpression += ", completionStatus.title = :titleStatus";
+      expressionAttributeValues[":titleStatus"] = true;
+    }
 
     const updateCommand = new UpdateCommand({
       TableName: dynamoTableName,
@@ -71,14 +87,8 @@ export async function toggleAccessPlanStatus(
         PK: "COURSE",
         SK: `COURSE#${courseId}`,
       },
-      UpdateExpression: `
-          SET accessPlans = :updatedPlans,
-              updatedAt = :updatedAt
-        `,
-      ExpressionAttributeValues: {
-        ":updatedPlans": updatedPlans,
-        ":updatedAt": new Date().toISOString(),
-      },
+      UpdateExpression: updateExpression,
+      ExpressionAttributeValues: expressionAttributeValues,
       ReturnValues: "ALL_NEW",
     });
 

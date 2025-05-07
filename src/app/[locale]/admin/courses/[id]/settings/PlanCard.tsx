@@ -5,11 +5,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Pencil, Trash2 } from "lucide-react";
+import { Loader, Pencil, Trash2 } from "lucide-react";
 import { AccessPlan } from "@/app/types/course";
 
 export interface CoursePlanCardProps {
   plan: AccessPlan;
+  isToggleLoading?: boolean;
   onToggle: (id: string, isActive: boolean) => void;
   onEdit: (id: string) => void;
   onDelete: (id: string) => void;
@@ -18,11 +19,13 @@ export interface CoursePlanCardProps {
 
 export const CoursePlanCard: React.FC<CoursePlanCardProps> = ({
   plan,
+  isToggleLoading,
   onToggle,
   onEdit,
   onDelete,
   className = "",
 }) => {
+  const isLiveTime = plan.duration === 0;
   return (
     <Card
       className={`border-2 ${
@@ -36,9 +39,13 @@ export const CoursePlanCard: React.FC<CoursePlanCardProps> = ({
             onCheckedChange={(checked) => onToggle(plan.id, checked)}
             aria-label={`Toggle ${plan.name} plan`}
           />
+
           <span className="text-sm text-muted-foreground">
             {plan.isActive ? "Enabled" : "Disabled"}
           </span>
+          {isToggleLoading && (
+            <Loader className="animate-spin h-5 w-5"></Loader>
+          )}
         </div>
         <Badge
           variant={plan.isActive ? "secondary" : "outline"}
@@ -55,7 +62,9 @@ export const CoursePlanCard: React.FC<CoursePlanCardProps> = ({
           <div>
             <p className="text-sm text-muted-foreground">Duration</p>
             <p className="font-medium">
-              {plan.duration} {plan.duration === 1 ? "day" : "days"}
+              {isLiveTime
+                ? "Live time"
+                : `${plan.duration} ${plan.duration === 1 ? "day" : "days"}`}
             </p>
           </div>
 

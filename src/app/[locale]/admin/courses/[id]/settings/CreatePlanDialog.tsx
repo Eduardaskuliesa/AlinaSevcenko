@@ -15,7 +15,7 @@ import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { Clock, CreditCard, Tag } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { AccessPlansData } from "@/app/actions/coursers/course/updateAccessPlan";
+import { AccessPlansData } from "@/app/actions/coursers/course/createAccessPlan";
 import { useGetCourseId } from "@/app/hooks/useGetCourseId";
 import { coursesAction } from "@/app/actions/coursers";
 
@@ -58,7 +58,7 @@ export const CreatePlanDialog: React.FC<CreatePlanDialogProps> = ({
         ],
       };
 
-      const result = await coursesAction.courses.updateAccessPlans(
+      const result = await coursesAction.courses.createAccessPlan(
         courseId,
         accessPlansData
       );

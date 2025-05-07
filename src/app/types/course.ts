@@ -27,7 +27,7 @@ export interface Course {
     }
   ];
   authorId: string;
-  accessPlans: CoursePlan[];
+  accessPlans: AccessPlan[];
   createdAt: string;
   updatedAt: string;
   publishedAt: string | null;
@@ -39,8 +39,6 @@ export interface Course {
     lessons: boolean;
     thumbnail: boolean;
   };
-
-  canBePublished: boolean;
 }
 
 export interface AccessPlan {

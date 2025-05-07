@@ -26,11 +26,14 @@ const AlertComponent = () => {
   }
 
   const completionStatus = course.completionStatus || {};
+  const canBePublsihed = Object.values(completionStatus).every(
+    (status) => status === true
+  );
 
   const completedSteps = Object.values(completionStatus).filter(Boolean).length;
   const totalSteps = Object.keys(completionStatus).length;
 
-  if (course.canBePublished) {
+  if (canBePublsihed) {
     return (
       <div className="bg-green-100 p-3 rounded-md">
         <div className="flex items-center">
