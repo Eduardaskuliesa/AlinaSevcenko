@@ -4,4 +4,5 @@ export type SaveActionState =
   | "saving-and-continuing"
   | "publishing"
   | "adding-lesson"
-  | "unpublishing";
+  | "unpublishing"
+  | "save-and-publish";

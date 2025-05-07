@@ -59,32 +59,51 @@ const CourseSettingsPage: React.FC = () => {
   const [isPlanDialogOpen, setIsPlanDialogOpen] = useState(false);
 
   const handlePublish = async (isPublished: boolean) => {
-    setActionState("publishing");
+    if (course?.isPublished) {
+      toast("Course is already published", {
+        icon: (
+          <InfoIcon
+            className="h-5 w-5 text-yellow-500 animate-icon-warning
+        "
+          />
+        ),
+      });
+      setActionState("idle");
+      return { success: true };
+    }
     try {
       const result = await coursesAction.courses.publishCourse(
         courseId,
         isPublished
       );
+
+      if (result.error === "COURSE_PUBLISHED") {
+        toast.error("Course is already published. Cannot update course info.");
+        setActionState("idle");
+        return { success: false };
+      }
       if (result?.error === "COURSE_NOT_FOUND") {
         toast.error("Course not found");
         setActionState("idle");
         queryClient.invalidateQueries({ queryKey: ["course", courseId] });
         router.refresh();
-        return;
+        return { success: false };
       }
       if (result?.error === "COURSE_NOT_COMPLETED") {
         setActionState("idle");
         toast.error("Course is not completed yet");
-        return;
+        return { success: false };
       }
       if (result?.success) {
         setActionState("idle");
         toast.success("Course published successfully");
         queryClient.invalidateQueries({ queryKey: ["course", courseId] });
       }
+      return { success: true };
     } catch (error) {
       console.error("Error publishing course", error);
       toast.error("Error publishing course");
+      return { success: false };
     } finally {
       setActionState("idle");
     }
@@ -102,7 +121,7 @@ const CourseSettingsPage: React.FC = () => {
         ),
       });
       setActionState("idle");
-      return;
+      return { success: false };
     }
     try {
       await coursesAction.courses.updateLanguage(courseId, language);
@@ -110,7 +129,19 @@ const CourseSettingsPage: React.FC = () => {
     } catch (error) {
       console.error("Error updating language", error);
       toast.error("Error updating language");
+      return { success: false };
     } finally {
+      setActionState("idle");
+      return { success: true };
+    }
+  };
+
+  const handleSaveAndPublish = async () => {
+    setActionState("save-and-publish");
+
+    const publish = await handlePublish(true);
+    if (publish.success) {
+      await handleSave();
       setActionState("idle");
     }
   };
@@ -208,7 +239,7 @@ const CourseSettingsPage: React.FC = () => {
         <div className="flex gap-4">
           <Button
             onClick={handleSave}
-            disabled={actionState === "saving"}
+            disabled={actionState !== "idle"}
             variant="outline"
             size="lg"
             className="flex items-center gap-2"
@@ -226,6 +257,8 @@ const CourseSettingsPage: React.FC = () => {
             )}
           </Button>
           <Button
+            onClick={handleSaveAndPublish}
+            disabled={actionState !== "idle"}
             variant="outline"
             size="lg"
             className="flex items-center gap-2"

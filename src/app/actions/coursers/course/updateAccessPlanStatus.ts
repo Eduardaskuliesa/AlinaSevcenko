@@ -61,34 +61,18 @@ export async function toggleAccessPlanStatus(
       isActive,
     };
 
-    let updateExpression =
-      "SET accessPlans = :updatedPlans, updatedAt = :updatedAt";
-
-    const expressionAttributeValues: {
-      ":updatedPlans": AccessPlan[];
-      ":updatedAt": string;
-      ":titleStatus"?: boolean;
-    } = {
-      ":updatedPlans": updatedPlans,
-      ":updatedAt": new Date().toISOString(),
-    };
-
-    if (!isActive && activePlansCount === 0 && !isPublished) {
-      updateExpression += ", completionStatus.title = :titleStatus";
-      expressionAttributeValues[":titleStatus"] = false;
-    } else if (isActive && activePlansCount === 0) {
-      updateExpression += ", completionStatus.title = :titleStatus";
-      expressionAttributeValues[":titleStatus"] = true;
-    }
-
     const updateCommand = new UpdateCommand({
       TableName: dynamoTableName,
       Key: {
         PK: "COURSE",
         SK: `COURSE#${courseId}`,
       },
-      UpdateExpression: updateExpression,
-      ExpressionAttributeValues: expressionAttributeValues,
+      UpdateExpression:
+        "SET accessPlans = :updatedPlans, updatedAt = :updatedAt",
+      ExpressionAttributeValues: {
+        ":updatedPlans": updatedPlans,
+        ":updatedAt": new Date().toISOString(),
+      },
       ReturnValues: "ALL_NEW",
     });
 

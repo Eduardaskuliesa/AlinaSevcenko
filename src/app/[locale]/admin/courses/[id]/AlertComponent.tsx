@@ -1,10 +1,17 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import React from "react";
-import { AlertTriangle, CheckCircle } from "lucide-react";
+import { AlertTriangle, CheckCircle, HelpCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { coursesAction } from "@/app/actions/coursers";
 import { useParams } from "next/navigation";
 import { Course } from "@/app/types/course";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const AlertComponent = () => {
   const params = useParams();
@@ -26,7 +33,7 @@ const AlertComponent = () => {
   }
 
   const completionStatus = course.completionStatus || {};
-  const isPublished = course.isPublished
+  const isPublished = course.isPublished;
   const canBePublsihed = Object.values(completionStatus).every(
     (status) => status === true
   );
@@ -34,14 +41,26 @@ const AlertComponent = () => {
   const completedSteps = Object.values(completionStatus).filter(Boolean).length;
   const totalSteps = Object.keys(completionStatus).length;
 
-  if(isPublished){
+  const incompleteSteps = Object.entries(completionStatus)
+    .filter(([_, value]) => !value)
+    .map(([key]) => {
+      const stepNames: Record<string, string> = {
+        title: "Course Title",
+        description: "Course Description",
+        price: "Pricing Plan",
+        category: "Category",
+        lessons: "Lessons",
+        thumbnail: "Course Thumbnail",
+      };
+      return stepNames[key] || key;
+    });
+
+  if (isPublished) {
     return (
       <div className="bg-primary-light/50 p-3 rounded-md">
         <div className="flex items-center">
           <CheckCircle className="h-5 w-5 text-gray-800 mr-3 flex-shrink-0" />
-          <p className="text-gray-800 font-medium">
-            This course is published
-          </p>
+          <p className="text-gray-800 font-medium">This course is published</p>
         </div>
       </div>
     );
@@ -64,12 +83,48 @@ const AlertComponent = () => {
     <div className="bg-amber-100 p-3 rounded-md">
       <div className="flex items-center">
         <AlertTriangle className="h-5 w-5 text-amber-500 mr-3 flex-shrink-0" />
-        <p className="text-gray-800 font-medium">
-          This course can&#39;t be published yet
-          <span className="text-gray-700 font-normal ml-2">
-            Steps completed ({completedSteps}/{totalSteps})
-          </span>
-        </p>
+        <div className="flex-1">
+          <p className="text-gray-800 font-medium flex items-center">
+            This course can&#39;t be published yet
+            <span className="text-gray-700 font-normal ml-2 flex items-center">
+              Steps completed ({completedSteps}/{totalSteps})
+              <TooltipProvider>
+                <Tooltip delayDuration={0}>
+                  <TooltipTrigger asChild>
+                    <button
+                      className="ml-2 cursor-help"
+                      aria-label="View missing requirements"
+                    >
+                      <HelpCircle className="h-5 w-5 text-gray-500" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    side="bottom"
+                    align="end"
+                    sideOffset={5}
+                    className="p-3 bg-white border border-primary-light/60 shadow-lg rounded-md w-64 z-50"
+                  >
+                    <div className="space-y-2">
+                      <h4 className="font-semibold text-sm text-gray-800 border-b border-gray-200 pb-1">
+                        Missing requirements:
+                      </h4>
+                      <ul className="list-none text-sm space-y-2">
+                        {incompleteSteps.map((step, index) => (
+                          <li key={index} className="flex items-start">
+                            <div className="mr-2 mt-0.5">
+                              <AlertTriangle className="h-3.5 w-3.5 text-amber-500" />
+                            </div>
+                            <span className="text-gray-700">{step}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </span>
+          </p>
+        </div>
       </div>
     </div>
   );

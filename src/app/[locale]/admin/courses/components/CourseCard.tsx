@@ -62,7 +62,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
   ).length;
 
   return (
-    <Card className="overflow-hidden flex flex-col h-full">
+    <Card className="overflow-hidden pt-0 pb-6 flex flex-col h-full">
       <div className="relative aspect-video">
         <Image
           src={course.imageUrl || "/placeholder.svg"}
