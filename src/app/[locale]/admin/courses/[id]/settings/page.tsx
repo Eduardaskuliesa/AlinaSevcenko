@@ -59,18 +59,6 @@ const CourseSettingsPage: React.FC = () => {
   const [isPlanDialogOpen, setIsPlanDialogOpen] = useState(false);
 
   const handlePublish = async (isPublished: boolean) => {
-    if (course?.isPublished) {
-      toast("Course is already published", {
-        icon: (
-          <InfoIcon
-            className="h-5 w-5 text-yellow-500 animate-icon-warning
-        "
-          />
-        ),
-      });
-      setActionState("idle");
-      return { success: true };
-    }
     try {
       const result = await coursesAction.courses.publishCourse(
         courseId,
@@ -133,16 +121,6 @@ const CourseSettingsPage: React.FC = () => {
     } finally {
       setActionState("idle");
       return { success: true };
-    }
-  };
-
-  const handleSaveAndPublish = async () => {
-    setActionState("save-and-publish");
-
-    const publish = await handlePublish(true);
-    if (publish.success) {
-      await handleSave();
-      setActionState("idle");
     }
   };
 
@@ -256,15 +234,7 @@ const CourseSettingsPage: React.FC = () => {
               </>
             )}
           </Button>
-          <Button
-            onClick={handleSaveAndPublish}
-            disabled={actionState !== "idle"}
-            variant="outline"
-            size="lg"
-            className="flex items-center gap-2"
-          >
-            <span>Save & Publish</span>
-          </Button>
+
           {course?.isPublished ? (
             <Button
               size="lg"

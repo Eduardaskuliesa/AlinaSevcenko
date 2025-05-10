@@ -50,12 +50,10 @@ export async function deleteAccessPlan(
       };
     }
 
-    const planToDelete = currentPlans[planIndex];
     const otherActivePlans = currentPlans.filter(
       (plan: AccessPlan) => plan.isActive && plan.id !== planId
     );
-    const isLastActivePlan =
-      planToDelete.isActive && otherActivePlans.length === 0;
+    const willHaveNoActivePlans = otherActivePlans.length === 0;
 
     const updatedPlans = [
       ...currentPlans.slice(0, planIndex),
@@ -76,7 +74,7 @@ export async function deleteAccessPlan(
       ":updatedAt": new Date().toISOString(),
     };
 
-    if (isLastActivePlan && !isPublished) {
+    if (willHaveNoActivePlans && !isPublished) {
       updateExpression += `,
         completionStatus.price = :priceStatus
       `;

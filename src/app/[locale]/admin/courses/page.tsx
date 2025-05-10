@@ -1,17 +1,6 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
-import { PlusCircle, Search } from "lucide-react";
-
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import CourseCard from "./components/CourseCard";
-import Link from "next/link";
+import PageHeading from "./components/PageHeading";
 
 const CoursePage = () => {
   const courses = [
@@ -75,58 +64,8 @@ const CoursePage = () => {
   ];
 
   return (
-    <div className=" xl:p-6 space-y-6 max-w-7xl">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">Courses</h1>
-        <Link href={'courses/create-course'}>
-          <Button className="flex items-center gap-2">
-            <PlusCircle className="h-4 w-4" />
-            Create Course
-          </Button>
-        </Link>
-      </div>
-
-      {/* Search and Filter */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search courses..."
-            className="pl-8 w-full ring-secondary focus-visible:ring-[2px] "
-          />
-        </div>
-        <Select defaultValue="all">
-          <SelectTrigger className="w-full sm:w-[180px] focus-visible:ring-[2px] ring-secondary">
-            <SelectValue placeholder="Category" />
-          </SelectTrigger>
-          <SelectContent className="bg-white focus-visible:ring-[2px]">
-            <SelectItem
-              className="hover:bg-secondary cursor-pointer"
-              value="all"
-            >
-              All Categories
-            </SelectItem>
-            <SelectItem
-              className="hover:bg-secondary cursor-pointer"
-              value="development"
-            >
-              Development
-            </SelectItem>
-            <SelectItem
-              className="hover:bg-secondary cursor-pointer"
-              value="programming"
-            >
-              Programming
-            </SelectItem>
-            <SelectItem
-              className="hover:bg-secondary cursor-pointer"
-              value="design"
-            >
-              Design
-            </SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+    <div className="xl:p-6 space-y-6 max-w-7xl">
+      <PageHeading></PageHeading>
 
       <div className="grid sm:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6">
         {courses.map((course) => (

@@ -1,12 +1,7 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -107,7 +102,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
           <DropdownMenuContent className="bg-white" align="end">
             <DropdownMenuItem className="cursor-pointer hover:bg-secondary/90">
               <Pencil className="mr-2 h-4 w-4" />
-              Update
+              Info
             </DropdownMenuItem>
             <DropdownMenuItem className="cursor-pointer hover:bg-secondary/90">
               <Settings className="mr-2 h-4 w-4" />
@@ -124,31 +119,6 @@ const CourseCard = ({ course }: CourseCardProps) => {
           </DropdownMenuContent>
         </DropdownMenu>
       </CardHeader>
-
-      <CardContent className="pb-2 space-y-4">
-        <div className="flex items-center justify-between">
-          <Badge variant={isPublished ? "default" : "outline"}>
-            {isPublished ? "Published" : "Draft"}
-          </Badge>
-
-          {/* Simplified completion status */}
-          {completedSteps === totalSteps ? (
-            <Badge
-              variant="outline"
-              className="bg-green-50 text-green-700 border-green-200"
-            >
-              Ready to publish
-            </Badge>
-          ) : (
-            <Badge
-              variant="outline"
-              className="bg-amber-50 text-amber-700 border-amber-200"
-            >
-              {completedSteps}/{totalSteps} completed
-            </Badge>
-          )}
-        </div>
-      </CardContent>
 
       <CardFooter className="flex items-center justify-between mt-auto pt-4">
         <div className="flex items-center space-x-2">
