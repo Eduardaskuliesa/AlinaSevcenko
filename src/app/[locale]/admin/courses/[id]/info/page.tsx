@@ -280,7 +280,7 @@ const InfoPage: React.FC = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto overflow-hidden ">
+    <div className="max-w-7xl mx-auto  ">
       <div ref={placeholderRef} className="h-16 lg:h-20">
         <div
           ref={buttonContainerRef}

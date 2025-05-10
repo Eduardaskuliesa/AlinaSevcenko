@@ -5,6 +5,7 @@ import { coursesAction } from "@/app/actions/coursers";
 import { getQueryClient } from "@/app/lib/getQueryClient";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { categoryActions } from "@/app/actions/category";
+import CourseStoreInitializer from "./CourseStoreInitializer";
 
 interface CourseIdLayoutProps {
   children: React.ReactNode;
@@ -37,6 +38,7 @@ export default async function CourseIdLayout({
         <NavBar />
         <AlertComponent />
         {/* Content */}
+        <CourseStoreInitializer courseId={courseId} />
         <div className="">{children}</div>
       </div>
     </HydrationBoundary>

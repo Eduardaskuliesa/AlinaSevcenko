@@ -4,6 +4,7 @@ import { createLesson } from "./createLesson";
 import { deleteLesson } from "./deleteLesson";
 import { getLesson } from "./getLesson";
 import { getLessons } from "./getLessons";
+import { updateLessons } from "./updateLesson";
 import { updateLessonOrder } from "./updateLessonOrder";
 
 export const lessons = {
@@ -13,5 +14,6 @@ export const lessons = {
   updateLessonOrder,
   deleteLesson,
   addAssetPlaybackId,
+  updateLessons,
   addLessonDuration,
 };

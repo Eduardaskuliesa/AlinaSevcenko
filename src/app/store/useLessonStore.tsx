@@ -2,7 +2,8 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { arrayMove } from "@dnd-kit/sortable";
 import { immer } from "zustand/middleware/immer";
-import { LessonsStatus } from "../types/course";
+import { Lesson, LessonsStatus } from "../types/course";
+import { coursesAction } from "../actions/coursers";
 
 export type LocalLesson = {
   lessonId: string;
@@ -18,35 +19,67 @@ export type LocalLesson = {
 
 interface LessonState {
   // State
+  courseId: string | null;
   lessons: LocalLesson[];
   selectedLessonId: string | null;
   hydrated: boolean;
+  loading: boolean;
+  error: Error | null;
 
   // Selectors
   selectedLesson: LocalLesson | null;
 
   // Actions
+  setCourseId: (courseId: string) => void;
   setHydrated: (hydrated: boolean) => void;
   setSelectedLesson: (lessonId: string) => void;
   addLesson: (lesson: Omit<LocalLesson, "id" | "order">) => void;
   updateLesson: (id: string, updates: Partial<Omit<LocalLesson, "id">>) => void;
   deleteLesson: (id: string) => void;
-
+  resetStore: () => void;
+  setLessons: (lessons: LocalLesson[]) => void;
   reorderLessons: (activeId: string, overId: string) => void;
   markAllSaved: () => void;
+
+  // Async actions
+  fetchLessons: (courseId: string) => Promise<void>;
 }
 
 export const useLessonStore = create<LessonState>()(
   persist(
-    immer((set) => ({
+    immer((set, get) => ({
+      courseId: null,
       lessons: [],
       selectedLessonId: null,
       selectedLesson: null,
       hydrated: false,
+      loading: false,
+      error: null,
 
-      setHydrated: () =>
+      setHydrated: (hydrated: boolean) =>
         set(() => ({
-          hydrated: true,
+          hydrated,
+        })),
+
+      setCourseId: (courseId: string) =>
+        set((state) => {
+          if (state.courseId !== courseId) {
+            return {
+              courseId,
+              lessons: [],
+              selectedLessonId: null,
+              selectedLesson: null,
+              loading: true,
+              error: null,
+            };
+          }
+          return { courseId };
+        }),
+
+      setLessons: (lessons: LocalLesson[]) =>
+        set(() => ({
+          lessons,
+          loading: false,
         })),
 
       setSelectedLesson: (lessonId: string) =>
@@ -65,6 +98,8 @@ export const useLessonStore = create<LessonState>()(
               {
                 status: "waiting",
                 ...lesson,
+                order: state.lessons.length,
+                isDirty: true,
               },
             ],
           };
@@ -118,7 +153,7 @@ export const useLessonStore = create<LessonState>()(
             selectedLessonId:
               state.selectedLessonId === id ? null : state.selectedLessonId,
             selectedLesson:
-              state.selectedLessonId === id ? null : state.selectedLesson, // Add this line
+              state.selectedLessonId === id ? null : state.selectedLesson,
           };
         }),
 
@@ -156,6 +191,7 @@ export const useLessonStore = create<LessonState>()(
             lessons: updatedLessons,
           };
         }),
+
       markAllSaved: () =>
         set((state) => ({
           lessons: state.lessons.map((lesson) => ({
@@ -163,18 +199,100 @@ export const useLessonStore = create<LessonState>()(
             isDirty: false,
           })),
         })),
+
+      resetStore: () =>
+        set(() => ({
+          lessons: [],
+          selectedLessonId: null,
+          selectedLesson: null,
+          loading: false,
+          error: null,
+        })),
+
+      // New async action to fetch lessons
+      fetchLessons: async (courseId: string) => {
+        // Don't fetch if we already have this course's lessons and they're not dirty
+        const state = get();
+        if (
+          state.courseId === courseId &&
+          state.lessons.length > 0 &&
+          !state.lessons.some((l) => l.isDirty)
+        ) {
+          return;
+        }
+
+        set({ loading: true, error: null });
+
+        try {
+          // Fetch both the course and lessons data in parallel
+          const [lessonsResponse, courseResponse] = await Promise.all([
+            coursesAction.lessons.getLessons(courseId),
+            coursesAction.courses.getCourse(courseId),
+          ]);
+
+          const courseData = courseResponse?.cousre || null;
+          const lessonsOrder = courseData?.lessonsOrder || [];
+
+          // Create order map
+          const orderMap = new Map();
+          lessonsOrder.forEach((item: { lessonId: string; order: number }) => {
+            orderMap.set(item.lessonId, item.order);
+          });
+
+          if (lessonsResponse) {
+            const processedLessons = lessonsResponse.map(
+              (lesson: Lesson, index: number) => {
+                const order = orderMap.has(lesson.lessonId)
+                  ? orderMap.get(lesson.lessonId)
+                  : index;
+
+                return {
+                  lessonId: lesson.lessonId,
+                  title: lesson.title,
+                  shortDesc: lesson.shortDesc || "",
+                  duration: lesson.duration || 0,
+                  videoUrl: lesson.playbackId || "",
+                  isPreview: lesson.isPreview || false,
+                  status: lesson.status || "waiting",
+                  order: order,
+                  isDirty: false,
+                };
+              }
+            );
+            const sortedLessons = [...processedLessons].sort(
+              (a: LocalLesson, b: LocalLesson) =>
+                (a.order !== undefined ? a.order : 999) -
+                (b.order !== undefined ? b.order : 999)
+            );
+
+            set({
+              lessons: sortedLessons,
+              loading: false,
+              hydrated: true,
+              courseId,
+            });
+          }
+        } catch (error) {
+          console.error("Failed to fetch lessons:", error);
+          set({
+            error: error instanceof Error ? error : new Error(String(error)),
+            loading: false,
+          });
+        }
+      },
     })),
     {
       name: "lesson-storage",
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
+        courseId: state.courseId,
         lessons: state.lessons,
         selectedLessonId: state.selectedLessonId,
       }),
       onRehydrateStorage() {
         return (state, error) => {
-          if (!error) {
-            state?.setHydrated(true);
+          if (!error && state) {
+            state.setHydrated(true);
           }
         };
       },

@@ -40,12 +40,14 @@ const LessonVideoUpload = ({
     storyboardToken: string;
   } | null>(null);
 
+
   const [isPolling, setIsPolling] = useState(false);
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [pollingAttempts, setPollingAttempts] = useState(0);
   const MAX_POLLING_ATTEMPTS = 20;
 
   useEffect(() => {
+    console.log("Playback ID:", playbackId);
     const loadTokens = async () => {
       if (playbackId) {
         const fetchedTokens = await getOrGenerateTokens(playbackId);
@@ -65,10 +67,8 @@ const LessonVideoUpload = ({
     if (isPolling && selectedLessonId && courseId) {
       const checkVideoStatus = async () => {
         try {
-          // Increment the polling attempts counter
           setPollingAttempts((prev) => prev + 1);
 
-          // Check if we've reached the maximum number of attempts
           if (pollingAttempts >= MAX_POLLING_ATTEMPTS) {
             setIsPolling(false);
             toast.error(
@@ -117,7 +117,7 @@ const LessonVideoUpload = ({
         pollingIntervalRef.current = null;
       }
     };
-  }, [isPolling, selectedLessonId, courseId, pollingAttempts]);
+  }, [isPolling, selectedLessonId, courseId]);
 
   const getUploadUrl = async () => {
     try {

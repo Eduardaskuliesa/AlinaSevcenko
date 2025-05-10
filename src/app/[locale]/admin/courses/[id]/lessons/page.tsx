@@ -123,6 +123,32 @@ const LessonPage: React.FC = () => {
           return { success: false };
         }
 
+        const lessonToUpdate = lessonsToSave.map((lesson) => ({
+          lessonId: lesson.lessonId,
+          ...(lesson.title !== undefined && { title: lesson.title }),
+          ...(lesson.shortDesc !== undefined && {
+            shortDesc: lesson.shortDesc,
+          }),
+          ...(lesson.isPreview !== undefined && {
+            isPreview: lesson.isPreview,
+          }),
+        }));
+
+        console.log("Lessons to update:", lessonToUpdate);
+
+        if (lessonToUpdate.length > 0) {
+          const updateLessonsResult = await coursesAction.lessons.updateLessons(
+            courseId,
+            lessonToUpdate
+          );
+
+          if (updateLessonsResult.error) {
+            console.error("Error updating lessons", updateLessonsResult.error);
+            toast.error("Failed to update lessons");
+            return { success: false };
+          }
+        }
+
         if (updateOrderResult.success) {
           toast.success("Lesson order updated successfully");
           queryClient.invalidateQueries({ queryKey: ["course", courseId] });

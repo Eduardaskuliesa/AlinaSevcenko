@@ -1,4 +1,4 @@
-// CategoryPage.tsx
+
 "use client";
 import React, { useState } from "react";
 import { Loader, Plus } from "lucide-react";

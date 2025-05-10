@@ -25,7 +25,7 @@ import { useLessonStore } from "@/app/store/useLessonStore";
 import LessonSkeleton from "./LessonSkeleton";
 
 const DragAndDropLessons = () => {
-  const { lessons, reorderLessons, hydrated } = useLessonStore();
+  const { lessons, reorderLessons, hydrated, loading } = useLessonStore();
   const containerRef = useRef<HTMLDivElement>(null);
 
   const modifiers: Modifier[] = [
@@ -58,7 +58,7 @@ const DragAndDropLessons = () => {
     }
   };
 
-  if (!hydrated) {
+  if (!hydrated || loading) {
     return (
       <div ref={containerRef} className="w-full overflow-y-auto relative">
         <div className="border-2 max-h-[500px] h-full overflow-auto rounded-md shadow-md p-2">

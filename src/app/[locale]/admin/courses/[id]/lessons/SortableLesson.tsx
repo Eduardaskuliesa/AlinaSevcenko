@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { GripVertical, Loader2, Trash2 } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 
@@ -18,7 +18,7 @@ interface SortableLessonProps {
 const SortableLesson: React.FC<SortableLessonProps> = ({ lesson, index }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { setSelectedLesson, selectedLesson, hydrated, deleteLesson, lessons } =
+  const { setSelectedLesson, selectedLesson, hydrated, deleteLesson } =
     useLessonStore();
   const {
     attributes,
@@ -65,10 +65,6 @@ const SortableLesson: React.FC<SortableLessonProps> = ({ lesson, index }) => {
       setIsDialogOpen(false);
     }
   };
-
-  useEffect(() => {
-    console.log(lessons);
-  }, [lessons]);
 
   if (!hydrated) {
     return (
