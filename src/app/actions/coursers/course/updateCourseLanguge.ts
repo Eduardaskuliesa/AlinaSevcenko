@@ -32,6 +32,7 @@ export async function updateLanguage(
 
     await dynamoDb.send(updateCommand);
     revalidateTag(`course-${courseId}`);
+    revalidateTag(`courses`);
   } catch (error) {
     logger.error(`Error updating course language for ${courseId}`, error);
     return {

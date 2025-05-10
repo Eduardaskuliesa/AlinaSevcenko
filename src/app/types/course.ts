@@ -6,10 +6,12 @@ export interface Course {
   description: string;
   shortDescription: string;
   thumbnailImage: string;
+  duration: number;
   price: number;
   sort: number;
   currency: string;
   language: string;
+  enrollmentCount: number;
   categories: [
     {
       categoryId: string;

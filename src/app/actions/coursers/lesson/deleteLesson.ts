@@ -39,6 +39,17 @@ export async function deleteLesson(
       };
     }
 
+    const getLessonCommand = new GetCommand({
+      TableName: dynamoTableName,
+      Key: {
+        PK: `COURSE#${courseId}`,
+        SK: `LESSON#${lessonId}`,
+      },
+    });
+
+    const lessonResult = await dynamoDb.send(getLessonCommand);
+    const lessonDuration = lessonResult.Item?.duration || 0;
+
     const course = courseResult.Item;
     const currentLessonCount = course.lessonCount || 0;
     const currentLessonOrder = course.lessonOrder || [];
@@ -58,8 +69,9 @@ export async function deleteLesson(
     await dynamoDb.send(deleteCommand);
 
     const timestamp = new Date().toISOString();
-
     const hasRemainingLessons = updatedLessonOrder.length > 0;
+
+    const newLessonCount = Math.max(0, currentLessonCount - 1);
 
     const updateCourseCommand = new UpdateCommand({
       TableName: dynamoTableName,
@@ -68,18 +80,23 @@ export async function deleteLesson(
         SK: `COURSE#${courseId}`,
       },
       UpdateExpression:
-        "SET lessonCount = :lessonCount, lessonOrder = :lessonOrder, updatedAt = :timestamp, completionStatus.lessons = :lessonComplete",
+        "SET lessonCount = :lessonCount, lessonOrder = :lessonOrder, updatedAt = :timestamp, completionStatus.lessons = :lessonComplete ADD #dur :duration",
+      ExpressionAttributeNames: {
+        "#dur": "duration",
+      },
       ExpressionAttributeValues: {
-        ":lessonCount": currentLessonCount - 1,
+        ":lessonCount": newLessonCount,
         ":lessonOrder": updatedLessonOrder,
         ":timestamp": timestamp,
         ":lessonComplete": hasRemainingLessons,
+        ":duration": -lessonDuration, // Subtract the lesson duration
       },
     });
 
     await dynamoDb.send(updateCourseCommand);
 
     revalidateTag(`course-${courseId}`);
+    revalidateTag(`courses`);
     return {
       success: true,
       message: "Lesson deleted successfully",

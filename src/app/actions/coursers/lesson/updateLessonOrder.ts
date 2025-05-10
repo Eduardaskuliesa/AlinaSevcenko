@@ -46,6 +46,7 @@ export async function updateLessonOrder(
 
     await dynamoDb.send(updateCourseCommand);
     revalidateTag(`course-${courseId}`);
+    revalidateTag(`courses`);
     return {
       success: true,
       message: "Lesson order updated successfully",

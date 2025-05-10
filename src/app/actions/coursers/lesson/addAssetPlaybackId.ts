@@ -39,6 +39,7 @@ export async function addAssetPlaybackId(data: AddAssetPlaybackIdData) {
     await dynamoDb.send(updateLessonCommand);
 
     revalidateTag(`course-${data.courseId}`);
+    revalidateTag(`courses`);
     const path = `admin/courses/${data.courseId}/lessons`;
     revalidatePath(path);
     logger.success(

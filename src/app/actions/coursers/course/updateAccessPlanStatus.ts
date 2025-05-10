@@ -80,13 +80,10 @@ export async function toggleAccessPlanStatus(
       ":updatedAt": new Date().toISOString(),
     };
 
-    // Update price status based on active plans transition
     if (!currentlyHasActivePlans && willHaveActivePlans) {
-      // Toggling from no active plans to having active plans - set price to true
       updateExpression += ", completionStatus.price = :priceStatus";
       expressionAttributeValues[":priceStatus"] = true;
     } else if (currentlyHasActivePlans && !willHaveActivePlans) {
-      // Toggling from having active plans to no active plans - set price to false
       updateExpression += ", completionStatus.price = :priceStatus";
       expressionAttributeValues[":priceStatus"] = false;
     }
@@ -106,6 +103,7 @@ export async function toggleAccessPlanStatus(
 
     logger.success(`Access plan ${planId} status updated successfully`);
     revalidateTag(`course-${courseId}`);
+    revalidateTag(`courses`);
 
     return {
       success: true,

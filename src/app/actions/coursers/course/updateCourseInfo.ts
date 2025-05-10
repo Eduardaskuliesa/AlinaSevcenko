@@ -106,6 +106,7 @@ export async function updateCourseInfo(
     ]);
     logger.success("Course info updated successfully");
     revalidateTag(`course-${courseId}`);
+    revalidateTag(`courses`);
 
     return {
       fieldsUpdate: fieldsResult,

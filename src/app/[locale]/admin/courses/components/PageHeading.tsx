@@ -15,7 +15,20 @@ import { Loader, PlusCircle, Search } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
-const PageHeading = () => {
+interface PageHeadingProps {
+  filters: {
+    search: string;
+    categoryId: string;
+  };
+  isLoadingCourses: boolean;
+  onFilterChange: (filters: { search: string; categoryId: string }) => void;
+}
+
+const PageHeading = ({
+  filters,
+  onFilterChange,
+  isLoadingCourses,
+}: PageHeadingProps) => {
   const { data, isFetching } = useQuery({
     queryKey: ["categories"],
     queryFn: () => categoryActions.getCategories(),
@@ -26,7 +39,13 @@ const PageHeading = () => {
   return (
     <>
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">Courses</h1>
+        <h1 className="text-3xl font-bold tracking-tight flex items-center">
+          Courses{" "}
+          {isLoadingCourses && (
+            <Loader className=" ml-2 h-6 w-6 animate-spin" />
+          )}
+        </h1>
+
         <Link href={"courses/create-course"}>
           <Button className="flex items-center gap-2">
             <PlusCircle className="h-4 w-4" />
@@ -39,10 +58,19 @@ const PageHeading = () => {
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search courses..."
-            className="pl-8 w-full h-10 border-2 border-primary-light/60 ring-secondary focus-visible:ring-[2px] "
+            className="pl-8 w-full h-10 border-2 border-primary-light/60 ring-secondary focus-visible:ring-[2px]"
+            value={filters.search}
+            onChange={(e) =>
+              onFilterChange({ ...filters, search: e.target.value })
+            }
           />
         </div>
-        <Select defaultValue="all">
+        <Select
+          value={filters.categoryId}
+          onValueChange={(value) =>
+            onFilterChange({ ...filters, categoryId: value })
+          }
+        >
           <SelectTrigger className="w-full sm:w-[180px] border-2 border-primary-light/60 focus-visible:ring-[2px] ring-secondary">
             {isFetching ? (
               <div className="flex items-center gap-2">

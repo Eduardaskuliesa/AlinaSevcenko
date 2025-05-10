@@ -7,6 +7,7 @@ import { mux } from "@/app/services/mux";
 import { headers } from "next/headers";
 
 export async function POST(req: Request) {
+  console.log("Received webhook request from Mux");
   const headerPayload = await headers();
   const payload = await req.json();
   const body = JSON.stringify(payload);

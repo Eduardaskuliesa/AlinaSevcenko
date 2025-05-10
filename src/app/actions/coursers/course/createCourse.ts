@@ -6,6 +6,7 @@ import { dynamoTableName } from "@/app/services/dynamoDB";
 import { PutCommand } from "@aws-sdk/lib-dynamodb";
 import { v4 as uuidv4 } from "uuid";
 import { logger } from "@/app/utils/logger";
+import { revalidateTag } from "next/cache";
 
 export async function createCourse(initialData: CreateCourseInitialData) {
   try {
@@ -27,18 +28,20 @@ export async function createCourse(initialData: CreateCourseInitialData) {
       description: "",
       shortDescription: "",
       thumbnailImage: "",
-      price: 0,
       sort: 0,
       currency: "EUR",
       language: "lt",
       status: "DRAFT",
       lessonOrder: [],
       lessonCount: 0,
+      enrollmentCount: 0,
       authorId: initialData.authorId,
       accessPlans: [],
       createdAt: timestamp,
+      isPublished: false,
       updatedAt: timestamp,
       publishedAt: null,
+      duration: 0,
       completionStatus: {
         title: true,
         description: false,
@@ -54,7 +57,8 @@ export async function createCourse(initialData: CreateCourseInitialData) {
       TableName: dynamoTableName,
       Item: courseData,
     });
-
+    revalidateTag(`courses`);
+    revalidateTag(`course-${courseId}`);
     await dynamoDb.send(command);
 
     return {

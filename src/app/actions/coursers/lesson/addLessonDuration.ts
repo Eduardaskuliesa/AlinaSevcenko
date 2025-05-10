@@ -57,9 +57,29 @@ export async function addLessonDuration(data: AddDurationData) {
       ConditionExpression: "attribute_exists(PK)",
     });
 
-    await dynamoDb.send(updateLessonCommand);
+    const updateCourseCommand = new UpdateCommand({
+      TableName: dynamoTableName,
+      Key: {
+        PK: "COURSE",
+        SK: `COURSE#${data.courseId}`,
+      },
+      UpdateExpression: "SET updatedAt = :updatedAt ADD #duration :duration",
+      ExpressionAttributeNames: {
+        "#duration": "duration",
+      },
+      ExpressionAttributeValues: {
+        ":updatedAt": new Date().toISOString(),
+        ":duration": data.duration,
+      },
+      ReturnValues: "UPDATED_NEW",
+    });
+    await Promise.all([
+      dynamoDb.send(updateLessonCommand),
+      dynamoDb.send(updateCourseCommand),
+    ]);
 
     revalidateTag(`course-${data.courseId}`);
+    revalidateTag(`courses`);
     const path = `admin/courses/${data.courseId}/lessons`;
     revalidatePath(path);
 
