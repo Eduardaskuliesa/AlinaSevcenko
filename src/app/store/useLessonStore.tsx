@@ -209,9 +209,7 @@ export const useLessonStore = create<LessonState>()(
           error: null,
         })),
 
-      // New async action to fetch lessons
       fetchLessons: async (courseId: string) => {
-        // Don't fetch if we already have this course's lessons and they're not dirty
         const state = get();
         if (
           state.courseId === courseId &&
@@ -224,7 +222,6 @@ export const useLessonStore = create<LessonState>()(
         set({ loading: true, error: null });
 
         try {
-          // Fetch both the course and lessons data in parallel
           const [lessonsResponse, courseResponse] = await Promise.all([
             coursesAction.lessons.getLessons(courseId),
             coursesAction.courses.getCourse(courseId),
@@ -233,7 +230,6 @@ export const useLessonStore = create<LessonState>()(
           const courseData = courseResponse?.cousre || null;
           const lessonsOrder = courseData?.lessonsOrder || [];
 
-          // Create order map
           const orderMap = new Map();
           lessonsOrder.forEach((item: { lessonId: string; order: number }) => {
             orderMap.set(item.lessonId, item.order);
