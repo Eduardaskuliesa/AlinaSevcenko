@@ -24,7 +24,7 @@ export const CategoryFilters: React.FC<CategoryFiltersProps> = ({
   onLanguageChange,
 }) => {
   return (
-    <div className="flex gap-4 mb-6">
+    <div className="flex flex-col xxs:flex-row gap-4 mb-6">
       <div className="relative flex-1 bg-white">
         <Search
           className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"

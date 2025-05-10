@@ -2,14 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import {
-  ChevronRight,
-  ChevronDown,
-  ChevronLeft,
-  Tag,
-  Plus,
-  Search,
-} from "lucide-react";
+import { ChevronRight, ChevronLeft, Tag, Plus, Search } from "lucide-react";
 import { Category } from "@/app/types/course";
 import { Input } from "@/components/ui/input";
 import {
@@ -164,7 +157,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
       </div>
 
       <div className="border-2 rounded-lg py-4 px-2 bg-white">
-        <div className="flex flex-col sm:flex-row gap-3">
+        <div className="flex flex-col sm:flex-row md:flex-col xl:flex-row gap-3">
           {/* Unassigned Categories */}
           <div className="flex-1">
             <div className="font-medium mb-2 text-sm text-center">
@@ -186,11 +179,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
                     </div>
                     <ChevronRight
                       size={18}
-                      className="text-primary opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block"
-                    />
-                    <ChevronDown
-                      size={18}
-                      className="text-primary opacity-0 group-hover:opacity-100 transition-opacity block sm:hidden"
+                      className="text-primary opacity-0 group-hover:opacity-100 transition-opacity rotate-90 sm:rotate-0 md:rotate-90 xl:rotate-0"
                     />
                   </div>
                 </div>
@@ -215,8 +204,10 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
               className="h-8 w-8"
               title="Assign all categories"
             >
-              <ChevronRight size={16} className=" hidden sm:block" />
-              <ChevronDown size={16} className="block sm:hidden" />
+              <ChevronRight
+                size={16}
+                className=" rotate-90 sm:rotate-0 md:rotate-90 xl:rotate-0"
+              />
             </Button>
             <Button
               variant="outline"
@@ -226,8 +217,10 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
               className="h-8 w-8"
               title="Unassign all categories"
             >
-              <ChevronLeft size={16} className=" hidden sm:block" />
-              <ChevronDown size={16} className="block sm:hidden rotate-180" />
+              <ChevronLeft
+                size={16}
+                className="rotate-90 sm:rotate-0 md:rotate-90 xl:rotate-0"
+              />
             </Button>
           </div>
 
@@ -246,12 +239,9 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
                   <div className="flex items-center justify-between">
                     <ChevronLeft
                       size={18}
-                      className="text-primary opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block"
+                      className="text-primary opacity-0 group-hover:opacity-100 transition-opacity rotate-90 sm:rotate-0 md:rotate-90 xl:rotate-0"
                     />
-                    <ChevronDown
-                      size={18}
-                      className="text-primary opacity-0 group-hover:opacity-100 transition-opacity block sm:hidden rotate-180"
-                    />
+
                     <div className="flex items-center gap-2">
                       <span className="text-sm">{category.title}</span>
                       <Badge variant="secondary" className="text-xs">

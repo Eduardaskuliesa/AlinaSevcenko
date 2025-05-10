@@ -35,7 +35,7 @@ const CategoryPage = () => {
   });
 
   return (
-    <div className="p-6 max-w-4xl">
+    <div className="p-2 lg:p-6 max-w-4xl">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-gray-900">Categories</h1>
         <Button

@@ -78,7 +78,7 @@ const CourseList = ({ filters }: CourseListProps) => {
   }
 
   return (
-    <div className="grid sm:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6">
+    <div className="grid sm:grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
       {filteredCourses.map((course) => (
         <CourseCard key={course.courseId} course={course} />
       ))}

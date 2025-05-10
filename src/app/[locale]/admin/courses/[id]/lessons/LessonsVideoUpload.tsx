@@ -42,6 +42,8 @@ const LessonVideoUpload = ({
 
   const [isPolling, setIsPolling] = useState(false);
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [pollingAttempts, setPollingAttempts] = useState(0);
+  const MAX_POLLING_ATTEMPTS = 20;
 
   useEffect(() => {
     const loadTokens = async () => {
@@ -55,8 +57,6 @@ const LessonVideoUpload = ({
   }, [playbackId]);
 
   useEffect(() => {
-    console.log("Polling effect triggered. isPolling:", isPolling);
-
     if (pollingIntervalRef.current) {
       clearInterval(pollingIntervalRef.current);
       pollingIntervalRef.current = null;
@@ -65,11 +65,22 @@ const LessonVideoUpload = ({
     if (isPolling && selectedLessonId && courseId) {
       const checkVideoStatus = async () => {
         try {
+          // Increment the polling attempts counter
+          setPollingAttempts((prev) => prev + 1);
+
+          // Check if we've reached the maximum number of attempts
+          if (pollingAttempts >= MAX_POLLING_ATTEMPTS) {
+            setIsPolling(false);
+            toast.error(
+              "Video processing is taking longer than expected. Please check back later."
+            );
+            return;
+          }
+
           const currentLesson = await coursesAction.lessons.getLesson(
             courseId,
             selectedLessonId
           );
-          console.log("Current lesson status:", currentLesson.status);
 
           if (currentLesson) {
             if (
@@ -84,9 +95,9 @@ const LessonVideoUpload = ({
               });
             }
 
-            console.log("Current lesson status:", currentLesson.status);
             if (currentLesson.status === "ready") {
               setIsPolling(false);
+              setPollingAttempts(0);
               onChange(currentLesson.playbackId || "");
               toast.success("Video processing complete!");
             }
@@ -106,7 +117,7 @@ const LessonVideoUpload = ({
         pollingIntervalRef.current = null;
       }
     };
-  }, [isPolling, selectedLessonId, courseId]);
+  }, [isPolling, selectedLessonId, courseId, pollingAttempts]);
 
   const getUploadUrl = async () => {
     try {
@@ -131,6 +142,7 @@ const LessonVideoUpload = ({
 
   const handleUploadSuccess = () => {
     setIsPolling(true);
+    setPollingAttempts(0);
     if (selectedLessonId) {
       updateLesson(selectedLessonId, {
         status: "preparing",
@@ -139,28 +151,24 @@ const LessonVideoUpload = ({
     toast.success("Upload successful! Processing video...");
   };
 
-  useEffect(() => {
-    console.log("Video status changed:", selectedLesson?.status);
-  }, [selectedLesson]);
-
   return (
-    <div className="mb-8">
+    <div className="mb-4 sm:mb-8">
       <Label
         htmlFor="lessonVideo"
-        className="text-base font-semibold flex items-center gap-2 mb-2"
+        className="text-sm sm:text-base font-semibold flex items-center gap-2 mb-2"
       >
-        <div className="bg-primary w-8 h-8 rounded-full flex items-center justify-center ring-4 ring-secondary/20">
-          <Film size={16} className="text-white" />
+        <div className="bg-primary w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center ring-4 ring-secondary/20">
+          <Film className="text-white w-4 h-4 sm:w-5 sm:h-5" />
         </div>
         Lesson Video
       </Label>
 
       <div className="border-2 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-secondary focus-within:border-transparent transition-all bg-white">
         <div className="w-full">
-          <div className="flex flex-1 flex-col gap-3 p-4">
+          <div className="flex flex-1 flex-col gap-2 sm:gap-3 p-3 sm:p-4">
             <div className="flex items-center justify-between">
               {videoStatus === "ready" && (
-                <div className="flex flex-1 items-center justify-end gap-3">
+                <div className="flex flex-1 items-center justify-end gap-2 sm:gap-3">
                   <MuxUploader
                     noDrop
                     noProgress
@@ -175,19 +183,22 @@ const LessonVideoUpload = ({
                   <div className="w-full flex-1">
                     <MuxUploaderStatus
                       muxUploader="my-uploader"
-                      className="text-sm text-gray-600"
+                      className="text-xs sm:text-sm text-gray-600"
                     ></MuxUploaderStatus>
                     <MuxUploaderProgress
                       type="bar"
                       muxUploader="my-uploader"
-                      className="w-full [--progress-bar-fill-color:#998ea7] [--progress-bar-height:6px]"
+                      className="w-full [--progress-bar-fill-color:#998ea7] [--progress-bar-height:4px] lg:[--progress-bar-height:6px]"
                     ></MuxUploaderProgress>
                   </div>
 
                   <MuxUploaderFileSelect muxUploader="my-uploader">
-                    <Button variant={"default"} className="gap-1 text-gray-100">
-                      <PlusCircleIcon className="h-3.5 w-3.5" />
-                      <span className="text-base">Change</span>
+                    <Button
+                      variant={"default"}
+                      className="h-8 sm:h-10 gap-1 text-gray-100 text-xs sm:text-sm"
+                    >
+                      <PlusCircleIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                      <span>Change</span>
                     </Button>
                   </MuxUploaderFileSelect>
                 </div>
@@ -196,7 +207,7 @@ const LessonVideoUpload = ({
 
             <div
               className={cn(
-                "flex aspect-video min-h-48 grow items-center justify-center rounded-md bg-gray-100",
+                "flex aspect-video min-h-40 sm:min-h-48 grow items-center justify-center rounded-md bg-gray-100",
                 videoStatus === "preparing" && "bg-gray-900 animate-pulse"
               )}
             >
@@ -215,9 +226,19 @@ const LessonVideoUpload = ({
               )}
 
               {videoStatus === "preparing" && (
-                <div className="text-white">
-                  <h4 className="text-xl font-semibold">Processing...</h4>
-                  <p className="mt-3 text-sm">This might take a few minutes!</p>
+                <div className="text-white text-center">
+                  <h4 className="text-lg sm:text-xl font-semibold">
+                    Processing...
+                  </h4>
+                  <p className="mt-2 sm:mt-3 text-xs sm:text-sm">
+                    This might take a few minutes!
+                  </p>
+                  {pollingAttempts > 0 && (
+                    <p className="mt-1 text-xs text-gray-300">
+                      {MAX_POLLING_ATTEMPTS - pollingAttempts} attempts
+                      remaining
+                    </p>
+                  )}
                 </div>
               )}
 
@@ -238,35 +259,41 @@ const LessonVideoUpload = ({
                     endpoint={getUploadUrl as () => Promise<string>}
                     onSuccess={handleUploadSuccess}
                   ></MuxUploader>
-                  <p slot="heading" className="text-xl font-semibold">
+                  <p
+                    slot="heading"
+                    className="text-lg sm:text-xl font-semibold"
+                  >
                     Drop a video file here to upload
                   </p>
                   <span
                     slot="separator"
-                    className="mt-2 text-sm italic text-muted-foreground"
+                    className="mt-1 sm:mt-2 text-xs sm:text-sm italic text-muted-foreground"
                   >
                     — or —
                   </span>
                   <div className="w-full">
                     <MuxUploaderStatus muxUploader="my-uploader"></MuxUploaderStatus>
                     <MuxUploaderProgress
-                      className="text-sm font-semibold text-gray-800 sm:text-base"
+                      className="text-xs sm:text-sm font-semibold text-gray-800"
                       muxUploader="my-uploader"
                       type="percentage"
                     ></MuxUploaderProgress>
                     <MuxUploaderProgress
                       type="bar"
                       muxUploader="my-uploader"
-                      className="[--progress-bar-fill-color:#998ea7] [--progress-bar-height:8px] sm:[--progress-bar-height:10px]"
+                      className="[--progress-bar-fill-color:#998ea7] [--progress-bar-height:6px] lg:[--progress-bar-height:8px]"
                     ></MuxUploaderProgress>
                   </div>
                   <MuxUploaderFileSelect
                     muxUploader="my-uploader"
-                    className="mt-4"
+                    className="mt-2 sm:mt-4"
                   >
-                    <Button variant={"default"} className="gap-1">
-                      <PlusCircleIcon className="h-3.5 w-3.5" />
-                      <span className="text-base">Select a file</span>
+                    <Button
+                      variant={"default"}
+                      className="h-8 sm:h-10 gap-1 text-xs sm:text-sm"
+                    >
+                      <PlusCircleIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                      <span>Select a file</span>
                     </Button>
                   </MuxUploaderFileSelect>
                 </MuxUploaderDrop>

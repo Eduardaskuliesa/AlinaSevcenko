@@ -17,13 +17,13 @@ const LessonTitle: React.FC<LessonTitleProps> = ({
   };
 
   return (
-    <div className="mb-8">
+    <div className="mb-4 sm:mb-8">
       <Label
         htmlFor="lessonTitle"
-        className="text-base font-semibold flex items-center gap-2 mb-2"
+        className="text-sm sm:text-base font-semibold flex items-center gap-2 mb-2"
       >
-        <div className="bg-primary w-8 h-8 rounded-full flex items-center justify-center ring-4 ring-secondary/20">
-          <BookOpen size={16} className="text-white" />
+        <div className="bg-primary w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center ring-4 ring-secondary/20">
+          <BookOpen className="text-white w-4 h-4 sm:w-5 sm:h-5" />
         </div>
         Lesson Title
       </Label>
@@ -31,7 +31,7 @@ const LessonTitle: React.FC<LessonTitleProps> = ({
         <Input
           id="lessonTitle"
           placeholder="Enter lesson title"
-          className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-14 px-4 text-base bg-white"
+          className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-10 sm:h-14 px-3 sm:px-4 text-sm sm:text-base bg-white"
           value={initialValue}
           onChange={handleChange}
         />

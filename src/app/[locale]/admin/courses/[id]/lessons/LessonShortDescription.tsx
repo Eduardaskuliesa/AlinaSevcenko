@@ -17,13 +17,13 @@ const LessonShortDescription: React.FC<LessonShortDescriptionProps> = ({
   };
 
   return (
-    <div className="mb-8">
+    <div className="mb-4 sm:mb-8">
       <Label
         htmlFor="lessonShortDescription"
-        className="text-base font-semibold flex items-center gap-2 mb-2"
+        className="text-sm sm:text-base font-semibold flex items-center gap-2 mb-2"
       >
-        <div className="bg-primary w-8 h-8 rounded-full flex items-center justify-center ring-4 ring-secondary/20">
-          <AlignLeft size={16} className="text-white" />
+        <div className="bg-primary w-6 sm:w-8 h-6 sm:h-8 rounded-full flex items-center justify-center ring-4 ring-secondary/20">
+          <AlignLeft className="text-white w-4 sm:w-5 h-4 sm:h-5" />
         </div>
         Lesson Description
       </Label>
@@ -31,7 +31,7 @@ const LessonShortDescription: React.FC<LessonShortDescriptionProps> = ({
         <Textarea
           id="lessonShortDescription"
           placeholder="A brief description of this lesson"
-          className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 min-h-24 p-4 text-base resize-none bg-white"
+          className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 min-h-20 sm:min-h-24 p-3 sm:p-4 text-sm sm:text-base resize-none bg-white"
           value={initialValue}
           onChange={handleChange}
         />

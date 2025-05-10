@@ -134,7 +134,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
 
   return (
     <>
-      <Card className="overflow-hidden pt-0 pb-6 gap-4 flex flex-col h-full">
+      <Card className="overflow-hidden pt-0 pb-6  gap-4 flex flex-col h-full">
         <div className="relative aspect-video">
           <Image
             src={course.thumbnailImage || "/placeholder.svg"}
@@ -162,7 +162,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
           )}
         </div>
 
-        <CardHeader className="flex flex-row items-start justify-between space-y-0">
+        <CardHeader className="flex flex-row items-start justify-between space-y-0 px-2 xxs:px-6 md:px-2 lg:px-6">
           <div className="space-y-1">
             <h3 className="text-xl font-bold tracking-tight line-clamp-1">
               {course.title}
@@ -224,7 +224,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
           </DropdownMenu>
         </CardHeader>
 
-        <CardFooter className="flex items-center justify-between mt-auto pt-4">
+        <CardFooter className="flex items-center justify-between mt-auto pt-4 px-2 xxs:px-6 md:px-2 lg:px-6">
           <div className="flex items-center space-x-2">
             <TooltipProvider delayDuration={0}>
               <Tooltip>
@@ -255,7 +255,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
             </div>
           </div>
 
-          <div className="flex space-x-2">
+          <div className="flex  space-x-2">
             <Link href={`${baseUrl}/${course.courseId}/info`}>
               <Button size="sm" variant="outline">
                 <Pencil className="h-4 w-4 mr-1" />

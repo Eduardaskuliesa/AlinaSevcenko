@@ -16,6 +16,7 @@ module.exports = {
         background: "#C9BDC7",
       },
       screens: {
+        xxs: "380px",
         xs: "480px",
         sm: "576px",
       },
@@ -117,8 +118,8 @@ module.exports = {
       "accordion-down": "accordion-down 0.2s ease-out",
       "accordion-up": "accordion-up 0.2s ease-out",
       spin: "spin 1s linear infinite",
-      ping: "ping 1s cubic-bezier(0, 0, 0.2, 1) infinite", 
-     pulse: "pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+      ping: "ping 1s cubic-bezier(0, 0, 0.2, 1) infinite",
+      pulse: "pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite",
       bounce: "bounce 1s infinite",
       in: "fade-in 0.2s ease-out",
       "in-slide-down": "fade-in 0.2s ease-out, slide-in-from-top 0.2s ease-out",

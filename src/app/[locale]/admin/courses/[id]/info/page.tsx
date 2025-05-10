@@ -281,11 +281,11 @@ const InfoPage: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto overflow-hidden ">
-      <div ref={placeholderRef} className="h-16 lg:h-20 mb-4 lg:mb-8">
+      <div ref={placeholderRef} className="h-16 lg:h-20">
         <div
           ref={buttonContainerRef}
           className={`w-full py-2 lg:py-4 px-2 lg:px-0 z-10 ${
-            isSticky ? "bg-white fixed top-[4rem] left-0 right-0 shadow-md" : ""
+            isSticky ? "bg-white  lg:bg-transparent fixed lg:relative top-[4rem] lg:top-0 left-0 right-0 shadow-md lg:shadow-none  md:px-12" : ""
           }`}
         >
           <div className="max-w-7xl mx-auto">

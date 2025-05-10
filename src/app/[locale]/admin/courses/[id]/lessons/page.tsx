@@ -9,7 +9,7 @@ import {
   InfoIcon,
   CircleXIcon,
 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import DragAndDropLessons from "./DragAndDropLessons";
 
 import LessonsBasicInfo from "./LessonsBasicInfo";
@@ -34,6 +34,29 @@ const LessonPage: React.FC = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
   const params = useParams();
+
+  // Sticky functionality
+  const [isSticky, setIsSticky] = useState(false);
+  const actionButtonsRef = useRef<HTMLDivElement>(null);
+  const placeholderRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (actionButtonsRef.current && placeholderRef.current) {
+        const containerRect = placeholderRef.current.getBoundingClientRect();
+        if (containerRect.top <= 80) {
+          setIsSticky(true);
+        } else {
+          setIsSticky(false);
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const handleAddLesson = async () => {
     setIsStateAction("adding-lesson");
@@ -77,10 +100,7 @@ const LessonPage: React.FC = () => {
         setIsStateAction("idle");
         toast("No changes were made to save", {
           icon: (
-            <InfoIcon
-              className="h-5 w-5 text-yellow-500 animate-icon-warning
-          "
-            />
+            <InfoIcon className="h-5 w-5 text-yellow-500 animate-icon-warning" />
           ),
         });
         return { success: true };
@@ -135,7 +155,10 @@ const LessonPage: React.FC = () => {
 
   const handlePublish = async (isPublished: boolean) => {
     try {
-      const result = await coursesAction.courses.publishCourse(courseId, isPublished);
+      const result = await coursesAction.courses.publishCourse(
+        courseId,
+        isPublished
+      );
       if (result?.error === "COURSE_NOT_FOUND") {
         toast.error("Course not found");
         setIsStateAction("idle");
@@ -162,120 +185,132 @@ const LessonPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-2 lg:px-0">
-      <div className="flex justify-between  mb-8">
-        <div className="flex justify-start">
-          <Button
-            onClick={handleAddLesson}
-            size="lg"
-            variant="outline"
-            className="flex items-center gap-2"
-          >
-            {isStateAction === "adding-lesson" ? (
-              <>
-                <Loader2 size={18} className="animate-spin" />
-                <span>Adding lesson...</span>
-              </>
-            ) : (
-              <>
-                <PlusCircle size={18}></PlusCircle>
-                <span>Add new lesson</span>
-              </>
-            )}
-          </Button>
-        </div>
-        <div className="flex justify-end gap-4">
-          <Button
-            onClick={() => {
-              handleSave();
-            }}
-            disabled={isStateAction !== "idle"}
-            variant="outline"
-            size="lg"
-            className="flex items-center gap-2"
-          >
-            {isStateAction === "saving" ? (
-              <>
-                <Loader2 size={18} className="animate-spin" />
-                <span>Saving...</span>
-              </>
-            ) : (
-              <>
-                <Save size={18} />
-                <span>Save</span>
-              </>
-            )}
-          </Button>
-          <Button
-            onClick={() => {
-              handleSaveAndContinue();
-              setIsStateAction("saving-and-continuing");
-            }}
-            disabled={isStateAction !== "idle"}
-            variant="outline"
-            size="lg"
-            className="flex items-center gap-2"
-          >
-            {isStateAction === "saving-and-continuing" ? (
-              <>
-                <Loader2 className="animate-spin" size={18} />
-                <span>Saving...</span>
-              </>
-            ) : (
-              <>
-                <ArrowRight size={18} />
-                <span>Save & Continue</span>
-              </>
-            )}
-          </Button>
-          {course?.isPublished ? (
-            <Button
-              size="lg"
-              className="flex items-center gap-2 text-white"
-              onClick={() => {
-                setIsStateAction("unpublishing");
-                handlePublish(false);
-              }}
-              disabled={isStateAction !== "idle"}
-            >
-              {isStateAction === "unpublishing" ? (
-                <>
-                  <Loader2 size={18} className="animate-spin" />
-                  <span>Unpublishing...</span>
-                </>
-              ) : (
-                <>
-                  <CircleXIcon size={18} />
-                  <span>Unpublish</span>
-                </>
-              )}
-            </Button>
-          ) : (
-            <Button
-              size="lg"
-              className="flex items-center gap-2 bg-primary text-white hover:bg-primary/90"
-              onClick={() => {
-                setIsStateAction("publishing");
-                handlePublish(true);
-              }}
-              disabled={isStateAction !== "idle"}
-            >
-              {isStateAction === "publishing" ? (
-                <>
-                  <Loader2 size={18} className="animate-spin" />
-                  <span>Publishing...</span>
-                </>
-              ) : (
-                <>
-                  <Send size={18} />
-                  <span>Publish</span>
-                </>
-              )}
-            </Button>
-          )}
+    <div className="max-w-7xl mx-auto  lg:px-0">
+      {/* Placeholder for sticky behavior */}
+      <div ref={placeholderRef} className="h-24 md:h-12 mb-4 lg:mb-8">
+        <div
+          ref={actionButtonsRef}
+          className={`w-full py-2 lg:py-4 z-10 ${
+            isSticky
+              ? "bg-white lg:bg-transparent fixed lg:relative top-[4rem] lg:top-0 left-0 right-0 shadow-md lg:shadow-none  md:px-10 lg:px-0"
+              : ""
+          }`}
+        >
+          <div className="max-w-7xl mx-auto">
+            <div className="flex px-2 flex-col md:flex-row justify-between gap-4">
+              <div className="order-2 md:order-1">
+                <Button
+                  onClick={handleAddLesson}
+                  className="flex h-8 lg:h-10 items-center gap-2 w-1/2 md:w-auto"
+                  variant="outline"
+                >
+                  {isStateAction === "adding-lesson" ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" />
+                      <span>Adding lesson...</span>
+                    </>
+                  ) : (
+                    <>
+                      <PlusCircle size={16} />
+                      <span>Add new lesson</span>
+                    </>
+                  )}
+                </Button>
+              </div>
+
+              <div className="flex order-1 md:order-2 md:justify-end gap-2 lg:gap-4">
+                <Button
+                  onClick={() => {
+                    setIsStateAction("saving");
+                    handleSave();
+                  }}
+                  disabled={isStateAction !== "idle"}
+                  variant="outline"
+                  className="flex h-8 lg:h-10 items-center gap-2"
+                >
+                  {isStateAction === "saving" ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" />
+                      <span>Saving...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Save size={16} />
+                      <span>Save</span>
+                    </>
+                  )}
+                </Button>
+                <Button
+                  onClick={() => {
+                    handleSaveAndContinue();
+                    setIsStateAction("saving-and-continuing");
+                  }}
+                  disabled={isStateAction !== "idle"}
+                  variant="outline"
+                  className="flex h-8 lg:h-10 items-center gap-2"
+                >
+                  {isStateAction === "saving-and-continuing" ? (
+                    <>
+                      <Loader2 className="animate-spin" size={16} />
+                      <span>Saving...</span>
+                    </>
+                  ) : (
+                    <>
+                      <ArrowRight size={16} />
+                      <span>Save & Continue</span>
+                    </>
+                  )}
+                </Button>
+                {course?.isPublished ? (
+                  <Button
+                    className="flex h-8 lg:h-10 items-center gap-2 text-white"
+                    onClick={() => {
+                      setIsStateAction("unpublishing");
+                      handlePublish(false);
+                    }}
+                    disabled={isStateAction !== "idle"}
+                  >
+                    {isStateAction === "unpublishing" ? (
+                      <>
+                        <Loader2 size={16} className="animate-spin" />
+                        <span>Unpublishing...</span>
+                      </>
+                    ) : (
+                      <>
+                        <CircleXIcon size={16} />
+                        <span>Unpublish</span>
+                      </>
+                    )}
+                  </Button>
+                ) : (
+                  <Button
+                    className="flex items-center h-8 lg:h-10 gap-2 bg-primary text-white hover:bg-primary/90"
+                    onClick={() => {
+                      setIsStateAction("publishing");
+                      handlePublish(true);
+                    }}
+                    disabled={isStateAction !== "idle"}
+                  >
+                    {isStateAction === "publishing" ? (
+                      <>
+                        <Loader2 size={16} className="animate-spin" />
+                        <span>Publishing...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send size={16} />
+                        <span>Publish</span>
+                      </>
+                    )}
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div className="flex flex-col lg:flex-row gap-6">
+
+      <div className="flex flex-col  xl:flex-row gap-6">
         <DragAndDropLessons />
         <LessonsBasicInfo />
       </div>

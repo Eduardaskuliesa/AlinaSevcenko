@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { CircleXIcon, InfoIcon, Loader2, Save, Send } from "lucide-react";
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { CoursePlanCard } from "./PlanCard";
 import { AddPlanButton } from "./AddPlanButton";
 import {
@@ -58,6 +58,29 @@ const CourseSettingsPage: React.FC = () => {
   );
   const [isPlanDialogOpen, setIsPlanDialogOpen] = useState(false);
 
+  // Sticky functionality
+  const [isSticky, setIsSticky] = useState(false);
+  const buttonContainerRef = useRef<HTMLDivElement>(null);
+  const placeholderRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (buttonContainerRef.current && placeholderRef.current) {
+        const containerRect = placeholderRef.current.getBoundingClientRect();
+        if (containerRect.top <= 60) {
+          setIsSticky(true);
+        } else {
+          setIsSticky(false);
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   const handlePublish = async (isPublished: boolean) => {
     try {
       const result = await coursesAction.courses.publishCourse(
@@ -102,10 +125,7 @@ const CourseSettingsPage: React.FC = () => {
     if (language === courseData?.cousre?.language) {
       toast("No changes were made to save", {
         icon: (
-          <InfoIcon
-            className="h-5 w-5 text-yellow-500 animate-icon-warning
-        "
-          />
+          <InfoIcon className="h-5 w-5 text-yellow-500 animate-icon-warning" />
         ),
       });
       setActionState("idle");
@@ -114,18 +134,17 @@ const CourseSettingsPage: React.FC = () => {
     try {
       await coursesAction.courses.updateLanguage(courseId, language);
       toast.success("Language updated successfully");
+      return { success: true };
     } catch (error) {
       console.error("Error updating language", error);
       toast.error("Error updating language");
       return { success: false };
     } finally {
       setActionState("idle");
-      return { success: true };
     }
   };
 
   const handleTogglePlan = async (planId: string, isActive: boolean) => {
-    console.log(`Toggling plan ${planId} to ${isActive}`);
     setLoadingPlanIds((prev) => ({ ...prev, toggle: planId }));
 
     try {
@@ -212,87 +231,119 @@ const CourseSettingsPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <div className="flex justify-end mb-8">
-        <div className="flex gap-4">
-          <Button
-            onClick={handleSave}
-            disabled={actionState !== "idle"}
-            variant="outline"
-            size="lg"
-            className="flex items-center gap-2"
-          >
-            {actionState === "saving" ? (
-              <>
-                <Loader2 size={18} className="animate-spin" />
-                <span>Saving...</span>
-              </>
-            ) : (
-              <>
-                <Save size={18} />
-                <span>Save</span>
-              </>
-            )}
-          </Button>
+    <div className="max-w-7xl mx-auto overflow-hidden px-2 lg:px-0">
+      <div ref={placeholderRef} className="h-16 lg:h-20">
+        <div
+          ref={buttonContainerRef}
+          className={`w-full py-2 lg:py-4 px-4 lg:px-0 z-10 ${
+            isSticky
+              ? "bg-white lg:bg-transparent fixed lg:relative top-[4rem] px-4 lg:top-0 left-0 right-0 shadow-md lg:shadow-none md:px-14"
+              : ""
+          }`}
+        >
+          <div className="max-w-7xl mx-auto">
+            <div className="flex justify-end gap-2 lg:gap-4">
+              <Button
+                onClick={handleSave}
+                disabled={actionState !== "idle"}
+                variant="outline"
+                className="flex h-8 lg:h-10 items-center gap-2"
+              >
+                {actionState === "saving" ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" />
+                    <span>Saving...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save size={16} />
+                    <span>Save</span>
+                  </>
+                )}
+              </Button>
 
-          {course?.isPublished ? (
-            <Button
-              size="lg"
-              className="flex items-center gap-2 text-white"
-              onClick={() => {
-                setActionState("unpublishing");
-                handlePublish(false);
-              }}
-              disabled={actionState !== "idle"}
-            >
-              {actionState === "unpublishing" ? (
-                <>
-                  <Loader2 size={18} className="animate-spin" />
-                  <span>Unpublishing...</span>
-                </>
+              {course?.isPublished ? (
+                <Button
+                  className="flex h-8 lg:h-10 items-center gap-2 text-white"
+                  onClick={() => {
+                    setActionState("unpublishing");
+                    handlePublish(false);
+                  }}
+                  disabled={actionState !== "idle"}
+                >
+                  {actionState === "unpublishing" ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" />
+                      <span>Unpublishing...</span>
+                    </>
+                  ) : (
+                    <>
+                      <CircleXIcon size={16} />
+                      <span>Unpublish</span>
+                    </>
+                  )}
+                </Button>
               ) : (
-                <>
-                  <CircleXIcon size={18} />
-                  <span>Unpublish</span>
-                </>
+                <Button
+                  className="flex items-center h-8 lg:h-10 gap-2 bg-primary text-white hover:bg-primary/90"
+                  onClick={() => {
+                    setActionState("publishing");
+                    handlePublish(true);
+                  }}
+                  disabled={actionState !== "idle"}
+                >
+                  {actionState === "publishing" ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" />
+                      <span>Publishing...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send size={16} />
+                      <span>Publish</span>
+                    </>
+                  )}
+                </Button>
               )}
-            </Button>
-          ) : (
-            <Button
-              size="lg"
-              className="flex items-center gap-2 bg-primary text-white hover:bg-primary/90"
-              onClick={() => {
-                setActionState("publishing");
-                handlePublish(true);
-              }}
-              disabled={actionState !== "idle"}
-            >
-              {actionState === "publishing" ? (
-                <>
-                  <Loader2 size={18} className="animate-spin" />
-                  <span>Publishing...</span>
-                </>
-              ) : (
-                <>
-                  <Send size={18} />
-                  <span>Publish</span>
-                </>
-              )}
-            </Button>
-          )}
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-6">
-        <div className="col-span-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Reordered content - Language section first on mobile, then pricing */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        {/* Language settings - full width on mobile, right column on desktop */}
+        <div className="md:order-2 md:col-span-4">
+          <div className="bg-white xs:w-full sm:w-1/2 md:w-full p-4 md:p-6 border-2 border-primary-light/60 rounded-lg shadow-sm mb-6 md:mb-0">
+            <p className="text-lg md:text-xl font-medium mb-3 md:mb-4">
+              Course Language
+            </p>
+            {isCourseLoading ? (
+              <Skeleton className="h-9 md:h-10 w-full" />
+            ) : (
+              <Select value={language} onValueChange={setLanguage}>
+                <SelectTrigger className="border-primary-light/60 bg-white border-2 h-9 md:h-10">
+                  <SelectValue placeholder="Select language" />
+                </SelectTrigger>
+                <SelectContent className="bg-white border-2 border-primary-light/60">
+                  <SelectItem value="lt">Lithuanian (LT)</SelectItem>
+                  <SelectItem value="ru">Russian (RU)</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+          </div>
+        </div>
+
+        {/* Pricing plans - full width on mobile, left column on desktop */}
+        <div className="md:order-1 md:col-span-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
             {isCourseLoading ? (
               Array(2)
                 .fill(0)
                 .map((_, index) => (
                   <div
                     key={index}
-                    className="border-2 border-gray-200 rounded-lg shadow-sm p-6 h-64"
+                    className="border-2 border-gray-200 rounded-lg shadow-sm p-4 md:p-6 h-48 md:h-64"
                   >
                     <Skeleton className="h-full w-full" />
                   </div>
@@ -312,26 +363,6 @@ const CourseSettingsPage: React.FC = () => {
                   <AddPlanButton onClick={() => setIsPlanDialogOpen(true)} />
                 )}
               </>
-            )}
-          </div>
-        </div>
-
-        {/* Right column - Language settings */}
-        <div className="col-span-4">
-          <div className="bg-white p-6 border-2 border-primary-light/60 rounded-lg shadow-sm">
-            <p className="text-xl font-medium mb-4">Course Language</p>
-            {isCourseLoading ? (
-              <Skeleton className="h-10 w-full" />
-            ) : (
-              <Select value={language} onValueChange={setLanguage}>
-                <SelectTrigger className="border-primary-light/60 bg-white border-2">
-                  <SelectValue placeholder="Select language" />
-                </SelectTrigger>
-                <SelectContent className="bg-white border-2 border-primary-light/60">
-                  <SelectItem value="lt">Lithuanian (LT)</SelectItem>
-                  <SelectItem value="ru">Russian (RU)</SelectItem>
-                </SelectContent>
-              </Select>
             )}
           </div>
         </div>
