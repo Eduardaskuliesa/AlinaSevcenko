@@ -61,7 +61,7 @@ const CreateCoursePage = () => {
   };
 
   return (
-    <div className="p-6 space-y-6 max-w-7xl mx-auto">
+    <div className="px-2 lg:p-6 space-y-6 max-w-7xl mx-auto">
       <Button
         variant="ghost"
         className="mb-6 pl-0 flex items-center hover:bg-gray-200"
@@ -71,13 +71,13 @@ const CreateCoursePage = () => {
         Back to courses
       </Button>
 
-      <Card className="max-w-lg py-5">
-        <CardHeader>
+      <Card className="max-w-lg py-5 bg-white">
+        <CardHeader className="px-2 lg:px-6">
           <CardTitle className="text-2xl">Create New Course</CardTitle>
         </CardHeader>
 
         <form onSubmit={handleSubmit}>
-          <CardContent>
+          <CardContent className="px-2 lg:px-6">
             <div className="space-y-4">
               <div className="space-y-2">
                 <label htmlFor="courseName" className="text-sm font-medium">
@@ -98,7 +98,7 @@ const CreateCoursePage = () => {
             </div>
           </CardContent>
 
-          <CardFooter className="flex justify-between mt-4">
+          <CardFooter className="flex justify-between mt-4 px-2 lg:px-6">
             <Button
               type="button"
               variant="outline"

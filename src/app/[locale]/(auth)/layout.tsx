@@ -14,7 +14,6 @@ export default function AuthLayout({
       }}
     >
       <AuthNavbar></AuthNavbar>
-
       <div className="pt-10 max-w-xl w-full mx-auto">{children}</div>
     </main>
   );

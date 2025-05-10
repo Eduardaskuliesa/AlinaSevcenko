@@ -33,11 +33,11 @@ export default async function CourseIdLayout({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <div className="max-w-7xl p-6">
+      <div className="max-w-7xl lg:px-6">
         <NavBar />
         <AlertComponent />
         {/* Content */}
-        <div className="pt-6">{children}</div>
+        <div className="">{children}</div>
       </div>
     </HydrationBoundary>
   );

@@ -17,13 +17,13 @@ const ShortDescription: React.FC<ShortDescriptionProps> = ({
   };
 
   return (
-    <div className="mb-8">
+    <div className="mb-4 lg:mb-8">
       <Label
         htmlFor="shortDescription"
-        className="text-base font-semibold flex items-center gap-2 mb-2"
+        className="text-sm lg:text-base font-semibold flex items-center gap-2 mb-2"
       >
-        <div className="bg-primary w-8 h-8 rounded-full flex items-center justify-center ring-4 ring-secondary/20">
-          <AlignLeft size={16} className="text-white" />
+        <div className="bg-primary w-6 h-6 lg:w-8 lg:h-8 rounded-full flex items-center justify-center ring-4 ring-secondary/20">
+          <AlignLeft className="text-white w-4 h-4 lg:w-5 lg:h-5" />
         </div>
         Short Description
       </Label>
@@ -31,7 +31,7 @@ const ShortDescription: React.FC<ShortDescriptionProps> = ({
         <Textarea
           id="shortDescription"
           placeholder="A brief overview of your course"
-          className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 min-h-24 p-4 text-base resize-none bg-white"
+          className="border-0  text-sm lg:text-base focus-visible:ring-0 focus-visible:ring-offset-0 min-h-24 p-4  resize-none bg-white"
           value={initialValue}
           onChange={handleChange}
         />

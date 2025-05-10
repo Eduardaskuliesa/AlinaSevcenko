@@ -55,10 +55,10 @@ const PageHeading = ({
       </div>
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1 h-10">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4" />
           <Input
             placeholder="Search courses..."
-            className="pl-8 w-full h-10 border-2 border-primary-light/60 ring-secondary focus-visible:ring-[2px]"
+            className="pl-8 w-full h-10 border-2 bg-white border-primary-light/60 ring-secondary focus-visible:ring-[2px]"
             value={filters.search}
             onChange={(e) =>
               onFilterChange({ ...filters, search: e.target.value })
@@ -71,7 +71,7 @@ const PageHeading = ({
             onFilterChange({ ...filters, categoryId: value })
           }
         >
-          <SelectTrigger className="w-full sm:w-[180px] border-2 border-primary-light/60 focus-visible:ring-[2px] ring-secondary">
+          <SelectTrigger className="w-full sm:w-[180px] border-2 bg-white border-primary-light/60 focus-visible:ring-[2px] ring-secondary">
             {isFetching ? (
               <div className="flex items-center gap-2">
                 <Loader className="h-4 w-4 animate-spin" />

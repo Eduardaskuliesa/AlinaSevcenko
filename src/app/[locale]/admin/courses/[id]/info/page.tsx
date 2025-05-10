@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Save, ArrowRight, Send, Loader, CircleXIcon } from "lucide-react";
 import toast from "react-hot-toast";
@@ -220,7 +220,10 @@ const InfoPage: React.FC = () => {
 
   const handlePublish = async (isPublished: boolean) => {
     try {
-      const result = await coursesAction.courses.publishCourse(courseId, isPublished);
+      const result = await coursesAction.courses.publishCourse(
+        courseId,
+        isPublished
+      );
       if (result?.error === "COURSE_NOT_FOUND") {
         toast.error("Course not found");
         setActionState("idle");
@@ -246,7 +249,27 @@ const InfoPage: React.FC = () => {
     }
   };
 
-  
+  const [isSticky, setIsSticky] = useState(false);
+  const buttonContainerRef = useRef<HTMLDivElement>(null);
+  const placeholderRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (buttonContainerRef.current && placeholderRef.current) {
+        const containerRect = placeholderRef.current.getBoundingClientRect();
+        if (containerRect.top <= 60) {
+          setIsSticky(true);
+        } else {
+          setIsSticky(false);
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   if (isCourseLoading || isCategoriesLoading || !course) {
     return (
@@ -257,100 +280,107 @@ const InfoPage: React.FC = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <div className="flex justify-end mb-8 gap-4">
-        <Button
-          variant="outline"
-          size="lg"
-          className="flex items-center gap-2"
-          onClick={() => {
-            setActionState("saving");
-            handleSubmit();
-          }}
-          disabled={actionState !== "idle"}
+    <div className="max-w-7xl mx-auto overflow-hidden ">
+      <div ref={placeholderRef} className="h-16 lg:h-20 mb-4 lg:mb-8">
+        <div
+          ref={buttonContainerRef}
+          className={`w-full py-2 lg:py-4 px-2 lg:px-0 z-10 ${
+            isSticky ? "bg-white fixed top-[4rem] left-0 right-0 shadow-md" : ""
+          }`}
         >
-          {actionState === "saving" ? (
-            <>
-              <Loader size={18} className="animate-spin" />
-              <span>Saving...</span>
-            </>
-          ) : (
-            <>
-              <Save size={18} />
-              <span>Save</span>
-            </>
-          )}
-        </Button>
-        <Button
-          variant="outline"
-          size="lg"
-          className="flex items-center gap-2"
-          onClick={() => {
-            setActionState("saving-and-continuing");
-            handleSaveAndContinue();
-          }}
-          disabled={actionState !== "idle"}
-        >
-          {actionState === "saving-and-continuing" ? (
-            <>
-              <Loader size={18} className="animate-spin" />
-              <span>Saving...</span>
-            </>
-          ) : (
-            <>
-              <ArrowRight size={18} />
-              <span>Save & Continue</span>
-            </>
-          )}
-        </Button>
-        {course?.isPublished ? (
-          <Button
-            size="lg"
-            className="flex items-center gap-2 text-white"
-            onClick={() => {
-              setActionState("unpublishing");
-              handlePublish(false);
-            }}
-            disabled={actionState !== "idle"}
-          >
-            {actionState === "unpublishing" ? (
-              <>
-                <Loader size={18} className="animate-spin" />
-                <span>Unpublishing...</span>
-              </>
-            ) : (
-              <>
-                <CircleXIcon size={18} />
-                <span>Unpublish</span>
-              </>
-            )}
-          </Button>
-        ) : (
-          <Button
-            size="lg"
-            className="flex items-center gap-2 bg-primary text-white hover:bg-primary/90"
-            onClick={() => {
-              setActionState("publishing");
-              handlePublish(true);
-            }}
-            disabled={actionState !== "idle"}
-          >
-            {actionState === "publishing" ? (
-              <>
-                <Loader size={18} className="animate-spin" />
-                <span>Publishing...</span>
-              </>
-            ) : (
-              <>
-                <Send size={18} />
-                <span>Publish</span>
-              </>
-            )}
-          </Button>
-        )}
+          <div className="max-w-7xl mx-auto">
+            <div className="flex justify-start lg:justify-end gap-2 lg:gap-4">
+              <Button
+                variant="outline"
+                className="flex h-8 lg:h-10 items-center gap-2"
+                onClick={() => {
+                  setActionState("saving");
+                  handleSubmit();
+                }}
+                disabled={actionState !== "idle"}
+              >
+                {actionState === "saving" ? (
+                  <>
+                    <Loader size={18} className="animate-spin" />
+                    <span>Saving...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save size={18} />
+                    <span>Save</span>
+                  </>
+                )}
+              </Button>
+              <Button
+                variant="outline"
+                className="flex h-8 lg:h-10 items-center gap-2"
+                onClick={() => {
+                  setActionState("saving-and-continuing");
+                  handleSaveAndContinue();
+                }}
+                disabled={actionState !== "idle"}
+              >
+                {actionState === "saving-and-continuing" ? (
+                  <>
+                    <Loader size={18} className="animate-spin" />
+                    <span>Saving...</span>
+                  </>
+                ) : (
+                  <>
+                    <ArrowRight size={18} />
+                    <span>Save & Continue</span>
+                  </>
+                )}
+              </Button>
+              {course?.isPublished ? (
+                <Button
+                  className="flex h-8 lg:h-10 items-center gap-2 text-white"
+                  onClick={() => {
+                    setActionState("unpublishing");
+                    handlePublish(false);
+                  }}
+                  disabled={actionState !== "idle"}
+                >
+                  {actionState === "unpublishing" ? (
+                    <>
+                      <Loader size={18} className="animate-spin" />
+                      <span>Unpublishing...</span>
+                    </>
+                  ) : (
+                    <>
+                      <CircleXIcon size={18} />
+                      <span>Unpublish</span>
+                    </>
+                  )}
+                </Button>
+              ) : (
+                <Button
+                  className="flex items-center h-8 lg:h-10 gap-2 bg-primary text-white hover:bg-primary/90"
+                  onClick={() => {
+                    setActionState("publishing");
+                    handlePublish(true);
+                  }}
+                  disabled={actionState !== "idle"}
+                >
+                  {actionState === "publishing" ? (
+                    <>
+                      <Loader size={18} className="animate-spin" />
+                      <span>Publishing...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send size={18} />
+                      <span>Publish</span>
+                    </>
+                  )}
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-2 lg:px-0">
         <div>
           <CourseTitle
             initialValue={formData.courseTitle}

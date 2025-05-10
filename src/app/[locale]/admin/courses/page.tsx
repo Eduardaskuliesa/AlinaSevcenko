@@ -4,7 +4,7 @@ import CoursePageWrapper from "./CoursePageWrapper";
 
 const CoursePage = () => {
   return (
-    <div className="xl:p-6 space-y-6 max-w-7xl">
+    <div className="px-2 xl:p-6 space-y-6 max-w-7xl">
       <CoursePageWrapper />
     </div>
   );

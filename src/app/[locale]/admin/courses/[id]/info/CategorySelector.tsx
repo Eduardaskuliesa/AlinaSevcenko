@@ -2,7 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { ChevronRight, ChevronLeft, Tag, Plus, Search } from "lucide-react";
+import {
+  ChevronRight,
+  ChevronDown,
+  ChevronLeft,
+  Tag,
+  Plus,
+  Search,
+} from "lucide-react";
 import { Category } from "@/app/types/course";
 import { Input } from "@/components/ui/input";
 import {
@@ -37,11 +44,6 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
   const [languageFilter, setLanguageFilter] = useState<"all" | "lt" | "ru">(
     "all"
   );
-
-  useEffect(() => {
-    console.log("Unassigned Categories:", unassignedCategories);
-    console.log("Assigned Categories:", assignedCategories);
-  }, [unassignedCategories, assignedCategories]);
 
   useEffect(() => {
     setUnassignedCategories(initialUnassignedCategories);
@@ -114,16 +116,16 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
   const filteredAssigned = filterCategories(assignedCategories);
 
   return (
-    <div className="mb-8">
+    <div className="mb-4 lg:mb-8">
       <div className="flex items-center justify-between mb-4">
-        <Label className="text-base font-semibold flex items-center gap-2">
-          <div className="bg-primary w-8 h-8 rounded-full flex items-center justify-center ring-4 ring-secondary/20">
-            <Tag size={16} className="text-white" />
+        <Label className="text-sm lg:text-base font-semibold flex items-center gap-2">
+          <div className="bg-primary w-6 h-6 lg:w-8 lg:h-8 rounded-full flex items-center justify-center ring-4 ring-secondary/20">
+            <Tag className="text-white w-4 h-4 lg:w-5 lg:h-5" />
           </div>
           Course Categories
         </Label>
         <Button
-          className="flex items-center gap-2"
+          className="h-8 lg:h-9 flex items-center gap-2"
           onClick={() => setIsDialogOpen(true)}
         >
           <Plus size={16} />
@@ -131,7 +133,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
         </Button>
       </div>
 
-      <div className="flex gap-4 mb-4">
+      <div className="flex gap-4 mb-4 flex-col sm:flex-row">
         <div className="relative flex-1">
           <Search
             className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
@@ -141,7 +143,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
             placeholder="Search categories..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 h-10 border-2 border-primary-light/40 bg-white"
+            className="pl-10 text-sm lg:text-base h-9 lg:h-10 border-2 border-primary-light/40 bg-white"
           />
         </div>
         <Select
@@ -150,7 +152,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
             setLanguageFilter(value)
           }
         >
-          <SelectTrigger className="w-[150px] h-9 bg-white hover:bg-gray-50 transition-colors border-2 border-primary-light/40" >
+          <SelectTrigger className="w-full sm:w-[150px] bg-white hover:bg-gray-50 transition-colors border-2 border-primary-light/40">
             <SelectValue placeholder="Filter by language" />
           </SelectTrigger>
           <SelectContent className="bg-white">
@@ -162,13 +164,13 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
       </div>
 
       <div className="border-2 rounded-lg py-4 px-2 bg-white">
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row gap-3">
           {/* Unassigned Categories */}
           <div className="flex-1">
             <div className="font-medium mb-2 text-sm text-center">
               <span>Unassigned Categories</span>
             </div>
-            <div className="border rounded-md min-h-[280px] max-h-[400px] bg-gray-50 overflow-y-auto">
+            <div className="border rounded-md min-h-[200px] md:min-h-[280px] max-h-[300px] md:max-h-[400px] bg-gray-50 overflow-y-auto">
               {filteredUnassigned.map((category) => (
                 <div
                   key={category.categoryId}
@@ -184,7 +186,11 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
                     </div>
                     <ChevronRight
                       size={18}
-                      className="text-primary opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="text-primary opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block"
+                    />
+                    <ChevronDown
+                      size={18}
+                      className="text-primary opacity-0 group-hover:opacity-100 transition-opacity block sm:hidden"
                     />
                   </div>
                 </div>
@@ -200,26 +206,28 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
           </div>
 
           {/* Arrow Buttons Container */}
-          <div className="flex flex-col justify-center items-center gap-3">
+          <div className="flex sm:flex-col justify-center items-center gap-3">
             <Button
               variant="outline"
               size="sm"
               onClick={moveAllToAssigned}
               disabled={filteredUnassigned.length === 0}
-              className="h-8 w-8 "
+              className="h-8 w-8"
               title="Assign all categories"
             >
-              <ChevronRight size={16} />
+              <ChevronRight size={16} className=" hidden sm:block" />
+              <ChevronDown size={16} className="block sm:hidden" />
             </Button>
             <Button
               variant="outline"
               size="sm"
               onClick={moveAllToUnassigned}
               disabled={filteredAssigned.length === 0}
-              className="h-8 w-8 "
+              className="h-8 w-8"
               title="Unassign all categories"
             >
-              <ChevronLeft size={16} />
+              <ChevronLeft size={16} className=" hidden sm:block" />
+              <ChevronDown size={16} className="block sm:hidden rotate-180" />
             </Button>
           </div>
 
@@ -228,7 +236,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
             <div className="font-medium mb-2 text-sm text-center">
               <span>Assigned Categories</span>
             </div>
-            <div className="border rounded-md min-h-[280px] max-h-[400px] bg-gray-50 overflow-y-auto">
+            <div className="border rounded-md min-h-[200px] md:min-h-[280px] max-h-[300px] md:max-h-[400px] bg-gray-50 overflow-y-auto">
               {filteredAssigned.map((category) => (
                 <div
                   key={category.categoryId}
@@ -238,7 +246,11 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
                   <div className="flex items-center justify-between">
                     <ChevronLeft
                       size={18}
-                      className="text-primary opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="text-primary opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block"
+                    />
+                    <ChevronDown
+                      size={18}
+                      className="text-primary opacity-0 group-hover:opacity-100 transition-opacity block sm:hidden rotate-180"
                     />
                     <div className="flex items-center gap-2">
                       <span className="text-sm">{category.title}</span>

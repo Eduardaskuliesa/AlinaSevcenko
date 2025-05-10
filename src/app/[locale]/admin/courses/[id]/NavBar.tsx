@@ -64,7 +64,7 @@ const NavBar = () => {
   return (
     <>
       {/* Breadcrumbs */}
-      <div className="flex items-center text-sm text-gray-500 mb-2">
+      <div className="flex items-center text-sm text-gray-500 mb-2 px-2">
         {breadcrumbs.map((crumb, index) => (
           <React.Fragment key={index}>
             {index > 0 && (
@@ -82,22 +82,22 @@ const NavBar = () => {
       </div>
 
       {/* Heading and Navigation */}
-      <div className="flex items-center justify-between border-b">
+      <div className="flex flex-col lg:flex-row  lg:items-center justify-between border-b px-2">
         <h1 className="text-3xl font-bold tracking-tight">{currentTabName}</h1>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 lg:gap-4">
           {tabs.map((tab) => (
             <Link key={tab.id} href={tab.href}>
               <div
                 className={`
-                  flex items-center px-4 py-2 font-medium transition-colors
+                  flex items-center py-1 lg:px-4 lg:py-2 font-medium transition-colors
                   ${
                     activeTab === tab.id
-                      ? "text-primary border-b-4 border-primary"
+                      ? "text-primary border-b-2 lg:border-b-4 border-primary"
                       : "text-gray-600 hover:text-primary"
                   }
                 `}
               >
-                <tab.icon className="mr-2 h-5 w-5" />
+                <tab.icon className="mr-1 lg:mr-2 h-4 w-4 lg:h-5 lg:w-5" />
                 {tab.name}
               </div>
             </Link>

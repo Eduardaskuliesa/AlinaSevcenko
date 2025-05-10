@@ -40,7 +40,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="fixed w-48 h-screen bg-gray border-r-2 border-primary shadow-sm">
+    <div className="fixed hidden lg:block w-48 h-screen bg-gray border-r-2 border-primary shadow-sm">
       <div className="flex flex-col h-full">
         {/* Logo Section */}
         <div className="h-16 flex items-center px-6 border-b border-primary/20">
