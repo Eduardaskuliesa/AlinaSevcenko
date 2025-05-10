@@ -14,7 +14,7 @@ interface CourseListProps {
 }
 
 const CourseList = ({ filters }: CourseListProps) => {
-  const { data, isFetching } = useQuery({
+  const { data, isLoading: isFetching } = useQuery({
     queryKey: ["courses"],
     queryFn: () => coursesAction.courses.getCourses(),
     refetchOnWindowFocus: true,

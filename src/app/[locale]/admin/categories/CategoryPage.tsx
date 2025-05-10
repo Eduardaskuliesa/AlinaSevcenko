@@ -1,7 +1,7 @@
 // CategoryPage.tsx
 "use client";
 import React, { useState } from "react";
-import { Plus } from "lucide-react";
+import { Loader, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { categoryActions } from "@/app/actions/category";
@@ -16,7 +16,7 @@ const CategoryPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [languageFilter, setLanguageFilter] = useState<Language | "all">("all");
 
-  const { data, isLoading } = useQuery({
+  const { data, isFetching } = useQuery({
     queryKey: ["categories"],
     queryFn: () => categoryActions.getCategories(),
   });
@@ -37,7 +37,10 @@ const CategoryPage = () => {
   return (
     <div className="p-2 lg:p-6 max-w-4xl">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Categories</h1>
+        <h1 className="text-2xl font-bold text-gray-900 flex items-center">
+          Categories
+          {isFetching && <Loader className=" ml-2 h-6 w-6 animate-spin" />}
+        </h1>
         <Button
           className="flex items-center gap-2"
           onClick={() => setIsDialogOpen(true)}
@@ -54,7 +57,11 @@ const CategoryPage = () => {
         onLanguageChange={setLanguageFilter}
       />
 
-      <CategoryList categories={filteredCategories} isLoading={isLoading} />
+      {isFetching ? (
+        <Loader className="animate-spin"></Loader>
+      ) : (
+        <CategoryList categories={filteredCategories} isLoading={isFetching} />
+      )}
 
       <CreateDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
     </div>
