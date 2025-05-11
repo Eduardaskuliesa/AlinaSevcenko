@@ -28,6 +28,8 @@ export const CreatePlanDialog: React.FC<CreatePlanDialogProps> = ({
   open,
   onOpenChange,
 }) => {
+
+  
   const { courseId } = useGetCourseId();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({

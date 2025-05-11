@@ -10,13 +10,14 @@ interface CourseStoreInitializerProps {
 export default function CourseStoreInitializer({
   courseId,
 }: CourseStoreInitializerProps) {
-  const { fetchLessons } = useLessonStore();
+  const { fetchLessons, setSelectedLesson } = useLessonStore();
 
   useEffect(() => {
     if (courseId) {
       fetchLessons(courseId);
+      setSelectedLesson("")
     }
-  }, [courseId, fetchLessons]);
+  }, [courseId, fetchLessons, setSelectedLesson]);
 
   return null;
 }

@@ -1,6 +1,6 @@
 import React from "react";
-
 import CoursePageWrapper from "./CoursePageWrapper";
+export const dynamic = "force-static";
 
 const CoursePage = () => {
   return (
