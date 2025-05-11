@@ -1,4 +1,5 @@
 "use server";
+import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { Course } from "@/app/types/course";
 import { logger } from "@/app/utils/logger";
@@ -33,6 +34,7 @@ async function fetchCourses() {
 }
 
 export async function getCourses() {
+  await verifyAdminAccess();
   const cacheTag = `courses`;
   return unstable_cache(
     async () => {

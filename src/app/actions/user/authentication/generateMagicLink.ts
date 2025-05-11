@@ -26,7 +26,7 @@ export async function generateMagicLinkToken(email: string) {
     }
 
     const user = userResult.Items[0];
-    const userId = user.PK.replace("USER#", "");
+    const userId = user.userId;
 
     const magicLinkToken = uuidv4();
 

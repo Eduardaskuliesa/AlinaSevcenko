@@ -21,8 +21,8 @@ export async function register(formData: RegisterFormData) {
     const command = new PutCommand({
       TableName: dynamoTableName,
       Item: {
-        PK: `USER#${userId}`,
-        SK: "PROFILE",
+        PK: `PROFILE`,
+        SK: `USER#${userId}`,
         email: formData.email,
         password: hashedPassword,
         userId: userId,

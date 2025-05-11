@@ -62,8 +62,8 @@ export async function verifyToken(token: string) {
     const updateUserCommand = new UpdateCommand({
       TableName: dynamoTableName,
       Key: {
-        PK: `USER#${userId}`,
-        SK: "PROFILE",
+        PK: `PROFILE`,
+        SK: `USER#${userId}` ,
       },
       UpdateExpression: "SET #status = :status",
       ExpressionAttributeNames: {

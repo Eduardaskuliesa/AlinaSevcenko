@@ -1,4 +1,3 @@
-// middleware.ts
 import { NextResponse } from "next/server";
 import { withAuth } from "next-auth/middleware";
 import createIntlMiddleware from "next-intl/middleware";
@@ -9,11 +8,23 @@ const intlMiddleware = createIntlMiddleware(routing);
 const middleware = withAuth(
   async function middleware(req) {
     const token = req.nextauth.token;
-    const isAdminPage = req.nextUrl.pathname.startsWith("/admin");
+
+    const pathname = req.nextUrl.pathname;
+    const locales = routing.locales || [];
+    const pathnameWithoutLocale = locales.some((locale) =>
+      pathname.startsWith(`/${locale}/`)
+    )
+      ? pathname.replace(/^\/[^\/]+\//, "/")
+      : pathname;
+
+    const isAdminPage = pathnameWithoutLocale.startsWith("/admin");
     const userRole = token?.role;
 
     if (isAdminPage && userRole !== "ADMIN") {
-      return NextResponse.redirect(new URL("/login", req.url));
+      const locale = pathname.split("/")[1] as "lt" | "ru";
+      const loginUrl = locales.includes(locale) ? `/${locale}/login` : "/login";
+
+      return NextResponse.redirect(new URL(loginUrl, req.url));
     }
 
     return intlMiddleware(req);
@@ -23,9 +34,17 @@ const middleware = withAuth(
       authorized: ({ token, req }) => {
         const pathname = req.nextUrl.pathname;
 
-        const requiresAuth = ["/admin", "/account"].some(
-          (path) => pathname.startsWith(path)
+        const locales = routing.locales || [];
+        const pathnameWithoutLocale = locales.some((locale) =>
+          pathname.startsWith(`/${locale}/`)
+        )
+          ? pathname.replace(/^\/[^\/]+\//, "/")
+          : pathname;
+
+        const requiresAuth = ["/admin", "/account"].some((path) =>
+          pathnameWithoutLocale.startsWith(path)
         );
+
         return requiresAuth ? !!token : true;
       },
     },
@@ -36,10 +55,10 @@ export default middleware;
 
 export const config = {
   matcher: [
-    // i18n routes
     "/((?!api|trpc|_next|_vercel|.*\\..*).*)",
 
     "/",
+    "/(lt|en|de|fr|es)/:path*",
     "/admin/:path*",
     "/account/:path*",
     "/calendar/:path*",

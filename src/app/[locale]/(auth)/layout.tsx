@@ -1,4 +1,5 @@
 import AuthNavbar from "./components/NavBar";
+import ToastHandler from "./components/ToastHandler";
 
 export default function AuthLayout({
   children,
@@ -13,7 +14,8 @@ export default function AuthLayout({
           "radial-gradient(ellipse at center, #998ea7 0%, #998ea7 20%, #c9bdc7 70%)",
       }}
     >
-      <AuthNavbar></AuthNavbar>
+      <AuthNavbar />
+      <ToastHandler />
       <div className="pt-10 max-w-xl w-full mx-auto">{children}</div>
     </main>
   );
