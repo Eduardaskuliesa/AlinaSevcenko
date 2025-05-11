@@ -12,6 +12,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const AlertComponent = () => {
   const params = useParams();
@@ -25,7 +26,14 @@ const AlertComponent = () => {
   const course = data?.cousre;
 
   if (isLoading || !course) {
-    return null;
+    return (
+      <Skeleton className="bg-gray-200 lg:p-3 rounded-md">
+        <div className="flex items-center">
+          <Skeleton className="bg-gray-400 h-6 w-6 text-gray-800 mr-3 flex-shrink-0" />
+          <Skeleton className="bg-gray-400 text-gray-800 font-medium w-32 h-6 rounded-md"></Skeleton>
+        </div>
+      </Skeleton>
+    );
   }
 
   if (course.publishedAt) {
