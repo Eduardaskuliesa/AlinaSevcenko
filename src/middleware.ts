@@ -24,7 +24,9 @@ const middleware = withAuth(
       const locale = pathname.split("/")[1] as "lt" | "ru";
       const loginUrl = locales.includes(locale) ? `/${locale}/login` : "/login";
 
-      return NextResponse.redirect(new URL(loginUrl, req.url));
+      return NextResponse.redirect(
+        new URL(`${loginUrl}?error=insufficientPermissions`, req.url)
+      );
     }
 
     return intlMiddleware(req);
@@ -41,9 +43,12 @@ const middleware = withAuth(
           ? pathname.replace(/^\/[^\/]+\//, "/")
           : pathname;
 
-        const requiresAuth = ["/admin", "/account"].some((path) =>
-          pathnameWithoutLocale.startsWith(path)
-        );
+        const requiresAuth = [
+          "/admin",
+          "/account",
+          "/my-courses",
+          "/user",
+        ].some((path) => pathnameWithoutLocale.startsWith(path));
 
         return requiresAuth ? !!token : true;
       },
@@ -56,11 +61,11 @@ export default middleware;
 export const config = {
   matcher: [
     "/((?!api|trpc|_next|_vercel|.*\\..*).*)",
-
     "/",
-    "/(lt|en|de|fr|es)/:path*",
+    "/(lt|ru|en|de|fr|es)/:path*",
     "/admin/:path*",
-    "/account/:path*",
+    "/user/:path*",
+    "/my-courses/:path*",
     "/calendar/:path*",
   ],
 };

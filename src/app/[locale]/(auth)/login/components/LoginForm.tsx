@@ -79,21 +79,20 @@ const LoginForm = () => {
       if (result?.ok) {
         const session = await getSession();
         if (session?.user.role === "STUDENT") {
-          router.push("/account");
+          router.push("/user/profile");
         } else if (session?.user.role === "ADMIN") {
-          router.push("/admin");
+          router.push("/admin/courses");
         }
 
         console.log("Session:", session);
       } else {
         if (result?.error === "INVALID_CREDENTIALS") {
+          setIsLoading(false);
           setPasswordError(t("invalidCredentials"));
         }
       }
     } catch (error) {
       console.error("Login error:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 

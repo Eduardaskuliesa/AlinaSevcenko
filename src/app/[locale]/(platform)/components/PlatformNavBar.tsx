@@ -12,15 +12,15 @@ import {
   Globe,
   LogOut,
 } from "lucide-react";
+import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
-// Centralized dropdown management
 const PlatformNavBar = () => {
-  // Single state to track which dropdown is open
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Clean up timeout on unmount
+  const router = useRouter();
   useEffect(() => {
     return () => {
       if (timeoutRef.current) {
@@ -29,7 +29,6 @@ const PlatformNavBar = () => {
     };
   }, []);
 
-  // Open dropdown immediately
   const handleMouseEnter = (dropdown: string) => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
@@ -37,11 +36,25 @@ const PlatformNavBar = () => {
     setOpenDropdown(dropdown);
   };
 
-  // Close dropdown with delay
   const handleMouseLeave = () => {
     timeoutRef.current = setTimeout(() => {
       setOpenDropdown(null);
     }, 150);
+  };
+
+  const handleLogout = async () => {
+    try {
+      toast.success("Successfully logged out");
+
+      await signOut({
+        redirect: false,
+      });
+
+      router.push("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast.error("There was an error logging out. Please try again.");
+    }
   };
 
   return (
@@ -202,8 +215,8 @@ const PlatformNavBar = () => {
 
               <div className="h-px bg-gray-200 my-2 mx-3"></div>
 
-              <ProfileMenuItem
-                href="/logout"
+              <LogoutMenuItem
+                onClick={handleLogout}
                 icon={<LogOut className="w-4 h-4" />}
                 title="Logout"
                 className="text-red-500 hover:text-red-700 hover:bg-red-200"
@@ -216,7 +229,6 @@ const PlatformNavBar = () => {
   );
 };
 
-// Enhanced profile menu item with better sizing and hover effects
 const ProfileMenuItem = ({
   href,
   icon,
@@ -240,6 +252,32 @@ const ProfileMenuItem = ({
       {icon}
       <span>{title}</span>
     </Link>
+  );
+};
+
+const LogoutMenuItem = ({
+  onClick,
+  icon,
+  title,
+  className,
+}: {
+  onClick: () => void;
+  icon: React.ReactNode;
+  title: string;
+  className?: string;
+}) => {
+  return (
+    <div
+      onClick={onClick}
+      className={cn(
+        "flex items-center gap-3 px-4 py-2 hover:bg-secondary hover:text-orange-900 mx-2 rounded-md cursor-pointer transition-colors duration-150",
+        "text-gray-700 font-medium text-sm",
+        className
+      )}
+    >
+      {icon}
+      <span>{title}</span>
+    </div>
   );
 };
 
