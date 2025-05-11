@@ -1,4 +1,5 @@
 "use server";
+import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { AccessPlan, Course } from "@/app/types/course";
 import { logger } from "@/app/utils/logger";
@@ -10,6 +11,7 @@ export async function deleteAccessPlan(
   planId: AccessPlan["id"]
 ) {
   try {
+    await verifyAdminAccess();
     const getCommand = new GetCommand({
       TableName: dynamoTableName,
       Key: {

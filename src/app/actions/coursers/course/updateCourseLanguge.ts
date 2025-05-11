@@ -1,4 +1,5 @@
 "use server";
+import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { Course } from "@/app/types/course";
 import { logger } from "@/app/utils/logger";
@@ -10,6 +11,7 @@ export async function updateLanguage(
   language: string
 ) {
   try {
+    await verifyAdminAccess();
     const timestamp = new Date().toISOString();
     const updateCommand = new UpdateCommand({
       TableName: dynamoTableName,

@@ -1,4 +1,5 @@
 "use server";
+import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { Course, Lesson } from "@/app/types/course";
 import {
@@ -13,6 +14,7 @@ export async function deleteLesson(
   lessonId: Lesson["lessonId"]
 ) {
   try {
+     await verifyAdminAccess();
     const getCourseCommand = new GetCommand({
       TableName: dynamoTableName,
       Key: {

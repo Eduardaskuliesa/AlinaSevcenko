@@ -1,4 +1,5 @@
 "use server";
+import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 import { dynamoDb } from "@/app/services/dynamoDB";
 import { dynamoTableName } from "@/app/services/dynamoDB";
 import { Course } from "@/app/types/course";
@@ -8,6 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 
 export async function createLesson(courseId: Course["courseId"]) {
   try {
+     await verifyAdminAccess();
     const checkCourseCommand = new GetCommand({
       TableName: dynamoTableName,
       Key: {

@@ -4,12 +4,14 @@ import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { revalidateTag } from "next/cache";
 import { logger } from "@/app/utils/logger";
+import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 
 export async function updateCourseInfo(
   courseData: CourseUpdateInfoData,
   courseId: Course["courseId"]
 ) {
   try {
+     await verifyAdminAccess();
     if (!courseData.courseTitle || !courseData.courseTitle.trim()) {
       return {
         error: "TITLE_EMPTY",

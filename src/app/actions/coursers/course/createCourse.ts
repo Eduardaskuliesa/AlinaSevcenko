@@ -7,10 +7,12 @@ import { PutCommand } from "@aws-sdk/lib-dynamodb";
 import { v4 as uuidv4 } from "uuid";
 import { logger } from "@/app/utils/logger";
 import { revalidateTag } from "next/cache";
+import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 
 export async function createCourse(initialData: CreateCourseInitialData) {
   try {
-    console.log(initialData);
+    await verifyAdminAccess();
+
     if (!initialData.authorId || !initialData.title) {
       return {
         success: false,

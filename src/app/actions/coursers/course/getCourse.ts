@@ -4,6 +4,7 @@ import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { GetCommand } from "@aws-sdk/lib-dynamodb";
 import { logger } from "@/app/utils/logger";
 import { unstable_cache } from "next/cache";
+import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 
 export async function fetchCourse(courseId: Course["courseId"]) {
   logger.info(`Fetching course ${courseId}`);
@@ -29,6 +30,7 @@ export async function fetchCourse(courseId: Course["courseId"]) {
 }
 
 export async function getCourse(courseId: Course["courseId"]) {
+   await verifyAdminAccess();
   const cacheTag = `course-${courseId}`;
   return unstable_cache(
     async () => {

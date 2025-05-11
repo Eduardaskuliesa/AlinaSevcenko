@@ -1,4 +1,5 @@
 "use server";
+import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { Course } from "@/app/types/course";
 import { GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
@@ -9,6 +10,7 @@ export async function updateLessonOrder(
   lessonOrder: Array<{ lessonId: string; sort: number }>
 ) {
   try {
+    await verifyAdminAccess();
     const getCommand = new GetCommand({
       TableName: dynamoTableName,
       Key: {

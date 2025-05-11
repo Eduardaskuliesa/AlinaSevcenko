@@ -1,4 +1,5 @@
 "use server";
+import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { Course, Lesson } from "@/app/types/course";
 import { logger } from "@/app/utils/logger";
@@ -9,6 +10,7 @@ export async function getLesson(
   lessonId: Lesson["lessonId"]
 ) {
   try {
+     await verifyAdminAccess();
     logger.info(`Fetching lesson ${lessonId}`);
     const getCommand = new GetCommand({
       TableName: dynamoTableName,

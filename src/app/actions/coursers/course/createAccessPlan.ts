@@ -5,6 +5,7 @@ import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { revalidateTag } from "next/cache";
 import { logger } from "@/app/utils/logger";
 import { v4 as uuidv4 } from "uuid";
+import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 
 export interface AccessPlansData {
   accessPlans: Omit<AccessPlan, "id">[];
@@ -15,6 +16,7 @@ export async function createAccessPlan(
   accessPlansData: AccessPlansData
 ) {
   try {
+     await verifyAdminAccess();
     const timestamp = new Date().toISOString();
 
     const plansWithIds = accessPlansData.accessPlans.map((plan) => ({

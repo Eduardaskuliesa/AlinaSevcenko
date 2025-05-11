@@ -1,5 +1,6 @@
 "use server";
 
+import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { logger } from "@/app/utils/logger";
 import { TransactWriteCommand } from "@aws-sdk/lib-dynamodb";
@@ -16,6 +17,7 @@ export async function updateLessons(
   courseId: string,
   lessonUpdates: LessonUpdateData[]
 ) {
+   await verifyAdminAccess();
   logger.info(
     `Updating ${lessonUpdates.length} lessons for course ${courseId}`
   );
