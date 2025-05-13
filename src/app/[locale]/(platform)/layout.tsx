@@ -6,9 +6,9 @@ export default function PlatformLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
+    <main className="bg-gray-50 min-h-screen">
       <PlatformNavBar></PlatformNavBar>
-      <main className="min-h-screen bg-gray-50">{children}</main>
-    </>
+      <div className="">{children}</div>
+    </main>
   );
 }

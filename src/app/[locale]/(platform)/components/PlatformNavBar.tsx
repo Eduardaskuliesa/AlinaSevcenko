@@ -11,6 +11,7 @@ import {
   User,
   Globe,
   LogOut,
+  LibraryBig,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
@@ -58,15 +59,22 @@ const PlatformNavBar = () => {
   };
 
   return (
-    <div className="bg-gray-50 border-b-2 border-secondary w-full h-16 flex justify-between px-24 items-center">
+    <div className="bg-gray-50 border-secondary w-full h-16 flex justify-between px-24 items-center">
       <div className="font-bold text-xl">Logo</div>
 
       <div className="flex items-center gap-2">
         {/* Regular Nav Items */}
-        <Link href="/my-courses/courses">
+
+        <Link href="/courses">
           <div className="flex items-center  gap-1.5 p-2  hover:bg-secondary hover:text-orange-900 cursor-pointer rounded-md transition-colors duration-200">
             <BookOpen className="w-5 h-5" />
-            <span>My courses</span>
+            <span>Courses</span>
+          </div>
+        </Link>
+        <Link href="/my-courses/courses">
+          <div className="flex items-center  gap-1.5 p-2  hover:bg-secondary hover:text-orange-900 cursor-pointer rounded-md transition-colors duration-200">
+            <LibraryBig className="w-5 h-5" />
+            <span>My learning</span>
           </div>
         </Link>
 

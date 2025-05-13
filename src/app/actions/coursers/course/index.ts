@@ -2,6 +2,7 @@ import { createAccessPlan } from "./createAccessPlan";
 import { createCourse } from "./createCourse";
 import { deleteAccessPlan } from "./deleteAcessPlan";
 import { deleteCourse } from "./deleteCourse";
+import { getAllCoursesUP } from "./getAllCoursesNP";
 import { getCourse } from "./getCourse";
 import { getCourses } from "./getCourses";
 import { publishCourse } from "./publishCourse";
@@ -19,5 +20,6 @@ export const courses = {
   createAccessPlan,
   toggleAccessPlanStatus,
   updateLanguage,
+  getAllCoursesUP,
   deleteCourse,
 };

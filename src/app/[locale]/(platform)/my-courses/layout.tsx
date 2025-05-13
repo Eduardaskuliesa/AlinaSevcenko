@@ -15,7 +15,7 @@ export default function MyCoursersLayout({
           <Navigation />
         </div>
       </header>
-      <main className="min-h-screen bg-gray-50">{children}</main>
+      <main className="bg-gray-50">{children}</main>
     </>
   );
 }

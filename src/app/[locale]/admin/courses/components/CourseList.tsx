@@ -38,7 +38,6 @@ const CourseList = ({ filters }: CourseListProps) => {
           words.some(
             (word) =>
               word.includes(searchWord) ||
-              // Fuzzy - allow one character difference
               (searchWord.length > 3 &&
                 word.length > 3 &&
                 (word.includes(
