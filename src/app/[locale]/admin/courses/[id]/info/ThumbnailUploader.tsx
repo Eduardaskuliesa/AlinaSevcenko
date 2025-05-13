@@ -6,17 +6,19 @@ import { Button } from "@/components/ui/button";
 import { Upload } from "lucide-react";
 
 interface ThumbnailUploaderProps {
-  initialThumbnail?: string;
+  initialThumbnail: string;
   onChange: (thumbnailSrc: string) => void;
   onFileSelect: (file: File | null) => void;
 }
 
 const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
-  initialThumbnail = "/placeholder.svg",
+  initialThumbnail,
   onChange,
   onFileSelect,
 }) => {
-  const [thumbnailSrc, setThumbnailSrc] = useState<string>(initialThumbnail);
+  const [thumbnailSrc, setThumbnailSrc] = useState<string>(
+    initialThumbnail || "/placeholder.svg"
+  );
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {

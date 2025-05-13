@@ -36,15 +36,28 @@ const ClientInfoPage: React.FC = () => {
   });
 
   const course = courseData?.cousre;
+
   const allCategories = (categoriesData?.categories as Category[]) || [];
 
   const [formData, setFormData] = useState<CourseUpdateInfoData>({
     courseTitle: course?.title || "",
     shortDescription: course?.shortDescription || "",
     fullDescription: course?.description || "",
-    thumbnailSrc: course?.thumbnailImage || "/placeholder.svg",
+    thumbnailSrc: course?.thumbnailImage || "",
     assignedCategories: course?.categories || [],
   });
+
+  useEffect(() => {
+    if (course) {
+      setFormData({
+        courseTitle: course.title || "",
+        shortDescription: course.shortDescription || "",
+        fullDescription: course.description || "",
+        thumbnailSrc: course.thumbnailImage,
+        assignedCategories: course.categories || [],
+      });
+    }
+  }, [course]);
 
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
 
