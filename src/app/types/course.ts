@@ -45,6 +45,26 @@ export interface Course {
   isPublished: boolean;
 }
 
+export interface FilteredCourse {
+  courseId: string;
+  title: string;
+  shortDescription: string;
+  sort: number;
+  language: string;
+  thumbnailImage: string;
+  categories: [
+    {
+      categoryId: string;
+      title: string;
+      language: Language;
+    }
+  ];
+  accessPlans: AccessPlan[];
+  isPublished: boolean;
+  lessonCount: number;
+  duration: number;
+}
+
 export interface AccessPlan {
   id: string;
   name: string;

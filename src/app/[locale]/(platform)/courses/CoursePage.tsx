@@ -5,10 +5,9 @@ import { coursesAction } from "@/app/actions/coursers";
 import DurationFilter from "./filters/DurationFilter";
 import LanguageFilter from "./filters/LangugeFilter";
 import CategoryFilter from "./filters/CategoryFilter";
-import Image from "next/image";
-import { convertTime } from "@/app/utils/converToMinutes";
-import { Heart, ShoppingBag } from "lucide-react";
+
 import CourseList from "./components/CourseGrid";
+import { FilteredCourse } from "@/app/types/course";
 
 type FilterState = {
   durations: string[];
@@ -28,23 +27,6 @@ const CoursePageContent = () => {
     queryFn: () => coursesAction.courses.getAllCoursesUP(),
   });
 
-  const coursesWithLowestPrices = courseData?.courses.map((course) => {
-    const lowestPrice =
-      course.accessPlans && course.accessPlans.length > 0
-        ? course.accessPlans
-            .map((plan) => plan?.price)
-            .reduce((a, b) => Math.min(a, b), Infinity)
-        : null;
-
-    return {
-      courseId: course.courseId,
-      lowestPrice,
-    };
-  });
-
-  console.log("Lowest Price:", coursesWithLowestPrices);
-
-  const testCourse = courseData?.courses[0];
   const updateDurationFilter = (durations: string[]) => {
     setFilters((prev) => ({ ...prev, durations }));
   };
@@ -78,7 +60,7 @@ const CoursePageContent = () => {
           </div>
           <div className="w-[70%] p-4 h-[650px]  overflow-y-auto">
             <CourseList
-              courses={courseData?.courses}
+              courses={courseData?.courses as FilteredCourse[]}
               isLoading={isCourseLoading}
             ></CourseList>
           </div>

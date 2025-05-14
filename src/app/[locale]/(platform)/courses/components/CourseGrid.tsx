@@ -1,8 +1,13 @@
 "use client";
-
+import { FilteredCourse } from "@/app/types/course";
 import CourseCard from "./CourseCard";
 
-const CourseList = ({ courses, isLoading }) => {
+interface CourseListProps {
+  courses: FilteredCourse[];
+  isLoading: boolean;
+}
+
+const CourseList = ({ courses, isLoading }: CourseListProps) => {
   console.log("Courses:", courses);
   const coursesWithLowestPrices = courses.map((course) => {
     const lowestPrice =
@@ -38,7 +43,7 @@ const CourseList = ({ courses, isLoading }) => {
 
   return (
     <div className="flex flex-col w-full gap-4 overflow-y-auto">
-      {courses.map((course) => (
+      {courses.map((course: FilteredCourse) => (
         <CourseCard
           key={course.courseId}
           course={course}

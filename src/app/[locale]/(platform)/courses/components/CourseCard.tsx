@@ -1,36 +1,21 @@
 "use client";
-
 import Image from "next/image";
-import {
-  Heart,
-  ShoppingBag,
-  Clock,
-  BookOpen,
-  ShoppingBasket,
-} from "lucide-react";
+import { Heart, Clock, BookOpen, ShoppingBasket } from "lucide-react";
 import { convertTime } from "@/app/utils/converToMinutes";
 import { Badge } from "@/components/ui/badge";
+import { FilteredCourse } from "@/app/types/course";
 
 interface CourseCardProps {
-  course: {
-    courseId: string;
-    title: string;
-    shortDescription: string;
-    thumbnailImage: string;
-    lessonCount: number;
-    duration: number;
-    category?: string;
-    language?: string;
-  };
+  course: FilteredCourse;
   lowestPrice: number | null;
 }
 
 const CourseCard = ({ course, lowestPrice }: CourseCardProps) => {
   return (
     <div className="flex flex-row border-b border-primary pb-4 ">
-      {/* Image column - now takes full height */}
       <div className="relative min-w-[300px] min-h-[150px] max-h-[200px]">
         <Image
+          quality={100}
           height={240}
           width={240}
           alt="Course Thumbnail"
@@ -39,7 +24,7 @@ const CourseCard = ({ course, lowestPrice }: CourseCardProps) => {
           }
           className="object-cover w-full h-full rounded-md"
         />
-        {/* Language tag */}
+
         {course.language && (
           <Badge
             variant="secondary"
@@ -50,11 +35,8 @@ const CourseCard = ({ course, lowestPrice }: CourseCardProps) => {
         )}
       </div>
 
-      {/* Content and actions column */}
       <div className="flex flex-col flex-1 justify-between ml-6">
-        {/* Top section with content and price */}
         <div className="flex flex-row justify-between w-full mb-auto">
-          {/* Course content */}
           <div className="flex-1">
             <h3 className="text-lg font-bold text-gray-800 mb-1 line-clamp-2">
               {course?.title}
@@ -70,7 +52,7 @@ const CourseCard = ({ course, lowestPrice }: CourseCardProps) => {
               </div>
               <div className="flex items-center gap-1">
                 <Clock className="h-4 w-4 text-primary" />
-                <span>{convertTime(course?.duration.toFixed(2))}</span>
+                <span>{convertTime(course?.duration)}</span>
               </div>
             </div>
           </div>
@@ -85,16 +67,18 @@ const CourseCard = ({ course, lowestPrice }: CourseCardProps) => {
           </div>
         </div>
 
-        {/* Bottom section with categories and icons */}
         <div className="flex justify-between items-center w-full mt-4">
           {/* Category badges on the left */}
           <div className="flex flex-wrap gap-1">
-            <Badge
-              variant="secondary"
-              className="bg-primary-light shadow-md border-primary text-gray-800 text-xs"
-            >
-              Web development
-            </Badge>
+            {course.categories?.map((category) => (
+              <Badge
+                key={category.categoryId}
+                variant="secondary"
+                className="bg-primary-light shadow-md border-primary text-gray-800 text-xs"
+              >
+                {category.title}
+              </Badge>
+            ))}
           </div>
 
           {/* Icons on the right */}

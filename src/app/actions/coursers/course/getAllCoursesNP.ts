@@ -1,6 +1,6 @@
 "use server";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
-import { Course } from "@/app/types/course";
+import { FilteredCourse } from "@/app/types/course";
 import { logger } from "@/app/utils/logger";
 import { QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { unstable_cache } from "next/cache";
@@ -11,16 +11,23 @@ async function fetchCourses() {
     const command = new QueryCommand({
       TableName: dynamoTableName,
       KeyConditionExpression: "PK = :PK",
+      FilterExpression: "isPublished = :published", // Fixed typo in attribute name
       ExpressionAttributeValues: {
         ":PK": "COURSE",
+        ":published": true,
+      },
+      ProjectionExpression:
+        "courseId, shortDescription, title, thumbnailImage, lessonCount, #duration, categories, #language, accessPlans",
+      ExpressionAttributeNames: {
+        "#language": "language",
+        "#duration": "duration",
       },
     });
 
     const courses = await dynamoDb.send(command);
-
     return {
       success: true,
-      courses: (courses.Items as Course[]) || [],
+      courses: (courses.Items as FilteredCourse[]) || [],
     };
   } catch (error) {
     console.log("Error in getCourses", error);
@@ -37,7 +44,6 @@ export async function getAllCoursesUP() {
   return unstable_cache(
     async () => {
       const result = await fetchCourses();
-
       return result;
     },
     [cacheTag],
