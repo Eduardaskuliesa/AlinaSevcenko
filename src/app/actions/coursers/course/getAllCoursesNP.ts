@@ -11,7 +11,7 @@ async function fetchCourses() {
     const command = new QueryCommand({
       TableName: dynamoTableName,
       KeyConditionExpression: "PK = :PK",
-      FilterExpression: "isPublished = :published", // Fixed typo in attribute name
+      FilterExpression: "isPublished = :published",
       ExpressionAttributeValues: {
         ":PK": "COURSE",
         ":published": true,

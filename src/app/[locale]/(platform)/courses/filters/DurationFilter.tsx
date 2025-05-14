@@ -51,15 +51,20 @@ const DurationFilter = ({
           >
             <div className="flex flex-col mt-2 space-y-2 pt-2">
               {durations.map((duration) => (
-                <div key={duration} className="flex items-center space-x-4">
+                <div
+                  key={duration}
+                  className="flex items-center space-x-4 cursor-pointer"
+                  onClick={() => toggleDuration(duration)}
+                >
                   <Checkbox
                     id={`duration-${duration}`}
                     checked={selectedDurations.includes(duration)}
+                    className="cursor-pointer"
                     onCheckedChange={() => toggleDuration(duration)}
                   />
                   <label
                     htmlFor={`duration-${duration}`}
-                    className="text-gray-800 cursor-pointer"
+                    className="text-gray-800 cursor-pointer w-full"
                   >
                     {duration}
                   </label>

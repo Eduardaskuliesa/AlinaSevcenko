@@ -9,18 +9,22 @@ interface LanguageFilterProps {
   setSelectedLanguages: (languages: string[]) => void;
 }
 
+const languageOptions = [
+  { display: "Lithuanian", code: "lt" },
+  { display: "Russian", code: "ru" },
+];
+
 const LanguageFilter = ({
   selectedLanguages,
   setSelectedLanguages,
 }: LanguageFilterProps) => {
   const [isOpen, setIsOpen] = useState(true);
-  const languages = ["Lithuanian", "Russian"];
 
-  const toggleLanguage = (language: string) => {
-    if (selectedLanguages.includes(language)) {
-      setSelectedLanguages(selectedLanguages.filter((l) => l !== language));
+  const toggleLanguage = (code: string) => {
+    if (selectedLanguages.includes(code)) {
+      setSelectedLanguages(selectedLanguages.filter((l) => l !== code));
     } else {
-      setSelectedLanguages([...selectedLanguages, language]);
+      setSelectedLanguages([...selectedLanguages, code]);
     }
   };
 
@@ -50,18 +54,21 @@ const LanguageFilter = ({
             className="overflow-hidden"
           >
             <div className="flex flex-col mt-2 space-y-2 pt-2">
-              {languages.map((language) => (
-                <div key={language} className="flex items-center space-x-4">
+              {languageOptions.map((language) => (
+                <div
+                  key={language.code}
+                  className="flex items-center space-x-4"
+                >
                   <Checkbox
-                    id={`language-${language}`}
-                    checked={selectedLanguages.includes(language)}
-                    onCheckedChange={() => toggleLanguage(language)}
+                    id={`language-${language.code}`}
+                    checked={selectedLanguages.includes(language.code)}
+                    onCheckedChange={() => toggleLanguage(language.code)}
                   />
                   <label
-                    htmlFor={`language-${language}`}
+                    htmlFor={`language-${language.code}`}
                     className="text-gray-800 cursor-pointer"
                   >
-                    {language}
+                    {language.display}
                   </label>
                 </div>
               ))}

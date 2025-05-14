@@ -4,6 +4,7 @@ import { Heart, Clock, BookOpen, ShoppingBasket } from "lucide-react";
 import { convertTime } from "@/app/utils/converToMinutes";
 import { Badge } from "@/components/ui/badge";
 import { FilteredCourse } from "@/app/types/course";
+import { motion } from "framer-motion";
 
 interface CourseCardProps {
   course: FilteredCourse;
@@ -12,7 +13,16 @@ interface CourseCardProps {
 
 const CourseCard = ({ course, lowestPrice }: CourseCardProps) => {
   return (
-    <div className="flex flex-row border-b border-primary pb-4 ">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{
+        duration: 0.4,
+        ease: "easeInOut",
+      }}
+      viewport={{ once: true }}
+      className="flex flex-row border-b z-[-10]  border-primary pb-4 "
+    >
       <div className="relative min-w-[300px] min-h-[150px] max-h-[200px]">
         <Image
           quality={100}
@@ -28,7 +38,7 @@ const CourseCard = ({ course, lowestPrice }: CourseCardProps) => {
         {course.language && (
           <Badge
             variant="secondary"
-            className="absolute top-2 left-2 border-white border text-gray-800 text-xs font-bold"
+            className="absolute top-2 left-2 uppercase border-white border text-gray-800 text-xs font-bold"
           >
             {course.language}
           </Badge>
@@ -92,7 +102,7 @@ const CourseCard = ({ course, lowestPrice }: CourseCardProps) => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
