@@ -3,6 +3,7 @@ export interface Course {
   SK: string;
   courseId: string;
   title: string;
+  slug: string;
   description: string;
   shortDescription: string;
   thumbnailImage: string;
@@ -25,6 +26,7 @@ export interface Course {
   lessonsOrder?: [
     {
       lessonId: string;
+      isPreview: boolean;
       order: number;
     }
   ];
@@ -81,6 +83,7 @@ export interface CreateCourseInitialData {
 export interface CourseUpdateInfoData {
   courseTitle: string;
   shortDescription: string;
+  slug: string;
   fullDescription: string;
   thumbnailSrc: string;
   assignedCategories: Pick<Category, "categoryId" | "title" | "language">[];

@@ -9,6 +9,19 @@ import { logger } from "@/app/utils/logger";
 import { revalidateTag } from "next/cache";
 import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 
+function generateSlug(text: string): string {
+  if (!text) return "";
+
+  return text
+    .normalize("NFD") // Normalize Unicode (decompose accented chars)
+    .replace(/[\u0300-\u036f]/g, "") // Remove diacritics/accents
+    .replace(/[^\w\s-]/g, "") // Remove special characters except whitespace and hyphens
+    .trim() // Remove leading/trailing whitespace
+    .toLowerCase() // Convert to lowercase
+    .replace(/\s+/g, "-") // Replace spaces with hyphens
+    .replace(/-+/g, "-"); // Replace multiple hyphens with single hyphen
+}
+
 export async function createCourse(initialData: CreateCourseInitialData) {
   try {
     await verifyAdminAccess();
@@ -21,12 +34,14 @@ export async function createCourse(initialData: CreateCourseInitialData) {
     }
     const courseId = uuidv4();
     const timestamp = new Date().toISOString();
+    const slug = generateSlug(initialData.title);
 
     const courseData = {
       PK: "COURSE",
       SK: `COURSE#${courseId}`,
       courseId: courseId,
       title: initialData.title,
+      slug: slug,
       description: "",
       shortDescription: "",
       thumbnailImage: "",

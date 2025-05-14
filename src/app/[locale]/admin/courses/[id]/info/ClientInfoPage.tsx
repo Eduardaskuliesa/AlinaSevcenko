@@ -17,6 +17,7 @@ import { InfoIcon } from "lucide-react";
 import { artificialDelay } from "@/app/utils/artificialDelay";
 import { SaveActionState } from "@/app/types/actions";
 import { categoryActions } from "@/app/actions/category";
+import SlugField from "./SlugField";
 
 const ClientInfoPage: React.FC = () => {
   const params = useParams();
@@ -41,6 +42,7 @@ const ClientInfoPage: React.FC = () => {
 
   const [formData, setFormData] = useState<CourseUpdateInfoData>({
     courseTitle: course?.title || "",
+    slug: course?.slug || "",
     shortDescription: course?.shortDescription || "",
     fullDescription: course?.description || "",
     thumbnailSrc: course?.thumbnailImage || "",
@@ -51,6 +53,7 @@ const ClientInfoPage: React.FC = () => {
     if (course) {
       setFormData({
         courseTitle: course.title || "",
+        slug: course?.slug || "",
         shortDescription: course.shortDescription || "",
         fullDescription: course.description || "",
         thumbnailSrc: course.thumbnailImage,
@@ -71,6 +74,10 @@ const ClientInfoPage: React.FC = () => {
 
   const handleTitleChange = (value: string) => {
     setFormData((prev) => ({ ...prev, courseTitle: value }));
+  };
+
+  const handleSlugChange = (value: string) => {
+    setFormData((prev) => ({ ...prev, slug: value }));
   };
 
   const handleShortDescriptionChange = (value: string) => {
@@ -98,6 +105,7 @@ const ClientInfoPage: React.FC = () => {
 
     const hasFormChanges =
       course?.title !== formData.courseTitle ||
+      course?.slug !== formData.slug ||
       course?.shortDescription !== formData.shortDescription ||
       course?.description !== formData.fullDescription ||
       course?.thumbnailImage !== formData.thumbnailSrc ||
@@ -202,6 +210,7 @@ const ClientInfoPage: React.FC = () => {
       if (updatedCourse) {
         setFormData({
           courseTitle: updatedCourse.title || "",
+          slug: course?.slug || "",
           shortDescription: updatedCourse.shortDescription || "",
           fullDescription: updatedCourse.description || "",
           thumbnailSrc: updatedCourse.thumbnailImage || "/placeholder.svg",
@@ -414,6 +423,7 @@ const ClientInfoPage: React.FC = () => {
           />
         </div>
         <div>
+          <SlugField initialValue={formData.slug} onChange={handleSlugChange} />
           <FullDescription
             initialValue={formData.fullDescription}
             onChange={handleFullDescriptionChange}

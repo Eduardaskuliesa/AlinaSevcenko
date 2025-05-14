@@ -21,7 +21,7 @@ const CourseCard = ({ course, lowestPrice }: CourseCardProps) => {
         ease: "easeInOut",
       }}
       viewport={{ once: true }}
-      className="flex flex-row border-b z-[-10]  border-primary pb-4 "
+      className="flex flex-row border-b hover:bg-slate-50 px-1 cursor-pointer hover:shadow-lg  border-primary pb-4 "
     >
       <div className="relative min-w-[300px] min-h-[150px] max-h-[200px]">
         <Image

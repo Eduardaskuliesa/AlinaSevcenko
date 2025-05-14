@@ -20,6 +20,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { DeleteModal } from "@/components/ui/DeleteModal";
 import { SaveActionState } from "@/app/types/actions";
+import { Input } from "@/components/ui/input";
 
 const CourseSettingsPage: React.FC = () => {
   const { courseId } = useGetCourseId();
@@ -53,15 +54,27 @@ const CourseSettingsPage: React.FC = () => {
   const course = courseData?.cousre;
   const plans = courseData?.cousre?.accessPlans || [];
 
-  const [language, setLanguage] = useState<string>(
-    courseData?.cousre?.language || "lt"
-  );
+  const [formFields, setFormFields] = useState<{
+    language: string;
+    sort: number;
+  }>({
+    language: courseData?.cousre?.language || "lt",
+    sort: courseData?.cousre?.sort || 0,
+  });
   const [isPlanDialogOpen, setIsPlanDialogOpen] = useState(false);
 
-  // Sticky functionality
   const [isSticky, setIsSticky] = useState(false);
   const buttonContainerRef = useRef<HTMLDivElement>(null);
   const placeholderRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (courseData?.cousre) {
+      setFormFields({
+        language: courseData.cousre.language,
+        sort: courseData.cousre.sort,
+      });
+    }
+  }, [courseData?.cousre]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -120,9 +133,14 @@ const CourseSettingsPage: React.FC = () => {
     }
   };
 
+  const hasChanges =
+    formFields.language !== courseData?.cousre?.language ||
+    formFields.sort !== courseData?.cousre?.sort;
+
   const handleSave = async () => {
     setActionState("saving");
-    if (language === courseData?.cousre?.language) {
+
+    if (!hasChanges) {
       toast("No changes were made to save", {
         icon: (
           <InfoIcon className="h-5 w-5 text-yellow-500 animate-icon-warning" />
@@ -131,13 +149,20 @@ const CourseSettingsPage: React.FC = () => {
       setActionState("idle");
       return { success: false };
     }
+
     try {
-      await coursesAction.courses.updateLanguage(courseId, language);
-      toast.success("Language updated successfully");
+      await coursesAction.courses.updateCourseSettings(
+        courseId,
+        formFields.language,
+        formFields.sort
+      );
+
+      toast.success("Course settings updated successfully");
+      queryClient.invalidateQueries({ queryKey: ["course", courseId] });
       return { success: true };
     } catch (error) {
-      console.error("Error updating language", error);
-      toast.error("Error updating language");
+      console.error("Error updating course settings", error);
+      toast.error("Error updating course settings");
       return { success: false };
     } finally {
       setActionState("idle");
@@ -310,9 +335,7 @@ const CourseSettingsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Reordered content - Language section first on mobile, then pricing */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-        {/* Language settings - full width on mobile, right column on desktop */}
         <div className="md:order-2 md:col-span-4">
           <div className="bg-white xs:w-full sm:w-1/2 md:w-full p-4 md:p-6 border-2 border-primary-light/60 rounded-lg shadow-sm mb-6 md:mb-0">
             <p className="text-lg md:text-xl font-medium mb-3 md:mb-4">
@@ -321,7 +344,12 @@ const CourseSettingsPage: React.FC = () => {
             {isCourseLoading ? (
               <Skeleton className="h-9 md:h-10 w-full" />
             ) : (
-              <Select value={language} onValueChange={setLanguage}>
+              <Select
+                value={formFields.language}
+                onValueChange={(value) =>
+                  setFormFields((prev) => ({ ...prev, language: value }))
+                }
+              >
                 <SelectTrigger className="border-primary-light/60 bg-white border-2 h-9 md:h-10">
                   <SelectValue placeholder="Select language" />
                 </SelectTrigger>
@@ -332,9 +360,26 @@ const CourseSettingsPage: React.FC = () => {
               </Select>
             )}
           </div>
+          <div className="bg-white xs:w-full mt-4 sm:w-1/2 md:w-full p-4 md:p-6 border-2 border-primary-light/60 rounded-lg shadow-sm mb-6 md:mb-0">
+            <p className="text-lg md:text-xl font-medium mb-3 md:mb-4">Sort</p>
+            {isCourseLoading ? (
+              <Skeleton className="h-8 md:h-9 w-1/2" />
+            ) : (
+              <Input
+                value={formFields.sort}
+                onChange={(e) =>
+                  setFormFields((prev) => ({
+                    ...prev,
+                    sort: parseInt(e.target.value) || 0,
+                  }))
+                }
+                className="border-2 w-1/2 border-primary-light/60"
+                type="number"
+              ></Input>
+            )}
+          </div>
         </div>
 
-        {/* Pricing plans - full width on mobile, left column on desktop */}
         <div className="md:order-1 md:col-span-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
             {isCourseLoading ? (

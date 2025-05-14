@@ -1,4 +1,5 @@
-import React, { useState, useRef } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,6 +21,12 @@ const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
     initialThumbnail || "/placeholder.svg"
   );
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (initialThumbnail && initialThumbnail !== thumbnailSrc) {
+      setThumbnailSrc(initialThumbnail);
+    }
+  }, [initialThumbnail]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

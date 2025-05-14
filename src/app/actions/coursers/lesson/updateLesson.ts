@@ -1,9 +1,12 @@
 "use server";
-
 import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { logger } from "@/app/utils/logger";
-import { TransactWriteCommand } from "@aws-sdk/lib-dynamodb";
+import {
+  GetCommand,
+  TransactWriteCommand,
+  UpdateCommand,
+} from "@aws-sdk/lib-dynamodb";
 import { revalidateTag } from "next/cache";
 
 export interface LessonUpdateData {
@@ -17,12 +20,71 @@ export async function updateLessons(
   courseId: string,
   lessonUpdates: LessonUpdateData[]
 ) {
-   await verifyAdminAccess();
+  await verifyAdminAccess();
   logger.info(
     `Updating ${lessonUpdates.length} lessons for course ${courseId}`
   );
 
   try {
+    const getCourseCommand = new GetCommand({
+      TableName: dynamoTableName,
+      Key: {
+        PK: "COURSE",
+        SK: `COURSE#${courseId}`,
+      },
+    });
+
+    const courseResult = await dynamoDb.send(getCourseCommand);
+    const course = courseResult.Item;
+
+    if (!course) {
+      return {
+        success: false,
+        error: "COURSE_NOT_FOUND",
+        message: "Course not found",
+      };
+    }
+
+    const existingLessonOrder: [
+      {
+        lessonId: string;
+        sort: number;
+        isPreview: boolean;
+      }
+    ] = course.lessonOrder || [];
+
+    const updatedLessonOrder = existingLessonOrder.map((lesson) => {
+      const standardLesson = {
+        lessonId: lesson.lessonId,
+        sort: lesson.sort,
+        isPreview: lesson.isPreview !== undefined ? lesson.isPreview : false,
+      };
+
+      const update = lessonUpdates.find((u) => u.lessonId === lesson.lessonId);
+
+      if (update && update.isPreview !== undefined) {
+        standardLesson.isPreview = update.isPreview;
+      }
+
+      return standardLesson;
+    });
+
+    const updateCourseCommand = new UpdateCommand({
+      TableName: dynamoTableName,
+      Key: {
+        PK: "COURSE",
+        SK: `COURSE#${courseId}`,
+      },
+      UpdateExpression:
+        "SET lessonOrder = :lessonOrder, updatedAt = :updatedAt",
+      ExpressionAttributeValues: {
+        ":lessonOrder": updatedLessonOrder,
+        ":updatedAt": new Date().toISOString(),
+      },
+    });
+
+    await dynamoDb.send(updateCourseCommand);
+
     const batches = [];
     for (let i = 0; i < lessonUpdates.length; i += 25) {
       batches.push(lessonUpdates.slice(i, i + 25));

@@ -11,7 +11,7 @@ export async function updateCourseInfo(
   courseId: Course["courseId"]
 ) {
   try {
-     await verifyAdminAccess();
+    await verifyAdminAccess();
     if (!courseData.courseTitle || !courseData.courseTitle.trim()) {
       return {
         error: "TITLE_EMPTY",
@@ -63,10 +63,12 @@ export async function updateCourseInfo(
             description = :description,
             thumbnailImage = :thumbnailImage,
             categories = :categories,
+            slug = :slug,
             updatedAt = :updatedAt
       `,
       ExpressionAttributeValues: {
         ":title": courseData.courseTitle,
+        ":slug": courseData.slug,
         ":shortDescription": courseData.shortDescription,
         ":description": courseData.fullDescription,
         ":thumbnailImage": courseData.thumbnailSrc,

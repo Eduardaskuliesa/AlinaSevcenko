@@ -8,7 +8,7 @@ import { getCourses } from "./getCourses";
 import { publishCourse } from "./publishCourse";
 import { toggleAccessPlanStatus } from "./updateAccessPlanStatus";
 import { updateCourseInfo } from "./updateCourseInfo";
-import { updateLanguage } from "./updateCourseLanguge";
+import { updateCourseSettings } from "./updateCourseLanguge";
 
 export const courses = {
   publishCourse,
@@ -19,7 +19,7 @@ export const courses = {
   deleteAccessPlan,
   createAccessPlan,
   toggleAccessPlanStatus,
-  updateLanguage,
+  updateCourseSettings,
   getAllCoursesUP,
   deleteCourse,
 };

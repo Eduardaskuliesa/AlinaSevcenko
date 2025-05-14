@@ -6,9 +6,10 @@ import { logger } from "@/app/utils/logger";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { revalidateTag } from "next/cache";
 
-export async function updateLanguage(
+export async function updateCourseSettings(
   courseId: Course["courseId"],
-  language: string
+  language: string,
+  sort: number
 ) {
   try {
     await verifyAdminAccess();
@@ -21,20 +22,24 @@ export async function updateLanguage(
       },
       UpdateExpression: `
         SET #language = :language,
+            sort = :sort,
             updatedAt = :updatedAt
       `,
       ExpressionAttributeNames: {
         "#language": "language",
       },
       ExpressionAttributeValues: {
+        ":sort": sort,
         ":language": language,
         ":updatedAt": timestamp,
       },
     });
 
     await dynamoDb.send(updateCommand);
+
     revalidateTag(`course-${courseId}`);
     revalidateTag(`courses`);
+    revalidateTag(`client-courses`);
   } catch (error) {
     logger.error(`Error updating course language for ${courseId}`, error);
     return {
