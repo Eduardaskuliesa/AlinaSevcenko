@@ -17,7 +17,7 @@ async function fetchCourses() {
         ":published": true,
       },
       ProjectionExpression:
-        "courseId, shortDescription, title, thumbnailImage, lessonCount, #duration, categories, #language, accessPlans",
+        "courseId, shortDescription, title, thumbnailImage, lessonCount, #duration, categories, #language, accessPlans, slug",
       ExpressionAttributeNames: {
         "#language": "language",
         "#duration": "duration",

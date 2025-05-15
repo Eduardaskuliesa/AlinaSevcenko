@@ -4,6 +4,7 @@ export interface Course {
   courseId: string;
   title: string;
   slug: string;
+  slugId: string;
   description: string;
   shortDescription: string;
   thumbnailImage: string;
@@ -50,6 +51,7 @@ export interface Course {
 export interface FilteredCourse {
   courseId: string;
   title: string;
+  slug: string;
   shortDescription: string;
   sort: number;
   language: string;
@@ -84,6 +86,7 @@ export interface CourseUpdateInfoData {
   courseTitle: string;
   shortDescription: string;
   slug: string;
+  slugId: string;
   fullDescription: string;
   thumbnailSrc: string;
   assignedCategories: Pick<Category, "categoryId" | "title" | "language">[];
@@ -116,6 +119,18 @@ export interface Category {
   title: string;
   language: Language;
   description: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Slug {
+  PK: string;
+  SK: string;
+  slugId: string;
+  slug: string;
+  redirect: boolean;
+  redirectTo: string | null;
+  courseId: string;
   createdAt: string;
   updatedAt: string;
 }

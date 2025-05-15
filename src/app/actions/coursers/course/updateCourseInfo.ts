@@ -78,6 +78,23 @@ export async function updateCourseInfo(
       ReturnValues: "ALL_NEW",
     });
 
+    const updateSlugCommand = new UpdateCommand({
+      TableName: dynamoTableName,
+      Key: {
+        PK: "SLUG",
+        SK: `SLUG#${courseData.slugId}`,
+      },
+      UpdateExpression: `
+        SET slug = :slug
+      `,
+      ExpressionAttributeValues: {
+        ":slug": courseData.slug,
+      },
+      ReturnValues: "ALL_NEW",
+    });
+
+    await dynamoDb.send(updateSlugCommand);
+
     const descriptionComplete = Boolean(courseData.fullDescription?.trim());
     const thumbnailComplete =
       courseData.thumbnailSrc &&
@@ -111,6 +128,7 @@ export async function updateCourseInfo(
     logger.success("Course info updated successfully");
     revalidateTag(`course-${courseId}`);
     revalidateTag(`courses`);
+    revalidateTag("client-courses");
 
     return {
       fieldsUpdate: fieldsResult,

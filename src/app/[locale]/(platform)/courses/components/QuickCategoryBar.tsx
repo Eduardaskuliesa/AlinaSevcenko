@@ -9,7 +9,7 @@ interface QuickCategoryBarProps {
 }
 
 const QuickCategoryBar = ({ setSelectedCategories }: QuickCategoryBarProps) => {
-  const { data: categories, isLoading } = useQuery({
+  const { data: categories, isFetching } = useQuery({
     queryKey: ["client-categories"],
     queryFn: () => categoryActions.getAllCategoriesUP(),
   });
@@ -18,7 +18,7 @@ const QuickCategoryBar = ({ setSelectedCategories }: QuickCategoryBarProps) => {
     setSelectedCategories([categoryId]);
   };
 
-  if (isLoading) {
+  if (isFetching) {
     return (
       <div className="max-w-7xl mx-auto px-4 shadow-sm">
         <div className="flex flex-row items-center gap-5 overflow-x-auto border-b border-primary-light py-2">

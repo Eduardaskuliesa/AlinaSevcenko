@@ -28,7 +28,7 @@ const CoursePageContent = () => {
     searchTerm: "",
   });
 
-  const { data: courseData, isLoading: isCourseLoading } = useQuery({
+  const { data: courseData, isFetching: isCourseLoading } = useQuery({
     queryKey: ["client-courses"],
     queryFn: () => coursesAction.courses.getAllCoursesUP(),
   });
@@ -177,7 +177,7 @@ const CoursePageContent = () => {
               setSelectedCategories={updateCategoryFilter}
             />
           </div>
-          <div className="w-[70%] p-4 h-[650px] overflow-y-auto z-20">
+          <div className="w-[70%] p-4 h-[650px] overflow-y-auto">
             <CourseList courses={filteredCourses} isLoading={isCourseLoading} />
           </div>
         </div>

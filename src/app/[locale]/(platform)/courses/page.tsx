@@ -5,6 +5,8 @@ import { getQueryClient } from "@/app/lib/getQueryClient";
 import { coursesAction } from "@/app/actions/coursers";
 import { categoryActions } from "@/app/actions/category";
 
+export const dynamic = "force-static";
+
 export default async function CoursePage() {
   const queryClient = getQueryClient();
 

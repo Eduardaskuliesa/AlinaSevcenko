@@ -31,6 +31,7 @@ const ClientInfoPage: React.FC = () => {
     queryFn: () => coursesAction.courses.getCourse(courseId),
   });
 
+
   const { data: categoriesData, isLoading: isCategoriesLoading } = useQuery({
     queryKey: ["categories"],
     queryFn: () => categoryActions.getCategories(),
@@ -43,6 +44,7 @@ const ClientInfoPage: React.FC = () => {
   const [formData, setFormData] = useState<CourseUpdateInfoData>({
     courseTitle: course?.title || "",
     slug: course?.slug || "",
+    slugId: course?.slugId || "",
     shortDescription: course?.shortDescription || "",
     fullDescription: course?.description || "",
     thumbnailSrc: course?.thumbnailImage || "",
@@ -54,6 +56,7 @@ const ClientInfoPage: React.FC = () => {
       setFormData({
         courseTitle: course.title || "",
         slug: course?.slug || "",
+        slugId: course?.slugId || "",
         shortDescription: course.shortDescription || "",
         fullDescription: course.description || "",
         thumbnailSrc: course.thumbnailImage,
@@ -210,7 +213,8 @@ const ClientInfoPage: React.FC = () => {
       if (updatedCourse) {
         setFormData({
           courseTitle: updatedCourse.title || "",
-          slug: course?.slug || "",
+          slug: updatedCourse.slug || "",
+          slugId: updatedCourse.slugId || "",
           shortDescription: updatedCourse.shortDescription || "",
           fullDescription: updatedCourse.description || "",
           thumbnailSrc: updatedCourse.thumbnailImage || "/placeholder.svg",

@@ -12,7 +12,7 @@ export async function toggleAccessPlanStatus(
   isActive: boolean
 ) {
   try {
-     await verifyAdminAccess();
+    await verifyAdminAccess();
     const getCommand = new GetCommand({
       TableName: dynamoTableName,
       Key: {
@@ -70,7 +70,6 @@ export async function toggleAccessPlanStatus(
       (plan: AccessPlan) => plan.isActive
     );
 
-
     let updateExpression =
       "SET accessPlans = :updatedPlans, updatedAt = :updatedAt";
     const expressionAttributeValues: {
@@ -106,6 +105,7 @@ export async function toggleAccessPlanStatus(
     logger.success(`Access plan ${planId} status updated successfully`);
     revalidateTag(`course-${courseId}`);
     revalidateTag(`courses`);
+    revalidateTag("client-courses");
 
     return {
       success: true,

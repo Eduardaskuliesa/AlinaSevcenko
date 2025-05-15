@@ -6,7 +6,7 @@ import { GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { revalidateTag } from "next/cache";
 
 export async function publishCourse(courseId: string, isPublished: boolean) {
-   await verifyAdminAccess();
+  await verifyAdminAccess();
   try {
     const getCommand = new GetCommand({
       TableName: dynamoTableName,
@@ -56,6 +56,7 @@ export async function publishCourse(courseId: string, isPublished: boolean) {
     await dynamoDb.send(updateCommand);
     revalidateTag(`course-${courseId}`);
     revalidateTag(`courses`);
+    revalidateTag("client-courses");
 
     return {
       success: true,

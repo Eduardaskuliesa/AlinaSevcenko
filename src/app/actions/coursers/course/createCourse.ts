@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from "uuid";
 import { logger } from "@/app/utils/logger";
 import { revalidateTag } from "next/cache";
 import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
+import { createSlug } from "./createSlug";
 
 function generateSlug(text: string): string {
   if (!text) return "";
@@ -36,12 +37,22 @@ export async function createCourse(initialData: CreateCourseInitialData) {
     const timestamp = new Date().toISOString();
     const slug = generateSlug(initialData.title);
 
+    const slugResponse = await createSlug({ slug, courseId });
+
+    if (!slugResponse.success) {
+      return {
+        success: false,
+        message: "Error creating slug",
+      };
+    }
+
     const courseData = {
       PK: "COURSE",
       SK: `COURSE#${courseId}`,
       courseId: courseId,
       title: initialData.title,
       slug: slug,
+      slugId: slugResponse.slugId,
       description: "",
       shortDescription: "",
       thumbnailImage: "",
@@ -75,6 +86,7 @@ export async function createCourse(initialData: CreateCourseInitialData) {
       Item: courseData,
     });
     revalidateTag(`courses`);
+    revalidateTag("client-courses");
     revalidateTag(`course-${courseId}`);
     await dynamoDb.send(command);
 

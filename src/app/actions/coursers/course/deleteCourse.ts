@@ -95,6 +95,7 @@ export async function deleteCourse(courseId: string) {
 
     revalidateTag(`course-${courseId}`);
     revalidateTag(`courses`);
+    revalidateTag("client-courses");
     return {
       success: true,
       message: "Course and all associated lessons deleted successfully",

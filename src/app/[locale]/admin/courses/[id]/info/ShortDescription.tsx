@@ -13,27 +13,33 @@ const ShortDescription: React.FC<ShortDescriptionProps> = ({
   onChange,
 }) => {
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    onChange(e.target.value);
+    const value = e.target.value.slice(0, 120);
+    onChange(value);
   };
 
   return (
     <div className="mb-4 lg:mb-8">
-      <Label
-        htmlFor="shortDescription"
-        className="text-sm lg:text-base font-semibold flex items-center gap-2 mb-2"
-      >
-        <div className="bg-primary w-6 h-6 lg:w-8 lg:h-8 rounded-full flex items-center justify-center ring-4 ring-secondary/20">
-          <AlignLeft className="text-white w-4 h-4 lg:w-5 lg:h-5" />
-        </div>
-        Short Description
-      </Label>
+      <div className="flex justify-between">
+        <Label
+          htmlFor="shortDescription"
+          className="text-sm lg:text-base font-semibold flex items-center gap-2 mb-2"
+        >
+          <div className="bg-primary w-6 h-6 lg:w-8 lg:h-8 rounded-full flex items-center justify-center ring-4 ring-secondary/20">
+            <AlignLeft className="text-white w-4 h-4 lg:w-5 lg:h-5" />
+          </div>
+          Short Description
+        </Label>
+        <div className="text-sm">{initialValue.length}/120</div>
+      </div>
+
       <div className="border-2 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-secondary focus-within:border-transparent transition-all bg-white">
         <Textarea
           id="shortDescription"
           placeholder="A brief overview of your course"
-          className="border-0  text-sm lg:text-base focus-visible:ring-0 focus-visible:ring-offset-0 min-h-24 p-4  resize-none bg-white"
+          className="border-0 text-sm lg:text-base focus-visible:ring-0 focus-visible:ring-offset-0 min-h-24 p-4 resize-none bg-white"
           value={initialValue}
           onChange={handleChange}
+          maxLength={120}
         />
       </div>
     </div>

@@ -99,7 +99,7 @@ export async function deleteAccessPlan(
     logger.success(`Access plan ${planId} deleted successfully`);
     revalidateTag(`course-${courseId}`);
     revalidateTag(`courses`);
-
+    revalidateTag("client-courses");
     return {
       success: true,
       result,

@@ -64,7 +64,7 @@ const CourseList = ({ courses, isLoading }: CourseListProps) => {
   }
 
   return (
-    <div className="flex flex-col w-full gap-4 overflow-hidden z-20">
+    <div className="flex flex-col w-full gap-4 overflow-hidden">
       <AnimatePresence mode="sync">
         {courses.map((course: FilteredCourse) => (
           <motion.div
