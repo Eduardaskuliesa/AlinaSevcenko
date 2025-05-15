@@ -12,12 +12,12 @@ export default async function CoursePage() {
 
   queryClient.prefetchQuery({
     queryKey: ["client-courses"],
-    queryFn: () => coursesAction.courses.getAllCoursesUP(),
+    queryFn: coursesAction.courses.getAllCoursesUP,
   });
 
   queryClient.prefetchQuery({
     queryKey: ["client-categories"],
-    queryFn: () => categoryActions.getAllCategoriesUP(),
+    queryFn: categoryActions.getAllCategoriesUP,
   });
 
   return (

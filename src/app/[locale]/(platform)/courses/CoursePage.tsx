@@ -30,7 +30,7 @@ const CoursePageContent = () => {
 
   const { data: courseData, isFetching: isCourseLoading } = useQuery({
     queryKey: ["client-courses"],
-    queryFn: () => coursesAction.courses.getAllCoursesUP(),
+    queryFn: coursesAction.courses.getAllCoursesUP,
   });
 
   const clearFitlers = () => {
@@ -85,7 +85,10 @@ const CoursePageContent = () => {
 
     return courseData.courses.filter((course: FilteredCourse) => {
       if (deferredFilters.searchTerm.trim()) {
-        const titleMatches = fuzzyMatch(course.title, deferredFilters.searchTerm);
+        const titleMatches = fuzzyMatch(
+          course.title,
+          deferredFilters.searchTerm
+        );
         const categoryMatches = course.categories.some((cat) =>
           fuzzyMatch(cat.title, deferredFilters.searchTerm)
         );
@@ -111,8 +114,8 @@ const CoursePageContent = () => {
 
       if (deferredFilters.categories.length > 0) {
         const courseCategories = course.categories.map((cat) => cat.categoryId);
-        const hasMatchingCategory = deferredFilters.categories.some((categoryId) =>
-          courseCategories.includes(categoryId)
+        const hasMatchingCategory = deferredFilters.categories.some(
+          (categoryId) => courseCategories.includes(categoryId)
         );
         if (!hasMatchingCategory) {
           return false;

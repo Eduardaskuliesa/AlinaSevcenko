@@ -33,12 +33,11 @@ export default async function CourseIdPage({
   const matchedSlug = slugsData?.slugs?.find((slug) => slug.slug === slugs);
   const courseResponse = await getCourseClient(matchedSlug?.courseId as string);
   const course = courseResponse.course;
-  const timestamp = Date().toString();
 
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-2xl font-bold">{course?.title}</h1>
-      <p className="text-lg">{timestamp}</p>
+      <p className="text-lg">{new Date().toLocaleTimeString()}</p>
       <p>{course?.description}</p>
     </div>
   );
