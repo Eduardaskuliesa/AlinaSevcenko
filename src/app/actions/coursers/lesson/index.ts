@@ -4,6 +4,7 @@ import { createLesson } from "./createLesson";
 import { deleteLesson } from "./deleteLesson";
 import { getLesson } from "./getLesson";
 import { getLessons } from "./getLessons";
+import { storeBlurPlaceholder } from "./sotreBlurdata";
 import { updateLessons } from "./updateLesson";
 import { updateLessonOrder } from "./updateLessonOrder";
 
@@ -15,5 +16,6 @@ export const lessons = {
   deleteLesson,
   addAssetPlaybackId,
   updateLessons,
+  storeBlurPlaceholder,
   addLessonDuration,
 };

@@ -6,7 +6,7 @@ import { logger } from "@/app/utils/logger";
 import { unstable_cache } from "next/cache";
 
 export async function fetchCourse(courseId: Course["courseId"]) {
-  logger.info(`Fetching course ${courseId}`);
+  logger.info(`Fetching clinet Course ${courseId}`);
   try {
     const getCommand = new GetCommand({
       TableName: dynamoTableName,
@@ -35,6 +35,6 @@ export async function getCourseClient(courseId: Course["courseId"]) {
       return fetchCourse(courseId);
     },
     [cacheTag],
-    { revalidate: 180, tags: [cacheTag] }
+    { revalidate: 72000, tags: [cacheTag] }
   )();
 }

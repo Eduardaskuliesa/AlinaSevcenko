@@ -1,3 +1,4 @@
+import { withNextVideo } from "next-video/process";
 import type { NextConfig } from "next";
 import createNextIntilPlugin from "next-intl/plugin";
 
@@ -11,6 +12,19 @@ const nextConfig: NextConfig = {
   images: {
     domains: ["d1qu0ys0a2oc3d.cloudfront.net"],
   },
+  env: {
+    CLOUDFLARE_STREAM_TOKEN: process.env.CLOUDFLARE_STREAM_TOKEN,
+    CLOUDFLARE_ACCOUNT_ID: process.env.CLOUDFLARE_ACCOUNT_ID,
+  },
+
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.externals = config.externals || [];
+
+      config.externals.push("sharp");
+    }
+    return config;
+  },
 };
 
-export default withNextIntl(nextConfig);
+export default withNextVideo(withNextIntl(nextConfig), { folder: "no" });

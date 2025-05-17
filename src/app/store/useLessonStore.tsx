@@ -228,7 +228,7 @@ export const useLessonStore = create<LessonState>()(
           ]);
 
           const courseData = courseResponse?.cousre || null;
-          const lessonsOrder = courseData?.lessonsOrder || [];
+          const lessonsOrder = courseData?.lessonOrder || [];
 
           const orderMap = new Map();
           lessonsOrder.forEach((item: { lessonId: string; order: number }) => {

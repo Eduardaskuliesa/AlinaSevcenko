@@ -1,16 +1,15 @@
 "use server";
-import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { Course, Lesson } from "@/app/types/course";
 import { logger } from "@/app/utils/logger";
 import { GetCommand } from "@aws-sdk/lib-dynamodb";
+import { unstable_cache } from "next/cache";
 
-export async function getLesson(
+async function fetchLesson(
   courseId: Course["courseId"],
   lessonId: Lesson["lessonId"]
 ) {
   try {
-     await verifyAdminAccess();
     logger.info(`Fetching lesson ${lessonId}`);
     const getCommand = new GetCommand({
       TableName: dynamoTableName,
@@ -26,4 +25,18 @@ export async function getLesson(
     logger.error(`Error fetching lesson ${lessonId}`, error);
     throw error;
   }
+}
+
+export async function getLesson(
+  courseId: Course["courseId"],
+  lessonId: Lesson["lessonId"]
+) {
+  const cacheTag = `lesson-${lessonId}`;
+  return unstable_cache(
+    async () => {
+      return fetchLesson(courseId, lessonId);
+    },
+    [cacheTag],
+    { revalidate: 72000, tags: [cacheTag] }
+  )();
 }

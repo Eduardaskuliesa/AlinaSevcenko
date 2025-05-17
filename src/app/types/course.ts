@@ -24,7 +24,7 @@ export interface Course {
 
   status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
   lessonCount: number;
-  lessonsOrder?: [
+  lessonOrder?: [
     {
       lessonId: string;
       isPreview: boolean;
@@ -108,6 +108,8 @@ export interface Lesson {
   isPreview: boolean;
   createdAt: string;
   updatedAt: string;
+  blurPlaceholder: string | null;
+  blurAspectRatio: number | null;
 }
 
 export type Language = "lt" | "ru";

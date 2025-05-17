@@ -10,7 +10,7 @@ import MuxUploader, {
 } from "@mux/mux-uploader-react";
 import { muxActions } from "@/app/actions/mux";
 import { Button } from "@/components/ui/button";
-import { Film, PlusCircleIcon } from "lucide-react";
+import { Film, PlusCircleIcon, LockIcon } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { useLessonStore } from "@/app/store/useLessonStore";
@@ -18,6 +18,7 @@ import { useGetCourseId } from "@/app/hooks/useGetCourseId";
 import toast from "react-hot-toast";
 import { coursesAction } from "@/app/actions/coursers";
 import { getOrGenerateTokens } from "@/app/utils/media-tokens";
+import { useQuery } from "@tanstack/react-query";
 
 interface LessonVideoUploadProps {
   initialValue?: string;
@@ -31,6 +32,14 @@ const LessonVideoUpload = ({
   const { selectedLessonId, selectedLesson, updateLesson } = useLessonStore();
   const { courseId } = useGetCourseId();
 
+  const { data: courseData } = useQuery({
+    queryKey: ["course", courseId],
+    queryFn: () => coursesAction.courses.getCourse(courseId),
+  });
+
+  const course = courseData?.cousre;
+  const isPublished = course?.isPublished || false;
+
   const videoStatus = selectedLesson?.status || "waiting";
   const playbackId = selectedLesson?.videoUrl || initialValue || null;
 
@@ -39,7 +48,6 @@ const LessonVideoUpload = ({
     playbackToken: string;
     storyboardToken: string;
   } | null>(null);
-
 
   const [isPolling, setIsPolling] = useState(false);
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -99,6 +107,11 @@ const LessonVideoUpload = ({
               setIsPolling(false);
               setPollingAttempts(0);
               onChange(currentLesson.playbackId || "");
+              await coursesAction.lessons.storeBlurPlaceholder(
+                selectedLessonId,
+                courseId,
+                currentLesson.playbackId as string
+              );
               toast.success("Video processing complete!");
             }
           }
@@ -121,14 +134,21 @@ const LessonVideoUpload = ({
 
   const getUploadUrl = async () => {
     try {
+      if (isPublished) {
+        toast.error("Videos cannot be changed for published courses");
+        return null;
+      }
+
       if (!selectedLessonId) {
         toast.error("Selected lesson ID is required");
-        return;
+        return null;
       }
+
       const { uploadUrl } = await muxActions.createUploadUrl(
         selectedLessonId,
         courseId
       );
+
       if (!uploadUrl) {
         throw new Error("Failed to retrieve upload URL");
       }
@@ -141,6 +161,11 @@ const LessonVideoUpload = ({
   };
 
   const handleUploadSuccess = () => {
+    if (isPublished) {
+      toast.error("Videos cannot be changed for published courses");
+      return;
+    }
+
     setIsPolling(true);
     setPollingAttempts(0);
     if (selectedLessonId) {
@@ -161,13 +186,18 @@ const LessonVideoUpload = ({
           <Film className="text-white w-4 h-4 sm:w-5 sm:h-5" />
         </div>
         Lesson Video
+        {isPublished && (
+          <span className="text-xs bg-gray-100 text-gray-700 px-2 py-0.5 rounded-full flex items-center ml-2">
+            <LockIcon className="h-3 w-3 mr-1" /> Published
+          </span>
+        )}
       </Label>
 
       <div className="border-2 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-secondary focus-within:border-transparent transition-all bg-white">
         <div className="w-full">
           <div className="flex flex-1 flex-col gap-2 sm:gap-3 p-3 sm:p-4">
-            <div className="flex items-center justify-between">
-              {videoStatus === "ready" && (
+            {videoStatus === "ready" && (
+              <div className="flex items-center justify-between">
                 <div className="flex flex-1 items-center justify-end gap-2 sm:gap-3">
                   <MuxUploader
                     noDrop
@@ -196,33 +226,42 @@ const LessonVideoUpload = ({
                     <Button
                       variant={"default"}
                       className="h-8 sm:h-10 gap-1 text-gray-100 text-xs sm:text-sm"
+                      disabled={isPublished}
                     >
                       <PlusCircleIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                       <span>Change</span>
                     </Button>
                   </MuxUploaderFileSelect>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
 
             <div
               className={cn(
-                "flex aspect-video min-h-40 sm:min-h-48 grow items-center justify-center rounded-md bg-gray-100",
+                "flex aspect-video min-h-40 sm:min-h-48 grow items-center justify-center rounded-md bg-gray-100 relative",
                 videoStatus === "preparing" && "bg-gray-900 animate-pulse"
               )}
             >
               {videoStatus === "ready" && playbackId && tokens && (
-                <MuxPlayer
-                  tokens={{
-                    thumbnail: tokens?.thumbnailToken,
-                    playback: tokens?.playbackToken,
-                    storyboard: tokens?.storyboardToken,
-                  }}
-                  streamType="on-demand"
-                  accentColor="#998ea7"
-                  className="aspect-[16/9] overflow-hidden rounded-md"
-                  playbackId={playbackId}
-                />
+                <>
+                  <MuxPlayer
+                    tokens={{
+                      thumbnail: tokens?.thumbnailToken,
+                      playback: tokens?.playbackToken,
+                      storyboard: tokens?.storyboardToken,
+                    }}
+                    streamType="on-demand"
+                    accentColor="#998ea7"
+                    className="aspect-[16/9] overflow-hidden rounded-md"
+                    playbackId={playbackId}
+                  />
+                  {isPublished && (
+                    <div className="absolute top-2 right-2 bg-gray-900/70 text-white rounded-md px-2 py-1 text-xs flex items-center">
+                      <LockIcon className="h-3 w-3 mr-1" />
+                      Published
+                    </div>
+                  )}
+                </>
               )}
 
               {videoStatus === "preparing" && (
@@ -243,60 +282,74 @@ const LessonVideoUpload = ({
               )}
 
               {videoStatus === "waiting" && (
-                <MuxUploaderDrop
-                  overlay
-                  overlayText="Drop to upload"
-                  muxUploader="my-uploader"
-                  className="h-full w-full rounded-md border border-dashed border-gray-700 [--overlay-background-color:#998ea7]"
-                >
-                  <MuxUploader
-                    noDrop
-                    noProgress
-                    noRetry
-                    noStatus
-                    id="my-uploader"
-                    className="hidden"
-                    endpoint={getUploadUrl as () => Promise<string>}
-                    onSuccess={handleUploadSuccess}
-                  ></MuxUploader>
-                  <p
-                    slot="heading"
-                    className="text-lg sm:text-xl font-semibold"
-                  >
-                    Drop a video file here to upload
-                  </p>
-                  <span
-                    slot="separator"
-                    className="mt-1 sm:mt-2 text-xs sm:text-sm italic text-muted-foreground"
-                  >
-                    — or —
-                  </span>
-                  <div className="w-full">
-                    <MuxUploaderStatus muxUploader="my-uploader"></MuxUploaderStatus>
-                    <MuxUploaderProgress
-                      className="text-xs sm:text-sm font-semibold text-gray-800"
+                <>
+                  {isPublished ? (
+                    <div className="text-center p-4">
+                      <LockIcon className="mx-auto h-8 w-8 text-gray-400 mb-2" />
+                      <h4 className="text-lg font-semibold text-gray-700">
+                        Video Locked
+                      </h4>
+                      <p className="mt-1 text-sm text-gray-500">
+                        This course is published and videos cannot be changed.
+                      </p>
+                    </div>
+                  ) : (
+                    <MuxUploaderDrop
+                      overlay
+                      overlayText="Drop to upload"
                       muxUploader="my-uploader"
-                      type="percentage"
-                    ></MuxUploaderProgress>
-                    <MuxUploaderProgress
-                      type="bar"
-                      muxUploader="my-uploader"
-                      className="[--progress-bar-fill-color:#998ea7] [--progress-bar-height:6px] lg:[--progress-bar-height:8px]"
-                    ></MuxUploaderProgress>
-                  </div>
-                  <MuxUploaderFileSelect
-                    muxUploader="my-uploader"
-                    className="mt-2 sm:mt-4"
-                  >
-                    <Button
-                      variant={"default"}
-                      className="h-8 sm:h-10 gap-1 text-xs sm:text-sm"
+                      className="h-full w-full rounded-md border border-dashed border-gray-700 [--overlay-background-color:#998ea7]"
                     >
-                      <PlusCircleIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                      <span>Select a file</span>
-                    </Button>
-                  </MuxUploaderFileSelect>
-                </MuxUploaderDrop>
+                      <MuxUploader
+                        noDrop
+                        noProgress
+                        noRetry
+                        noStatus
+                        id="my-uploader"
+                        className="hidden"
+                        endpoint={getUploadUrl as () => Promise<string>}
+                        onSuccess={handleUploadSuccess}
+                      ></MuxUploader>
+                      <p
+                        slot="heading"
+                        className="text-lg sm:text-xl font-semibold"
+                      >
+                        Drop a video file here to upload
+                      </p>
+                      <span
+                        slot="separator"
+                        className="mt-1 sm:mt-2 text-xs sm:text-sm italic text-muted-foreground"
+                      >
+                        — or —
+                      </span>
+                      <div className="w-full">
+                        <MuxUploaderStatus muxUploader="my-uploader"></MuxUploaderStatus>
+                        <MuxUploaderProgress
+                          className="text-xs sm:text-sm font-semibold text-gray-800"
+                          muxUploader="my-uploader"
+                          type="percentage"
+                        ></MuxUploaderProgress>
+                        <MuxUploaderProgress
+                          type="bar"
+                          muxUploader="my-uploader"
+                          className="[--progress-bar-fill-color:#998ea7] [--progress-bar-height:6px] lg:[--progress-bar-height:8px]"
+                        ></MuxUploaderProgress>
+                      </div>
+                      <MuxUploaderFileSelect
+                        muxUploader="my-uploader"
+                        className="mt-2 sm:mt-4"
+                      >
+                        <Button
+                          variant={"default"}
+                          className="h-8 sm:h-10 gap-1 text-xs sm:text-sm"
+                        >
+                          <PlusCircleIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                          <span>Select a file</span>
+                        </Button>
+                      </MuxUploaderFileSelect>
+                    </MuxUploaderDrop>
+                  )}
+                </>
               )}
             </div>
           </div>

@@ -3,8 +3,8 @@ import { AddAssetPlaybackIdData } from "@/app/actions/coursers/lesson/addAssetPl
 import { AddDurationData } from "@/app/actions/coursers/lesson/addLessonDuration";
 import { passthroughData } from "@/app/actions/mux/upload";
 import { mux } from "@/app/services/mux";
-
 import { headers } from "next/headers";
+import { revalidateTag } from "next/cache";
 
 export async function POST(req: Request) {
   console.log("Received webhook request from Mux");
@@ -41,7 +41,7 @@ export async function POST(req: Request) {
         status: data.status,
       };
       const lesson = await coursesAction.lessons.addAssetPlaybackId(updateData);
-
+      revalidateTag(`lesson-${passthrough.lessonId}`);
       if (!lesson.success) {
         return new Response("Error updating lesson", { status: 200 });
       }
@@ -62,6 +62,7 @@ export async function POST(req: Request) {
         status: data.status,
       };
       const lesson = await coursesAction.lessons.addLessonDuration(updateData);
+      revalidateTag(`lesson-${passthrough.lessonId}`);
       if (!lesson.success) {
         return new Response("Error updating lesson", { status: 200 });
       }
