@@ -13,6 +13,7 @@ import { Loader, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import QuickCategoryBar from "./components/QuickCategoryBar";
 
+
 type FilterState = {
   durations: string[];
   languages: string[];
