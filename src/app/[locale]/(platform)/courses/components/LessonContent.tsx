@@ -66,14 +66,17 @@ const LessonContent = ({ courseLessons }: { courseLessons: Lesson[] }) => {
             >
               <button
                 onClick={() => toggleLesson(lesson.lessonId)}
-                className="w-full flex justify-between items-center px-4 py-3 hover:bg-slate-50 transition-colors text-left"
+                className="w-full flex justify-between items-center px-4 py-3 hover:bg-slate-50/40 transition-colors text-left"
               >
                 <div className="flex items-center">
-                  <ChevronDown
-                    className={`h-5 w-5 mr-2 text-primary transition-transform duration-200 ${
-                      isExpanded ? "transform rotate-180" : ""
-                    }`}
-                  />
+                  <div className="p-1 bg-primary-light rounded-md mr-4">
+                    <ChevronDown
+                      className={`h-4 w-4  text-gray-800 transition-transform duration-200 ${
+                        isExpanded ? "transform rotate-180" : ""
+                      }`}
+                    />
+                  </div>
+
                   <span className="font-semibold text-gray-800">
                     {lesson.title}
                   </span>

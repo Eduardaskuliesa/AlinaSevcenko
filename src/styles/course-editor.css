@@ -1,0 +1,230 @@
+/* styles/course-editor.css */
+
+/* Basic editor styling */
+.course-content-wrapper {
+  position: relative;
+  width: 100%;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  background-color: white;
+}
+
+.course-editor-content {
+  min-height: 300px;
+  padding: 1rem;
+  outline: none;
+}
+
+/* Typography */
+.course-editor-content h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.course-editor-content h2 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 600;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.course-editor-content h3 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.course-editor-content p {
+  margin: 0px;
+  line-height: 1.5;
+}
+.course-content-wrapper p {
+  margin: 0px;
+  line-height: 1.5;
+}
+
+/* Lists */
+.course-editor-content ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+.tiptap.ProseMirror p:not(:first-child) {
+  margin-top: 0rem;
+}
+
+.course-editor-content ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.course-editor-content li {
+  margin-bottom: 0.25rem;
+}
+
+/* Blockquote */
+.course-editor-content blockquote {
+  border-left: 3px solid #e2e8f0;
+  padding-left: 1rem;
+  margin-left: 0;
+  margin-right: 0;
+  font-style: italic;
+  color: #4a5568;
+}
+
+/* Links */
+.course-editor-content a {
+  color: #3182ce;
+  text-decoration: underline;
+}
+
+/* Text formatting */
+.course-editor-content strong {
+  font-weight: 700;
+}
+
+.course-editor-content em {
+  font-style: italic;
+}
+
+.course-editor-content u {
+  text-decoration: underline;
+}
+
+/* Text alignment */
+.course-editor-content .text-left {
+  text-align: left;
+}
+
+.course-editor-content .text-center {
+  text-align: center;
+}
+
+.course-editor-content .text-right {
+  text-align: right;
+}
+
+/* Toolbar animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Toolbar styling */
+.tiptap-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-bottom: none;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+  padding: 0.25rem;
+  height: var(--tt-toolbar-height, 2.75rem);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.tiptap-toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+}
+
+.tiptap-toolbar-separator {
+  width: 1px;
+  height: 1.5rem;
+  background-color: #e2e8f0;
+  margin: 0 0.5rem;
+}
+
+.tiptap-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2rem;
+  width: 2rem;
+  border-radius: 0.25rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #4a5568;
+  transition: background-color 0.2s ease;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.tiptap-button:hover {
+  background-color: #f7fafc;
+}
+
+.tiptap-button[data-active="true"] {
+  color: #3182ce;
+  background-color: #ebf8ff;
+}
+
+.tiptap-button-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.tiptap-spacer {
+  flex: 1;
+}
+
+/* Dropdown menu styles */
+.tiptap-dropdown-menu {
+  position: relative;
+  display: inline-block;
+}
+
+.tiptap-dropdown-menu-content {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.25rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  min-width: 10rem;
+  z-index: 100;
+  animation: fadeIn 0.2s ease;
+}
+
+.tiptap-dropdown-menu-item {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.tiptap-dropdown-menu-item:hover {
+  background-color: #f7fafc;
+}
+
+.tiptap-dropdown-menu-item[data-active="true"] {
+  background-color: #ebf8ff;
+  color: #3182ce;
+}

@@ -1,7 +1,7 @@
 import React from "react";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { AlignLeft } from "lucide-react";
+import { CourseEditor } from "@/components/tiptap-templates/course-editor";
 
 interface FullDescriptionProps {
   initialValue?: string;
@@ -12,10 +12,6 @@ const FullDescription: React.FC<FullDescriptionProps> = ({
   initialValue = "",
   onChange,
 }) => {
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    onChange(e.target.value);
-  };
-
   return (
     <div className="mb-4 lg:mb-8">
       <Label
@@ -27,13 +23,10 @@ const FullDescription: React.FC<FullDescriptionProps> = ({
         </div>
         Full Description
       </Label>
-      <div className="border-2 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-secondary focus-within:border-transparent transition-all bg-white">
-        <Textarea
-          id="fullDescription"
-          placeholder="Provide a detailed description of your course content, learning outcomes, and target audience"
-          className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 min-h-40 lg:min-h-60 p-3 lg:p-4 text-sm lg:text-base resize-none bg-white"
-          value={initialValue}
-          onChange={handleChange}
+      <div className="border-2 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-secondary focus-within:border-transparent transition-all">
+        <CourseEditor 
+          initialValue={initialValue} 
+          onChange={onChange} 
         />
       </div>
     </div>
