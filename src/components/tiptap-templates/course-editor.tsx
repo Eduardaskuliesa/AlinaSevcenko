@@ -33,7 +33,6 @@ import { MarkButton } from "@/components/tiptap-ui/mark-button";
 import { TextAlignButton } from "@/components/tiptap-ui/text-align-button";
 import { UndoRedoButton } from "@/components/tiptap-ui/undo-redo-button";
 
-import { useCursorVisibility } from "@/hooks/use-cursor-visibility";
 
 import "@/styles/course-editor.css";
 import { Spacer } from "@/components/tiptap-ui-primitive/spacer";

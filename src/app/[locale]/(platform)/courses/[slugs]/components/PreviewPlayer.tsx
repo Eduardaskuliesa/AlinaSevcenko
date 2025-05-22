@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import MuxPlayer from "@mux/mux-player-react";
 import { getOrGenerateTokens } from "@/app/utils/media-tokens";
 import Image from "next/image";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Lesson } from "@/app/types/course";
 
 const PreviewPlayer = ({ lessonData }: { lessonData: Lesson }) => {
@@ -12,38 +11,19 @@ const PreviewPlayer = ({ lessonData }: { lessonData: Lesson }) => {
     playbackToken: string;
     storyboardToken: string;
   }>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isTokensLoading, setIsTokensLoading] = useState(true);
 
   useEffect(() => {
     const loadTokens = async () => {
-      setIsLoading(true);
-
       if (lessonData?.playbackId) {
-        try {
-          const fetchedTokens = await getOrGenerateTokens(
-            lessonData.playbackId
-          );
-          setTokens(fetchedTokens);
-        } catch (error) {
-          console.error("Failed to get tokens:", error);
-        } finally {
-          setIsLoading(false);
-        }
-      } else {
-        setIsLoading(false);
+        const fetchedTokens = await getOrGenerateTokens(lessonData.playbackId);
+        setTokens(fetchedTokens);
       }
+      setIsTokensLoading(false);
     };
 
     loadTokens();
   }, [lessonData?.playbackId]);
-
-  if (isLoading) {
-    return (
-      <div className="aspect-[16/9] w-full relative ">
-        <Skeleton className="w-full h-full bg-slate-400 animate-pulse" />
-      </div>
-    );
-  }
 
   return (
     <div className="aspect-[16/9] w-full relative  rounded-lg">
@@ -73,6 +53,11 @@ const PreviewPlayer = ({ lessonData }: { lessonData: Lesson }) => {
           style={{ height: "100%", width: "100%" }}
           playbackId={lessonData.playbackId}
         />
+      )}
+      {isTokensLoading && (
+        <div className="absolute top-2 right-2 bg-black/50 rounded px-2 py-1">
+          <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
+        </div>
       )}
     </div>
   );

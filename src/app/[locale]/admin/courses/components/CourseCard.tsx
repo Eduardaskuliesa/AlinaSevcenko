@@ -98,7 +98,12 @@ const CourseCard = ({ course }: CourseCardProps) => {
             : "Course unpublished successfully",
           { id: toastId }
         );
-        queryClient.invalidateQueries({ queryKey: ["courses"] });
+        queryClient.invalidateQueries({
+          queryKey: ["course", course.courseId],
+        });
+          queryClient.invalidateQueries({
+          queryKey: ["courses"],
+        });
       }
     } catch (error) {
       console.error("Error publishing course:", error);
