@@ -1,13 +1,14 @@
-"use client";
 import React from "react";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import SocialLoginButtons from "../register/components/SocialLoginButtons";
 import LoginForm from "./components/LoginForm";
 import CardHeader from "../components/CardHeader";
 import CardWrapper from "../components/CardWrapper";
 
-const Page = () => {
-  const t = useTranslations("LoginPage");
+export const dynamic = "force-static";
+
+const Page = async () => {
+  const t = await getTranslations("LoginPage");
 
   return (
     <CardWrapper>

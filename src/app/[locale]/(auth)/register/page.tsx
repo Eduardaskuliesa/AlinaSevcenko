@@ -1,16 +1,24 @@
-"use client";
 import React from "react";
 import RegisterForm from "./components/RegisterForm";
-import { useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import CardWrapper from "../components/CardWrapper";
 
-const Page = () => {
-  const t = useTranslations("RegisterPage");
-  const searchParams = useSearchParams();
+export const dynamic = "force-static";
 
-  const status = searchParams.get("status");
-  const email = searchParams.get("email");
+interface PageProps {
+  searchParams: Promise<{
+    status?: string;
+    email?: string;
+  }>;
+}
+
+
+export default async function Page({ searchParams }: PageProps) {
+  const t = await getTranslations("RegisterPage");
+  const params = await searchParams;
+  
+  const status = params.status;
+  const email = params.email;
 
   return (
     <CardWrapper>
@@ -25,7 +33,7 @@ const Page = () => {
               </p>
             </div>
             <hr className="bg-gray-600 h-0.5 mt-4" />
-            <p className="text-violet-800 mt-6 underline text-sm ">
+            <p className="text-violet-800 mt-6 underline text-sm">
               <span className="hover:cursor-pointer">
                 {t("sendAnotherLink")}
               </span>
@@ -43,6 +51,4 @@ const Page = () => {
       </div>
     </CardWrapper>
   );
-};
-
-export default Page;
+}
