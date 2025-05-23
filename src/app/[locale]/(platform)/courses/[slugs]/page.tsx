@@ -5,7 +5,8 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/app/lib/getQueryClient";
 
 export const dynamicParams = false;
-export const revalidate = 72000; // 20 hours revalidation
+export const revalidate = 72000;
+export const dynamic = "force-static";
 
 export async function generateStaticParams() {
   const slugsData = await getSlugs();

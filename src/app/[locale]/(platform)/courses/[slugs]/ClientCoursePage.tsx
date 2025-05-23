@@ -14,6 +14,9 @@ export default function CoursePageClient({ slugs }: CoursePageClientProps) {
   const { data } = useQuery({
     queryKey: ["course", slugs],
     queryFn: () => getCourseWithPreviewLesson(slugs),
+    staleTime: 1000 * 60 * 60 * 2,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
 
   if (!data?.course) return <div>Course not found</div>;
