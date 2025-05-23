@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import MuxPlayer from "@mux/mux-player-react";
+import MuxPlayer from "@mux/mux-player-react/lazy";
 import { getOrGenerateTokens } from "@/app/utils/media-tokens";
 import Image from "next/image";
 import { Lesson } from "@/app/types/course";
