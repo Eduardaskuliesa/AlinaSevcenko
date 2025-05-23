@@ -33,7 +33,7 @@ export default async function CourseIdPage({
   const { slugs } = await params;
   const queryClient = getQueryClient();
 
-  queryClient.prefetchQuery({
+  await queryClient.prefetchQuery({
     queryKey: ["course", slugs],
     queryFn: () => getCourseWithPreviewLesson(slugs),
   });
