@@ -1,21 +1,24 @@
-'use client';
-import { BackButton } from '../components/AnimteBackButton';
-import PreviewPlayer from './components/PreviewPlayer';
-import LessonDescription from '../components/LessonDescription';
-import LessonContent from '../components/LessonContent';
-import { Course, Lesson } from '@/app/types/course';
+"use client";
+import { BackButton } from "../components/AnimteBackButton";
+import PreviewPlayer from "./components/PreviewPlayer";
+import LessonDescription from "../components/LessonDescription";
+import LessonContent from "../components/LessonContent";
+import { useQuery } from "@tanstack/react-query";
+import { getCourseWithPreviewLesson } from "@/app/actions/coursers/course/getCourseWithPrevie";
 
 interface CoursePageClientProps {
-  course: Course;
-  previewLesson: Lesson;
-  courseLessons: Lesson[];
+  slugs: string;
 }
 
-export default function CoursePageClient({ 
-  course, 
-  previewLesson, 
-  courseLessons 
-}: CoursePageClientProps) {
+export default function CoursePageClient({ slugs }: CoursePageClientProps) {
+  const { data } = useQuery({
+    queryKey: ["course", slugs],
+    queryFn: () => getCourseWithPreviewLesson(slugs),
+  });
+
+  if (!data?.course) return <div>Course not found</div>;
+
+  const { course, previewLesson, courseLessons } = data;
   return (
     <>
       <header className="h-[5rem] bg-primary w-full flex">

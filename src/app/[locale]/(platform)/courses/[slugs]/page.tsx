@@ -1,6 +1,8 @@
 import { getSlugs } from "@/app/actions/coursers/course/getSlugs";
 import { getCourseWithPreviewLesson } from "@/app/actions/coursers/course/getCourseWithPrevie";
 import CoursePageClient from "./ClientCoursePage";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { getQueryClient } from "@/app/lib/getQueryClient";
 
 export const dynamicParams = false;
 export const revalidate = 72000; // 20 hours revalidation
@@ -29,20 +31,16 @@ export default async function CourseIdPage({
   params: Promise<{ locale: string; slugs: string }>;
 }) {
   const { slugs } = await params;
-  const data = await getCourseWithPreviewLesson(slugs);
-   
+  const queryClient = getQueryClient();
 
-  if (!data || !data.course || !data.previewLesson) {
-    return <div>Course not found</div>;
-  }
-
- const { course, previewLesson, courseLessons } = data;
+  queryClient.prefetchQuery({
+    queryKey: ["course", slugs],
+    queryFn: () => getCourseWithPreviewLesson(slugs),
+  });
 
   return (
-    <CoursePageClient
-      course={course}
-      previewLesson={previewLesson}
-      courseLessons={courseLessons}
-    />
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <CoursePageClient slugs={slugs} />
+    </HydrationBoundary>
   );
 }
