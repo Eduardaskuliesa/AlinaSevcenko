@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import MuxPlayer from "@mux/mux-player-react/lazy";
 import { getOrGenerateTokens } from "@/app/utils/media-tokens";
-import Image from "next/image";
 import { Lesson } from "@/app/types/course";
 
 const PreviewPlayer = ({ lessonData }: { lessonData: Lesson }) => {
@@ -28,18 +27,7 @@ const PreviewPlayer = ({ lessonData }: { lessonData: Lesson }) => {
   return (
     <div className="aspect-[16/9] w-full relative  rounded-lg">
       {!tokens || !lessonData?.playbackId ? (
-        <>
-          {lessonData?.blurPlaceholder && (
-            <Image
-              alt="Lesson placeholder"
-              src={lessonData.blurPlaceholder}
-              fill
-              sizes="100vw"
-              className="object-cover"
-              priority
-            />
-          )}
-        </>
+        <>{lessonData?.blurPlaceholder && <div className="bg-black" />}</>
       ) : (
         <MuxPlayer
           tokens={{
