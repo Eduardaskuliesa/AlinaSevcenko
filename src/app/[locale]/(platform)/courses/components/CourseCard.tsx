@@ -1,11 +1,12 @@
 "use client";
 import Image from "next/image";
-import { Heart, Clock, BookOpen, ShoppingBasket } from "lucide-react";
+import { Clock, BookOpen } from "lucide-react";
 import { convertTime } from "@/app/utils/converToMinutes";
 import { Badge } from "@/components/ui/badge";
 import { FilteredCourse } from "@/app/types/course";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import ActionButtonts from "./ActionButtonts";
 
 interface CourseCardProps {
   course: FilteredCourse;
@@ -93,15 +94,8 @@ const CourseCard = ({ course, lowestPrice }: CourseCardProps) => {
               ))}
             </div>
 
-            {/* Icons on the right */}
-            <div className="flex items-center gap-2">
-              <button className="p-2 rounded-full hover:bg-slate-100 bg-white shadow-sm border-primary border  transition-colors">
-                <Heart className="h-5 w-5 text-primary transition-colors" />
-              </button>
-              <button className="p-2 rounded-full hover:bg-slate-100 bg-white shadow-sm border-primary border transition-colors">
-                <ShoppingBasket className="h-5 w-5  text-primary transition-colors" />
-              </button>
-            </div>
+            {/* Action buttons */}
+            <ActionButtonts course={course} lowestPrice={lowestPrice} />
           </div>
         </div>
       </motion.div>

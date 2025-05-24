@@ -17,6 +17,7 @@ import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import WhisList from "./WhisList";
 
 const PlatformNavBar = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -101,27 +102,7 @@ const PlatformNavBar = () => {
           >
             <Heart className="w-5 h-5" />
           </div>
-
-          <div
-            className={cn(
-              "absolute right-0 mt-2 rounded-md shadow-lg bg-white z-10 border border-primary-light  w-64",
-              "transition-all duration-200",
-              openDropdown === "wishlist"
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-1 pointer-events-none invisible"
-            )}
-          >
-            <div className="py-4">
-              <div className="text-center">
-                <h3 className="text-base font-medium mb-2">
-                  Your wishlist is empty
-                </h3>
-                <p className="text-pink-900 font-medium text-base">
-                  Explore coursers
-                </p>
-              </div>
-            </div>
-          </div>
+          <WhisList openDropdown={openDropdown} setOpenDropdown={setOpenDropdown}></WhisList>
         </div>
 
         {/* Cart Dropdown */}
