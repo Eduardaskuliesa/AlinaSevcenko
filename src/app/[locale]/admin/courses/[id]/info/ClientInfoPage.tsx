@@ -38,6 +38,8 @@ const ClientInfoPage: React.FC = () => {
   });
 
   const course = courseData?.cousre;
+  
+  console.log("courseData", courseData?.cousre?.description);
 
   const allCategories = (categoriesData?.categories as Category[]) || [];
 

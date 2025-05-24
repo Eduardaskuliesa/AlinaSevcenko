@@ -105,6 +105,7 @@ export async function toggleAccessPlanStatus(
     logger.success(`Access plan ${planId} status updated successfully`);
     revalidateTag(`course-${courseId}`);
     revalidateTag(`courses`);
+    revalidateTag(`course-client-${courseId}`);
     revalidateTag("client-courses");
 
     return {

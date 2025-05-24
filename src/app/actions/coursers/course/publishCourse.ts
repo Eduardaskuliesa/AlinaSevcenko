@@ -56,6 +56,7 @@ export async function publishCourse(courseId: string, isPublished: boolean) {
     await dynamoDb.send(updateCommand);
     revalidateTag(`course-${courseId}`);
     revalidateTag(`courses`);
+    revalidateTag(`course-client-${courseId}`);
     revalidateTag("client-courses");
 
     return {

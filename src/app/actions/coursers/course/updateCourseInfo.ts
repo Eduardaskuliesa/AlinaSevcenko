@@ -3,6 +3,7 @@ import { Course, CourseUpdateInfoData } from "@/app/types/course";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { revalidateTag } from "next/cache";
+import DOMPurify from "isomorphic-dompurify";
 import { logger } from "@/app/utils/logger";
 import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 
@@ -40,6 +41,30 @@ export async function updateCourseInfo(
       };
     }
 
+    const sanitizedDescription = DOMPurify.sanitize(
+      courseData.fullDescription,
+      {
+        ALLOWED_TAGS: [
+          "p",
+          "br",
+          "strong",
+          "em",
+          "u",
+          "h1",
+          "h2",
+          "h3",
+          "ul",
+          "ol",
+          "li",
+          "a",
+          "mark",
+          "blockquote",
+        ],
+        ALLOWED_ATTR: ["href", "class", "style", "target", "data-color", "data-highlight"],
+        FORBID_TAGS: ["script", "iframe", "object", "embed"],
+      }
+    );
+
     const timestamp = new Date().toISOString();
     const DEFAULT_PLACEHOLDER = "/placeholder.svg";
 
@@ -70,7 +95,7 @@ export async function updateCourseInfo(
         ":title": courseData.courseTitle,
         ":slug": courseData.slug,
         ":shortDescription": courseData.shortDescription,
-        ":description": courseData.fullDescription,
+        ":description": sanitizedDescription,
         ":thumbnailImage": courseData.thumbnailSrc,
         ":categories": simplifiedCategories,
         ":updatedAt": timestamp,
@@ -127,6 +152,7 @@ export async function updateCourseInfo(
     ]);
     logger.success("Course info updated successfully");
     revalidateTag(`course-${courseId}`);
+    revalidateTag(`course-client-${courseId}`);
     revalidateTag(`courses`);
     revalidateTag("client-courses");
 

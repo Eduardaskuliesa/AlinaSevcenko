@@ -1,5 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 
+import containerQueries from "@tailwindcss/container-queries";
+
 module.exports = {
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
@@ -141,5 +143,5 @@ module.exports = {
       "out-zoom": "fade-out 0.2s ease-in, zoom-out 0.2s ease-in",
     },
   },
-  plugins: [],
+  plugins: [containerQueries],
 };

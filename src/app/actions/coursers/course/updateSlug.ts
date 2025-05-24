@@ -40,6 +40,8 @@ export async function updateSlug(
 
     await dynamoDb.send(updateCourseCommand);
     revalidateTag("client-courses");
+    revalidateTag(`course-client-${courseId}`);
+    revalidateTag(`course-${courseId}`);
     return {
       success: true,
       message: "Slug updated successfully",

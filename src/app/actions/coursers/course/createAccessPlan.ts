@@ -58,6 +58,8 @@ export async function createAccessPlan(
     logger.success("Course access plans updated successfully");
     revalidateTag(`course-${courseId}`);
     revalidateTag(`courses`);
+    revalidateTag(`course-client-${courseId}`);
+    revalidateTag("client-courses");
 
     return {
       success: true,

@@ -40,7 +40,7 @@ const LessonContent = ({ courseLessons }: { courseLessons: Lesson[] }) => {
   );
 
   return (
-    <div className="mt-4 border-b-2 border-primary pb-6">
+    <div className="mt-4 bg-white border-primary-light border rounded-lg p-2">
       <h2 className="text-2xl text-gray-800 font-bold mb-2">Course content</h2>
 
       <div className="flex justify-between items-center mb-3 text-sm px-2">
@@ -55,7 +55,7 @@ const LessonContent = ({ courseLessons }: { courseLessons: Lesson[] }) => {
         </button>
       </div>
 
-      <div className="border border-primary-light rounded-md overflow-hidden bg-white">
+      <div className="border border-primary-light rounded-md overflow-hidden bg-gray-50">
         {filteredLessons.map((lesson, index) => {
           const isExpanded = expandedLessons[lesson.lessonId] || false;
 

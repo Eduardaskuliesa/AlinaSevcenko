@@ -12,6 +12,8 @@ const FullDescription: React.FC<FullDescriptionProps> = ({
   initialValue = "",
   onChange,
 }) => {
+
+  console.log("FullDescription initialValue:", initialValue);
   return (
     <div className="mb-4 lg:mb-8">
       <Label

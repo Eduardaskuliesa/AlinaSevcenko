@@ -38,6 +38,7 @@ export async function updateCourseSettings(
     await dynamoDb.send(updateCommand);
 
     revalidateTag(`course-${courseId}`);
+    revalidateTag(`course-client-${courseId}`);
     revalidateTag(`courses`);
     revalidateTag(`client-courses`);
   } catch (error) {
