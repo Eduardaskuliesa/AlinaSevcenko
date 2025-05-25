@@ -114,6 +114,18 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
     return `${days} Days`;
   };
 
+  const getDynamicHeight = (plansCount: number) => {
+    switch (plansCount) {
+      case 1:
+        return 380;
+      case 2:
+        return 460;
+      case 3:
+      default:
+        return 540;
+    }
+  };
+
   if (!activeAccessPlans.length) {
     return (
       <div className="w-[30%] bg-white max-h-[540px] p-4 rounded-lg">
@@ -125,7 +137,10 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
   }
 
   return (
-    <div className="w-[30%] mt-6 sticky top-[2rem] bg-white border-primary-light/60 border-2 h-full max-h-[540px] rounded-lg overflow-hidden">
+    <div
+      style={{ maxHeight: `${getDynamicHeight(activeAccessPlans.length)}px` }}
+      className="w-[30%] mt-6 sticky top-[2rem] bg-white border-primary-light/60 border-2 rounded-lg"
+    >
       <div className="p-4 h-full overflow-y-auto overflow-hidden">
         {/* Access Plans Slider */}
         <div className="space-y-3">
@@ -172,7 +187,6 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
           </div>
         </div>
 
-        {/* Selected Plan Price */}
         {selectedPlan && (
           <div className="text-center py-4">
             <div className="text-3xl font-bold text-gray-800">
@@ -184,7 +198,6 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
           </div>
         )}
 
-        {/* Action Buttons */}
         <div className="space-y-3">
           <div className="flex gap-2">
             <motion.button
