@@ -31,14 +31,17 @@ const ActionButtons = ({
     if (isInWishlist) {
       removeFromWishlist(course.courseId);
     } else {
-      addToWishlist({
-        courseId: course.courseId,
-        title: course.title,
-        slug: course.slug,
-        price: lowestPrice || 0,
-        imageUrl: course.thumbnailImage || "",
-        accessDuration: course.duration || 0,
-      });
+      addToWishlist(
+        {
+          courseId: course.courseId,
+          title: course.title,
+          slug: course.slug,
+          price: lowestPrice || 0,
+          imageUrl: course.thumbnailImage || "",
+          accessDuration: course.duration || 0,
+        },
+        true
+      ); // true = "from" price
     }
 
     const newHearts = Array.from({ length: 5 }, (_, i) => ({
@@ -73,14 +76,17 @@ const ActionButtons = ({
     if (isInCartList) {
       removeFromCart(course.courseId);
     } else {
-      addToCart({
-        courseId: course.courseId,
-        title: course.title,
-        slug: course.slug,
-        price: lowestPrice || 0,
-        imageUrl: course.thumbnailImage || "",
-        accessDuration: course.duration || 0,
-      });
+      addToCart(
+        {
+          courseId: course.courseId,
+          title: course.title,
+          slug: course.slug,
+          price: lowestPrice || 0,
+          imageUrl: course.thumbnailImage || "",
+          accessDuration: course.duration || 0,
+        },
+        true
+      ); // true = "from" price
     }
   };
 

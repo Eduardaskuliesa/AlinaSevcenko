@@ -16,7 +16,7 @@ function WishListItem({ item, isLast }: { item: CartItem; isLast: boolean }) {
     setIsRemoving(true);
 
     setTimeout(() => {
-      addToCart(item);
+      addToCart(item, item.isFromPrice);
       removeFromWishlist(item.courseId);
     }, 200);
   };
@@ -53,7 +53,7 @@ function WishListItem({ item, isLast }: { item: CartItem; isLast: boolean }) {
             {item.title}
           </h3>
           <div className="text-sm text-gray-600 font-medium">
-            From ${item.price.toFixed(2)}
+            {item.isFromPrice ? "From " : ""}${item.price.toFixed(2)}
           </div>
         </div>
       </div>

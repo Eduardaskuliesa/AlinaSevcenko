@@ -5,4 +5,5 @@ export interface CartItem {
   price: number;
   imageUrl: string;
   accessDuration: number;
+  isFromPrice?: boolean;
 }

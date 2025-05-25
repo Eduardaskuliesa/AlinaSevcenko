@@ -24,7 +24,7 @@ function CartListItem({ item, isLast }: { item: CartItem; isLast: boolean }) {
               {item.title}
             </h3>
             <div className="text-sm text-gray-600 font-medium">
-              From ${item.price.toFixed(2)}
+              {item.isFromPrice ? "From " : ""}${item.price.toFixed(2)}
             </div>
           </div>
         </div>
@@ -47,7 +47,7 @@ function GoToCartButton({
       <p className="text-lg font-medium text-gray-800 mb-2">
         Total:{totalPrice}$
       </p>
-      <Link onClick={closeDropdown} href={"/my-courses/wishlist"}>
+      <Link onClick={closeDropdown} href={"/cart"}>
         <motion.button
           whileTap={{ scale: 0.96, translateY: 2 }}
           className="w-full bg-primary-light border hover:bg-primary-light/80 text-gray-800 font-medium py-1 rounded-md transition-colors"

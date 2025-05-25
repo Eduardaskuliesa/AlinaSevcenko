@@ -5,6 +5,7 @@ import LessonDescription from "../components/LessonDescription";
 import LessonContent from "../components/LessonContent";
 import { useQuery } from "@tanstack/react-query";
 import { getCourseWithPreviewLesson } from "@/app/actions/coursers/course/getCourseWithPrevie";
+import StickyCartOptions from "./components/StickyCartOptions";
 
 interface CoursePageClientProps {
   slugs: string;
@@ -32,14 +33,14 @@ export default function CoursePageClient({ slugs }: CoursePageClientProps) {
         </div>
       </header>
 
-      <section className="flex gap-8 mx-auto max-w-7xl">
+      <section className="flex gap-8 mx-auto max-w-7xl h-[200vh]">
         <div className="w-[70%] h-auto px-4 py-4">
           <BackButton />
           {previewLesson && <PreviewPlayer lessonData={previewLesson} />}
           <LessonDescription courseData={course} />
           <LessonContent courseLessons={courseLessons ?? []} />
         </div>
-        <div className="w-[30%] bg-slate-900 max-h-[550px]"></div>
+        <StickyCartOptions courseData={course}></StickyCartOptions>
       </section>
     </>
   );

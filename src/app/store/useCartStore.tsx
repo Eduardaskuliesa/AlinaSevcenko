@@ -14,11 +14,11 @@ interface CartState {
 
   //Actions
   setHydrated: (hydrated: boolean) => void;
-  addToCart: (item: CartItem) => void;
+  addToCart: (item: CartItem, isFromPrice?: boolean) => void;
   removeFromCart: (courseId: string) => void;
   clearCart: () => void;
   updateCartItem: (courseId: string, updates: Partial<CartItem>) => void;
-  addToWishlist: (item: CartItem) => void;
+  addToWishlist: (item: CartItem, isFromPrice?: boolean) => void;
   removeFromWishlist: (courseId: string) => void;
   clearWishlist: () => void;
 }
@@ -38,7 +38,7 @@ export const useCartStore = create<CartState>()(
           hydrated,
         })),
 
-      addToCart: (item: CartItem) => {
+      addToCart: (item: CartItem, isFromPrice = false) => {
         set((state) => {
           const existingItem = state.cartItems.find(
             (cartItem) => cartItem.courseId === item.courseId
@@ -49,6 +49,7 @@ export const useCartStore = create<CartState>()(
           } else {
             state.cartItems.push({
               ...item,
+              isFromPrice, // Store whether this is a "from" price or exact price
             });
           }
 
@@ -100,7 +101,7 @@ export const useCartStore = create<CartState>()(
         });
       },
 
-      addToWishlist: (item: CartItem) => {
+      addToWishlist: (item: CartItem, isFromPrice = false) => {
         set((state) => {
           const existingItem = state.wishlistItems.find(
             (wishlistItem) => wishlistItem.courseId === item.courseId
@@ -109,6 +110,7 @@ export const useCartStore = create<CartState>()(
           if (!existingItem) {
             state.wishlistItems.push({
               ...item,
+              isFromPrice,
             });
           }
         });
