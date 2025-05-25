@@ -29,9 +29,10 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
     cartItems,
   } = useCartStore();
 
-  const activeAccessPlans = courseData.accessPlans.filter(
-    (plan) => plan.isActive
-  );
+  const activeAccessPlans = courseData.accessPlans
+    .filter((plan) => plan.isActive)
+    .sort((a, b) => a.price - b.price); 
+
   const [selectedPlan, setSelectedPlan] = useState<AccessPlan>(
     activeAccessPlans[0] || null
   );
@@ -142,7 +143,6 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
       className="w-[30%] mt-6 sticky top-[2rem] bg-white border-primary-light/60 border-2 rounded-lg"
     >
       <div className="p-4 h-full overflow-y-auto overflow-hidden">
-        {/* Access Plans Slider */}
         <div className="space-y-3">
           <h3 className="font-semibold text-lg text-gray-800">
             Choose Your Access Plan
