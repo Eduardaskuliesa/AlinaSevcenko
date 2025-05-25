@@ -18,10 +18,13 @@ import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import WhisList from "./WhisList";
+import CartList from "./CartList";
+import { useCartStore } from "@/app/store/useCartStore";
 
 const PlatformNavBar = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const { totalItems } = useCartStore();
   const router = useRouter();
   useEffect(() => {
     return () => {
@@ -102,7 +105,10 @@ const PlatformNavBar = () => {
           >
             <Heart className="w-5 h-5" />
           </div>
-          <WhisList openDropdown={openDropdown} setOpenDropdown={setOpenDropdown}></WhisList>
+          <WhisList
+            openDropdown={openDropdown}
+            setOpenDropdown={setOpenDropdown}
+          ></WhisList>
         </div>
 
         {/* Cart Dropdown */}
@@ -113,35 +119,24 @@ const PlatformNavBar = () => {
         >
           <div
             className={cn(
-              "flex items-center p-2 rounded-md  cursor-pointer transition-colors duration-200",
+              "flex items-center p-2 rounded-md relative  cursor-pointer transition-colors duration-200",
               openDropdown === "cart"
                 ? "bg-secondary text-orange-900"
                 : "hover:bg-secondary hover:text-orange-900"
             )}
           >
             <ShoppingCart className="w-5 h-5" />
+            {totalItems > 0 && (
+              <div className="absolute top-0 -right-1 font-medium h-5 w-5 flex items-center justify-center text-sm bg-primary text-gray-100 rounded-full">
+                {totalItems}
+              </div>
+            )}
           </div>
 
-          <div
-            className={cn(
-              "absolute right-0 mt-2 rounded-md shadow-lg bg-white z-10 border border-primary-light w-64",
-              "transition-all duration-200",
-              openDropdown === "cart"
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-1 pointer-events-none invisible"
-            )}
-          >
-            <div className="py-4">
-              <div className="text-center">
-                <h3 className="text-base font-medium mb-2">
-                  Your cart is empty
-                </h3>
-                <p className="text-pink-900 font-medium text-base">
-                  Keep shoping
-                </p>
-              </div>
-            </div>
-          </div>
+          <CartList
+            openDropdown={openDropdown}
+            setOpenDropdown={setOpenDropdown}
+          ></CartList>
         </div>
 
         {/* Avatar Dropdown */}

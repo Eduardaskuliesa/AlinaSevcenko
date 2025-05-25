@@ -27,7 +27,7 @@ const PreviewPlayer = ({ lessonData }: { lessonData: Lesson }) => {
   return (
     <div className="aspect-[16/9] w-full relative  rounded-lg">
       {!tokens || !lessonData?.playbackId ? (
-        <>{lessonData?.blurPlaceholder && <div className="bg-black" />}</>
+        <>{lessonData?.blurPlaceholder && <div className="bg-black w-full h-full" />}</>
       ) : (
         <MuxPlayer
           tokens={{

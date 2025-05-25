@@ -12,8 +12,14 @@ const ActionButtons = ({
   course: FilteredCourse;
   lowestPrice: number | null;
 }) => {
-  const { addToCart, addToWishlist, removeFromWishlist, wishlistItems } =
-    useCartStore();
+  const {
+    addToCart,
+    removeFromCart,
+    addToWishlist,
+    removeFromWishlist,
+    wishlistItems,
+    cartItems,
+  } = useCartStore();
   const [hearts, setHearts] = useState<{ id: number; x: number; y: number }[]>(
     []
   );
@@ -21,13 +27,14 @@ const ActionButtons = ({
   const handleHeartClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    
+
     if (isInWishlist) {
       removeFromWishlist(course.courseId);
     } else {
       addToWishlist({
         courseId: course.courseId,
         title: course.title,
+        slug: course.slug,
         price: lowestPrice || 0,
         imageUrl: course.thumbnailImage || "",
         accessDuration: course.duration || 0,
@@ -55,17 +62,26 @@ const ActionButtons = ({
     (item) => item.courseId === course.courseId
   );
 
+  const isInCartList = cartItems.some(
+    (item) => item.courseId === course.courseId
+  );
+
   const handleCartClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
 
-    addToCart({
-      courseId: course.courseId,
-      title: course.title,
-      price: lowestPrice || 0,
-      imageUrl: course.thumbnailImage || "",
-      accessDuration: course.duration || 0,
-    });
+    if (isInCartList) {
+      removeFromCart(course.courseId);
+    } else {
+      addToCart({
+        courseId: course.courseId,
+        title: course.title,
+        slug: course.slug,
+        price: lowestPrice || 0,
+        imageUrl: course.thumbnailImage || "",
+        accessDuration: course.duration || 0,
+      });
+    }
   };
 
   return (
@@ -115,9 +131,16 @@ const ActionButtons = ({
       <motion.button
         whileTap={{ scale: 0.9 }}
         onClick={handleCartClick}
-        className="p-2 rounded-full hover:bg-slate-100 bg-white shadow-sm border-primary border transition-colors"
+        className={`p-2 rounded-full hover:bg-slate-100 shadow-sm border-primary border transition-colors ${
+          isInCartList ? "bg-primary/10" : "bg-white"
+        }`}
       >
-        <ShoppingBasket className="h-5 w-5 text-primary transition-colors" />
+        <ShoppingBasket
+          className={`h-5 w-5 transition-colors ${
+            isInCartList ? "text-primary fill-current" : "text-primary"
+          }`}
+          fill={isInCartList ? "currentColor" : "none"}
+        />
       </motion.button>
     </div>
   );

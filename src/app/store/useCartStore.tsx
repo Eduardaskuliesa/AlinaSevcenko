@@ -8,6 +8,7 @@ interface CartState {
   cartItems: CartItem[];
   wishlistItems: CartItem[];
   totalPrice: number;
+  totalItems: number;
   hydrated: boolean;
   loading: boolean;
 
@@ -28,6 +29,7 @@ export const useCartStore = create<CartState>()(
       cartItems: [],
       wishlistItems: [],
       totalPrice: 0,
+      totalItems: 0,
       hydrated: false,
       loading: false,
 
@@ -54,6 +56,7 @@ export const useCartStore = create<CartState>()(
             (sum, cartItem) => sum + cartItem.price,
             0
           );
+          state.totalItems = state.cartItems.length;
         });
       },
 
@@ -67,6 +70,7 @@ export const useCartStore = create<CartState>()(
             (sum, cartItem) => sum + cartItem.price,
             0
           );
+          state.totalItems = state.cartItems.length;
         });
       },
 
@@ -74,6 +78,7 @@ export const useCartStore = create<CartState>()(
         set((state) => {
           state.cartItems = [];
           state.totalPrice = 0;
+          state.totalItems = 0;
         });
       },
 
@@ -90,6 +95,7 @@ export const useCartStore = create<CartState>()(
               (sum, cartItem) => sum + cartItem.price,
               0
             );
+            state.totalItems = state.cartItems.length;
           }
         });
       },
