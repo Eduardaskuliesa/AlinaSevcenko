@@ -24,6 +24,8 @@ const ActionButtons = ({
     []
   );
 
+  const accessPlan = course.accessPlans.find((plan) => plan.isActive);
+
   const handleHeartClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
@@ -34,6 +36,7 @@ const ActionButtons = ({
       addToWishlist(
         {
           courseId: course.courseId,
+          accessPlanId: accessPlan?.id || "",
           title: course.title,
           slug: course.slug,
           duration: course.duration,
@@ -41,7 +44,7 @@ const ActionButtons = ({
           price: lowestPrice || 0,
           language: course.language,
           imageUrl: course.thumbnailImage || "",
-          accessDuration: course.duration || 0,
+          accessDuration: accessPlan?.duration || 0,
         },
         true
       ); // true = "from" price
@@ -82,6 +85,7 @@ const ActionButtons = ({
       addToCart(
         {
           courseId: course.courseId,
+          accessPlanId: accessPlan?.id || "",
           title: course.title,
           lessonCount: course.lessonCount,
           duration: course.duration,
@@ -89,7 +93,7 @@ const ActionButtons = ({
           language: course.language,
           price: lowestPrice || 0,
           imageUrl: course.thumbnailImage || "",
-          accessDuration: course.duration || 0,
+          accessDuration: accessPlan?.duration || 0,
         },
         true
       ); // true = "from" price

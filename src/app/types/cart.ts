@@ -8,5 +8,6 @@ export interface CartItem {
   duration: number;
   lessonCount: number;
   accessDuration: number;
+  accessPlanId: string;
   isFromPrice?: boolean;
 }

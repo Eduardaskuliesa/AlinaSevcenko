@@ -7,16 +7,16 @@ import { motion } from "motion/react";
 
 export function CartPageItem({
   item,
-  accessDuration,
+  accessPlanId,
 }: {
   item: Course;
-  accessDuration: number;
+  accessPlanId: string;
 }) {
   const { updateCartItem, removeFromCart, addToWishlist } = useCartStore();
 
   const [selectedPlan, setSelectedPlan] = useState(() => {
     let plan = item.accessPlans.find(
-      (plan) => plan.isActive && plan.duration === accessDuration
+      (plan) => plan.isActive && plan.id === accessPlanId
     );
     if (!plan) {
       plan = item.accessPlans.find((plan) => plan.isActive);
@@ -31,12 +31,15 @@ export function CartPageItem({
     return `${Math.floor(days / 365)} years`;
   };
 
-  const activeAccessPlans = item.accessPlans.filter((plan) => plan.isActive);
+  const activeAccessPlans = item.accessPlans
+    .filter((plan) => plan.isActive)
+    .sort((a, b) => a.price - b.price);
 
   const handlePlanChange = (plan: AccessPlan) => {
     setSelectedPlan(plan);
     updateCartItem(item.courseId, {
       accessDuration: plan.duration,
+      accessPlanId: plan.id,
       price: plan.price,
       isFromPrice: false,
     });
@@ -50,6 +53,7 @@ export function CartPageItem({
     addToWishlist(
       {
         courseId: item.courseId,
+        accessPlanId: selectedPlan?.id || "",
         title: item.title,
         lessonCount: item.lessonCount,
         duration: item.duration,

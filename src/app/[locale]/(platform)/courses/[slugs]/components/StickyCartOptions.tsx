@@ -31,6 +31,7 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
     addToCart,
     removeFromCart,
     cartItems,
+    updateCartItem,
   } = useCartStore();
   const activeAccessPlans = courseData.accessPlans
     .filter((plan) => plan.isActive)
@@ -67,6 +68,7 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
           duration: courseData.duration,
           lessonCount: courseData.lessonCount,
           price: selectedPlan?.price || 0,
+          accessPlanId: selectedPlan.id,
           imageUrl: courseData.thumbnailImage || "",
           accessDuration: selectedPlan?.duration || 0,
         },
@@ -91,6 +93,16 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
     }, 1000);
   };
 
+  const handlePlanChange = (plan: AccessPlan) => {
+    setSelectedPlan(plan);
+    updateCartItem(courseData.courseId, {
+      accessDuration: plan.duration,
+      accessPlanId: plan.id,
+      price: plan.price,
+      isFromPrice: false,
+    });
+  };
+
   const handleCartClick = () => {
     if (!selectedPlan) return;
 
@@ -99,6 +111,7 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
     } else {
       addToCart(
         {
+          accessPlanId: selectedPlan.id,
           courseId: courseData.courseId,
           title: courseData.title,
           slug: courseData.slug,
@@ -176,7 +189,10 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
                     ? "ring-2 ring-primary bg-primary-light/30 border-primary"
                     : "hover:bg-slate-50 border-primary-light bg-gray-50"
                 }`}
-                onClick={() => setSelectedPlan(plan)}
+                onClick={() => {
+                  setSelectedPlan(plan);
+                  handlePlanChange(plan);
+                }}
               >
                 <CardContent className="p-3">
                   <div className="flex justify-between items-center">
