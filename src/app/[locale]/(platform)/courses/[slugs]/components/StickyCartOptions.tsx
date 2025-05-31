@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { CardContent } from "@/components/ui/card";
 import { useCartStore } from "@/app/store/useCartStore";
 import { motion, AnimatePresence } from "motion/react";
+import { useSearchParams } from "next/navigation";
 
 interface AccessPlan {
   name: string;
@@ -20,6 +21,9 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
   const [hearts, setHearts] = useState<{ id: number; x: number; y: number }[]>(
     []
   );
+  const searchParams = useSearchParams();
+  const price = searchParams.get("price");
+
   const {
     removeFromWishlist,
     addToWishlist,
@@ -28,13 +32,23 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
     removeFromCart,
     cartItems,
   } = useCartStore();
-
   const activeAccessPlans = courseData.accessPlans
     .filter((plan) => plan.isActive)
-    .sort((a, b) => a.price - b.price); 
+    .sort((a, b) => a.price - b.price);
+
+  const getInitialSelectedPlan = () => {
+    if (price) {
+      const priceNumber = parseFloat(price);
+      const matchingPlan = activeAccessPlans.find(
+        (plan) => plan.price === priceNumber
+      );
+      return matchingPlan || activeAccessPlans[0] || null;
+    }
+    return activeAccessPlans[0] || null;
+  };
 
   const [selectedPlan, setSelectedPlan] = useState<AccessPlan>(
-    activeAccessPlans[0] || null
+    getInitialSelectedPlan()
   );
 
   const handleHeartClick = (e: React.MouseEvent) => {
@@ -49,6 +63,9 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
           courseId: courseData.courseId,
           title: courseData.title,
           slug: courseData.slug,
+          language: courseData.language,
+          duration: courseData.duration,
+          lessonCount: courseData.lessonCount,
           price: selectedPlan?.price || 0,
           imageUrl: courseData.thumbnailImage || "",
           accessDuration: selectedPlan?.duration || 0,
@@ -85,12 +102,15 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
           courseId: courseData.courseId,
           title: courseData.title,
           slug: courseData.slug,
+          language: courseData.language,
+          duration: courseData.duration,
+          lessonCount: courseData.lessonCount,
           price: selectedPlan.price,
           imageUrl: courseData.thumbnailImage || "",
           accessDuration: selectedPlan.duration,
         },
         false
-      ); // false = exact price, not "from" price
+      );
     }
   };
 

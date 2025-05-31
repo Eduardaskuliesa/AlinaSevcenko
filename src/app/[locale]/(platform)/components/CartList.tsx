@@ -9,7 +9,7 @@ import { useCartStore } from "@/app/store/useCartStore";
 function CartListItem({ item, isLast }: { item: CartItem; isLast: boolean }) {
   return (
     <div className={cn("p-3", !isLast && "border-b border-primary-light")}>
-      <Link href={`/courses/${item.slug}`}>
+      <Link href={`/courses/${item.slug}?price=${item.price}`}>
         <div className="flex gap-2">
           <Image
             quality={90}

@@ -3,7 +3,10 @@ export interface CartItem {
   slug: string;
   title: string;
   price: number;
+  language: string;
   imageUrl: string;
+  duration: number;
+  lessonCount: number;
   accessDuration: number;
   isFromPrice?: boolean;
 }
