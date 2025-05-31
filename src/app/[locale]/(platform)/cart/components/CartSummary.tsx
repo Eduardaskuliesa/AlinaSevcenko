@@ -3,9 +3,29 @@ import React from "react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { useParams } from "next/navigation";
 
 const CartSummary = () => {
   const { totalPrice, totalItems, cartItems } = useCartStore();
+
+  const params = useParams();
+  const locale = params.locale;
+  const handleCheckout = async () => {
+    try {
+      const response = await fetch("/api/stripe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items: cartItems, locale: locale }),
+      });
+
+      const { url } = await response.json();
+      if (url) {
+        window.location.href = url;
+      }
+    } catch (error) {
+      console.error("Checkout error:", error);
+    }
+  };
 
   const formatDuration = (days: number) => {
     if (days === 0) return "Lifetime";
@@ -48,6 +68,7 @@ const CartSummary = () => {
 
           <div className="pt-4 space-y-3 ">
             <motion.button
+              onClick={handleCheckout}
               whileTap={{ scale: 0.96 }}
               className="w-full flex group  items-center justify-center hover:bg-primary/90 transition-colors bg-primary py-2 rounded-md text-gray-100  font-medium"
             >

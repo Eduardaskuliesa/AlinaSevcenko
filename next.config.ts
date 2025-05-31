@@ -15,6 +15,8 @@ const nextConfig: NextConfig = {
   env: {
     CLOUDFLARE_STREAM_TOKEN: process.env.CLOUDFLARE_STREAM_TOKEN,
     CLOUDFLARE_ACCOUNT_ID: process.env.CLOUDFLARE_ACCOUNT_ID,
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
   },
 
   webpack: (config, { isServer }) => {

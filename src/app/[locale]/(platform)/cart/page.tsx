@@ -7,21 +7,129 @@ import React from "react";
 import { CartLoaderSkeleton } from "./components/CartLoderSkeleton";
 import { CartSummarySkeleton } from "./components/CartSummarySkeleton";
 import { CartPageItem } from "./components/CartPageItem";
-import { Loader } from "lucide-react";
+import { Loader, Mail, X } from "lucide-react";
 import Link from "next/link";
 import CartSummary from "./components/CartSummary";
+import toast from "react-hot-toast";
 
 const CartPage = () => {
-  const { cartItems, hydrated } = useCartStore();
+  const { cartItems, hydrated, removeFromCart, updateCartItem } =
+    useCartStore();
 
   const { data: freshCartItems, isLoading } = useQuery({
     queryKey: ["cartItems", cartItems.map((item) => item.courseId)],
     queryFn: async () => {
-      return await Promise.all(
-        cartItems.map(async (item) => {
-          return await coursesAction.courses.getCourse(item.courseId);
+      const results = await Promise.all(
+        cartItems.map(async (cartItem) => {
+          try {
+            const result = await coursesAction.courses.getCourse(
+              cartItem.courseId
+            );
+            const course = result.cousre as Course;
+            if (!course || !course.isPublished) {
+              toast.error(
+                `Course "${cartItem.title}" has been removed from your cart because it's no longer available.`,
+                { duration: 8000 }
+              );
+
+              toast(
+                (t) => (
+                  <div className="flex items-center gap-2">
+                    <span>Want this course back?</span>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => {
+                          window.open(`alinaanancenko@gmail.com`, "_blank");
+                          toast.dismiss(t.id);
+                        }}
+                        className="bg-primary flex items-center text-white px-2 py-1 rounded text-sm"
+                      >
+                        <Mail className="mr-1 h-4 w-4" />
+                        Email Us
+                      </button>
+                      <button
+                        onClick={() => toast.dismiss(t.id)}
+                        className="bg-gray-500 flex items-center text-white px-2 py-1 rounded text-sm"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+                ),
+                { duration: Infinity, position: "bottom-right" }
+              );
+
+              removeFromCart(cartItem.courseId);
+              return null;
+            }
+
+            const selectedPlan = course.accessPlans.find(
+              (plan) => plan.id === cartItem.accessPlanId && plan.isActive
+            );
+
+            if (!selectedPlan) {
+              const firstActivePlan = course.accessPlans
+                .filter((plan) => plan.isActive)
+                .sort((a, b) => a.price - b.price)[0];
+
+              if (firstActivePlan) {
+                toast.success(
+                  `Access plan for "${cartItem.title}" was updated to the current available option.`,
+                  { duration: 4000 }
+                );
+
+                updateCartItem(cartItem.courseId, {
+                  accessPlanId: firstActivePlan.id,
+                  accessDuration: firstActivePlan.duration,
+                  price: firstActivePlan.price,
+                });
+              } else {
+                toast.error(
+                  `No access plans are currently available for "${cartItem.title}". Please contact support.`,
+                  { duration: 6000 }
+                );
+
+                toast(
+                  (t) => (
+                    <div className="flex items-center gap-2">
+                      <span>Need help with access plans?</span>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => {
+                            window.open(
+                              `mailto:alinaanancenko@gmail.com?subject=Access Plan Issue`,
+                              "_blank"
+                            );
+                            toast.dismiss(t.id);
+                          }}
+                          className="bg-primary flex items-center text-white px-2 py-1 rounded text-sm"
+                        >
+                          <Mail className="mr-1 h-4 w-4" />
+                          Email Us
+                        </button>
+                        <button
+                          onClick={() => toast.dismiss(t.id)}
+                          className="bg-gray-500 flex items-center text-white px-2 py-1 rounded text-sm"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ),
+                  { duration: Infinity, position: "bottom-right" }
+                );
+              }
+            }
+
+            return result;
+          } catch (error) {
+            console.log(error);
+            removeFromCart(cartItem.courseId);
+            return null;
+          }
         })
       );
+      return results.filter(Boolean);
     },
     refetchOnMount: false,
     refetchOnWindowFocus: false,
@@ -96,9 +204,9 @@ const CartPage = () => {
           ) : (
             freshCartItems?.map((item, index) => (
               <CartPageItem
-                key={item.cousre?.courseId}
+                key={item?.cousre?.courseId}
                 accessPlanId={cartItems[index].accessPlanId}
-                item={item.cousre as Course}
+                item={item?.cousre as Course}
               />
             ))
           )}
