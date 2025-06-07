@@ -8,7 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(req: NextRequest) {
   try {
-    const { items, locale } = await req.json();
+    const { items, locale, userId } = await req.json();
 
     const formatDuration = (days: number, locale: string) => {
       if (days === 0) {
@@ -63,7 +63,6 @@ export async function POST(req: NextRequest) {
     };
 
     const stripeLocale = locale === "ru" ? "ru" : "lt";
-
     const session = await stripe.checkout.sessions.create({
       locale: stripeLocale,
       payment_method_types: ["card", "paypal", "revolut_pay"],
@@ -80,17 +79,18 @@ export async function POST(req: NextRequest) {
                 : "Access plan"
             }: ${formatDuration(item.accessDuration, locale)}`,
           },
+
           unit_amount: Math.round(item.price * 100),
         },
         quantity: 1,
       })),
       mode: "payment",
-      success_url: `${req.nextUrl.origin}/${
-        locale || "en"
-      }/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.nextUrl.origin}/${locale || "en"}/cart`,
+      success_url: `${req.nextUrl.origin}/${locale}/checkout-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${req.nextUrl.origin}/${locale}/cart`,
       metadata: {
         courseIds: items.map((item: CartItem) => item.courseId).join(","),
+        accessIds: items.map((item: CartItem) => item.accessPlanId).join(","),
+        userId: userId,
       },
     });
 

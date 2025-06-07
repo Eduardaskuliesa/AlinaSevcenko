@@ -1,21 +1,29 @@
 import { useCartStore } from "@/app/store/useCartStore";
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "motion/react";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 import { useParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const CartSummary = () => {
   const { totalPrice, totalItems, cartItems } = useCartStore();
+  const [redirecting, setRedirecting] = useState(false);
 
   const params = useParams();
   const locale = params.locale;
+  const userId = useSession().data?.user.id;
   const handleCheckout = async () => {
+    setRedirecting(true);
     try {
       const response = await fetch("/api/stripe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items: cartItems, locale: locale }),
+        body: JSON.stringify({
+          items: cartItems,
+          locale: locale,
+          userId: userId,
+        }),
       });
 
       const { url } = await response.json();
@@ -24,6 +32,7 @@ const CartSummary = () => {
       }
     } catch (error) {
       console.error("Checkout error:", error);
+      setRedirecting(false);
     }
   };
 
@@ -72,8 +81,17 @@ const CartSummary = () => {
               whileTap={{ scale: 0.96 }}
               className="w-full flex group  items-center justify-center hover:bg-primary/90 transition-colors bg-primary py-2 rounded-md text-gray-100  font-medium"
             >
-              Proceed to Checkout
-              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-all text-white" />
+              {redirecting ? (
+                <>
+                  Processing...
+                  <Loader2 className="w-5 h-5 ml-2 text-white animate-spin"></Loader2>
+                </>
+              ) : (
+                <>
+                  Proceed to Checkout
+                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-all text-white" />
+                </>
+              )}
             </motion.button>
 
             <Link href={"/courses"}>
