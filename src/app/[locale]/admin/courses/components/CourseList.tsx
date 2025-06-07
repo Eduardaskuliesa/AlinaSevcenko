@@ -23,7 +23,9 @@ const CourseList = ({ filters }: CourseListProps) => {
 
   const courses = data?.courses || [];
 
-  const filteredCourses = courses.filter((course) => {
+  const sortedCourses = [...courses].sort((a, b) => a.sort - b.sort)
+
+  const filteredCourses = sortedCourses.filter((course) => {
     const searchTerm = filters.search.toLowerCase().trim();
     let matchesSearch = true;
 

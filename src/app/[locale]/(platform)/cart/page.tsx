@@ -75,7 +75,7 @@ const CartPage = () => {
               if (firstActivePlan) {
                 toast.success(
                   `Access plan for "${cartItem.title}" was updated to the current available option.`,
-                  { duration: 4000 }
+                  { duration: 6000 }
                 );
 
                 updateCartItem(cartItem.courseId, {

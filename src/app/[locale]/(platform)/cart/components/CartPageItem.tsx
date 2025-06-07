@@ -24,6 +24,8 @@ export function CartPageItem({
     return plan;
   });
 
+  console.log("Selected Plan:", selectedPlan);
+
   const formatDuration = (days: number) => {
     if (days === 0) return "Lifetime";
     if (days < 30) return `${days} days`;

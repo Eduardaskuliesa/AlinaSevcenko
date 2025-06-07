@@ -23,6 +23,10 @@ const CourseList = ({ courses, isLoading }: CourseListProps) => {
     };
   });
 
+  const sortedCourses = courses.sort((a, b) => a.sort - b.sort);
+
+  console.dir(sortedCourses);
+
   if (isLoading) {
     return (
       <div className="flex flex-col space-y-6">
@@ -66,7 +70,7 @@ const CourseList = ({ courses, isLoading }: CourseListProps) => {
   return (
     <div className="flex flex-col w-full gap-4 overflow-hidden">
       <AnimatePresence mode="sync">
-        {courses.map((course: FilteredCourse) => (
+        {sortedCourses.map((course: FilteredCourse) => (
           <motion.div
             key={course.courseId}
             initial={{ opacity: 0 }}
