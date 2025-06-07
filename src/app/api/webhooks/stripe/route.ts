@@ -1,6 +1,6 @@
 import { logger } from "@/app/utils/logger";
 import Stripe from "stripe";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-05-28.basil",
@@ -23,8 +23,6 @@ export async function POST(req: Request) {
 
     if (event.type === "checkout.session.completed") {
       const metadata = event.data.object.metadata;
-
-      // This will show the actual content:
       logger.info(`Metadata: ${JSON.stringify(metadata)}`);
 
       console.log("Metadata:", metadata);
