@@ -4,6 +4,7 @@ import { convertTime } from "@/app/utils/converToMinutes";
 import { useState } from "react";
 import Image from "next/image";
 import { motion } from "motion/react";
+import { useSession } from "next-auth/react";
 
 export function CartPageItem({
   item,
@@ -13,7 +14,7 @@ export function CartPageItem({
   accessPlanId: string;
 }) {
   const { updateCartItem, removeFromCart, addToWishlist } = useCartStore();
-
+  const userId = useSession().data?.user.id;
   const [selectedPlan, setSelectedPlan] = useState(() => {
     let plan = item.accessPlans.find(
       (plan) => plan.isActive && plan.id === accessPlanId
@@ -44,16 +45,17 @@ export function CartPageItem({
       accessPlanId: plan.id,
       price: plan.price,
       isFromPrice: false,
-    });
+    }, userId || "");
   };
 
   const handleRemove = () => {
-    removeFromCart(item.courseId);
+    removeFromCart(item.courseId, userId || "");
   };
 
   const handleMoveToWishlist = () => {
     addToWishlist(
       {
+        userId: userId || "",
         courseId: item.courseId,
         accessPlanId: selectedPlan?.id || "",
         title: item.title,
@@ -68,7 +70,7 @@ export function CartPageItem({
       false
     );
 
-    removeFromCart(item.courseId);
+    removeFromCart(item.courseId, userId || "");
   };
 
   return (

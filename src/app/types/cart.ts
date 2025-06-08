@@ -1,5 +1,6 @@
 export interface CartItem {
   courseId: string;
+  userId: string;
   slug: string;
   title: string;
   price: number;

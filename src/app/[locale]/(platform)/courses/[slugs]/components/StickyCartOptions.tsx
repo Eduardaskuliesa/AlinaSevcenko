@@ -8,6 +8,7 @@ import { CardContent } from "@/components/ui/card";
 import { useCartStore } from "@/app/store/useCartStore";
 import { motion, AnimatePresence } from "motion/react";
 import { useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 interface AccessPlan {
   name: string;
@@ -23,6 +24,7 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
   );
   const searchParams = useSearchParams();
   const price = searchParams.get("price");
+  const userId = useSession().data?.user.id;
 
   const {
     removeFromWishlist,
@@ -61,6 +63,7 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
     } else {
       addToWishlist(
         {
+          userId: userId || "",
           courseId: courseData.courseId,
           title: courseData.title,
           slug: courseData.slug,
@@ -95,22 +98,27 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
 
   const handlePlanChange = (plan: AccessPlan) => {
     setSelectedPlan(plan);
-    updateCartItem(courseData.courseId, {
-      accessDuration: plan.duration,
-      accessPlanId: plan.id,
-      price: plan.price,
-      isFromPrice: false,
-    });
+    updateCartItem(
+      courseData.courseId,
+      {
+        accessDuration: plan.duration,
+        accessPlanId: plan.id,
+        price: plan.price,
+        isFromPrice: false,
+      },
+      userId || ""
+    );
   };
 
   const handleCartClick = () => {
     if (!selectedPlan) return;
 
     if (isInCart) {
-      removeFromCart(courseData.courseId);
+      removeFromCart(courseData.courseId, userId || "");
     } else {
       addToCart(
         {
+          userId: userId || "",
           accessPlanId: selectedPlan.id,
           courseId: courseData.courseId,
           title: courseData.title,

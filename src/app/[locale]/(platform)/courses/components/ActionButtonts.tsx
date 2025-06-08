@@ -3,6 +3,7 @@ import { useCartStore } from "@/app/store/useCartStore";
 import { FilteredCourse } from "@/app/types/course";
 import { Heart, ShoppingBasket } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { useSession } from "next-auth/react";
 import React, { useState } from "react";
 
 const ActionButtons = ({
@@ -23,7 +24,7 @@ const ActionButtons = ({
   const [hearts, setHearts] = useState<{ id: number; x: number; y: number }[]>(
     []
   );
-
+  const userId = useSession().data?.user.id;
   const accessPlan = course.accessPlans.find((plan) => plan.isActive);
 
   const handleHeartClick = (e: React.MouseEvent) => {
@@ -35,6 +36,7 @@ const ActionButtons = ({
     } else {
       addToWishlist(
         {
+          userId: userId || "",
           courseId: course.courseId,
           accessPlanId: accessPlan?.id || "",
           title: course.title,
@@ -80,10 +82,11 @@ const ActionButtons = ({
     e.preventDefault();
 
     if (isInCartList) {
-      removeFromCart(course.courseId);
+      removeFromCart(course.courseId, userId || "");
     } else {
       addToCart(
         {
+          userId: userId || "",
           courseId: course.courseId,
           accessPlanId: accessPlan?.id || "",
           title: course.title,

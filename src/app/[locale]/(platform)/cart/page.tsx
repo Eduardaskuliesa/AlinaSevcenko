@@ -11,10 +11,13 @@ import { Loader, Mail, X } from "lucide-react";
 import Link from "next/link";
 import CartSummary from "./components/CartSummary";
 import toast from "react-hot-toast";
+import { useSession } from "next-auth/react";
 
 const CartPage = () => {
   const { cartItems, hydrated, removeFromCart, updateCartItem } =
     useCartStore();
+
+  const userId = useSession().data?.user.id;
 
   const { data: freshCartItems, isLoading } = useQuery({
     queryKey: ["cartItems", cartItems.map((item) => item.courseId)],
@@ -59,7 +62,7 @@ const CartPage = () => {
                 { duration: Infinity, position: "bottom-right" }
               );
 
-              removeFromCart(cartItem.courseId);
+              removeFromCart(cartItem.courseId, userId || "");
               return null;
             }
 
@@ -82,7 +85,7 @@ const CartPage = () => {
                   accessPlanId: firstActivePlan.id,
                   accessDuration: firstActivePlan.duration,
                   price: firstActivePlan.price,
-                });
+                }, userId || "");
               } else {
                 toast.error(
                   `No access plans are currently available for "${cartItem.title}". Please contact support.`,
@@ -124,7 +127,7 @@ const CartPage = () => {
             return result;
           } catch (error) {
             console.log(error);
-            removeFromCart(cartItem.courseId);
+            removeFromCart(cartItem.courseId, userId || "");
             return null;
           }
         })

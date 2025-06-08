@@ -32,6 +32,7 @@ export async function POST(req: Request) {
       console.log("Course IDs:", courseIds);
       console.log("Access IDs:", accessIds);
     }
+    return NextResponse.json({ recieved: true });
   } catch (error) {
     logger.error("Error processing Stripe webhook:", error);
     return NextResponse.json({ error: "Webhook Error" }, { status: 400 });

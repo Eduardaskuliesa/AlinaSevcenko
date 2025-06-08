@@ -1,3 +1,4 @@
+import CartSync from "./components/CartSync";
 import PlatformNavBar from "./components/PlatformNavBar";
 
 export default function PlatformLayout({
@@ -7,7 +8,8 @@ export default function PlatformLayout({
 }) {
   return (
     <main className="bg-gray-50 min-h-screen">
-      <PlatformNavBar></PlatformNavBar>
+      <PlatformNavBar />
+      <CartSync />
       <div className="">{children}</div>
     </main>
   );
