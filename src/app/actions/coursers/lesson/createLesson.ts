@@ -88,6 +88,7 @@ export async function createLesson(courseId: Course["courseId"]) {
     await dynamoDb.send(updateCourseCommand);
 
     revalidateTag(`course-${courseId}`);
+    revalidateTag(`user-lesson-${courseId}`);
     revalidateTag(`courses`);
     return {
       success: true,

@@ -1,6 +1,8 @@
 import { logger } from "@/app/utils/logger";
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
+import { coursesAction } from "@/app/actions/coursers";
+import { enrolledCourseActions } from "@/app/actions/enrolled-course";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-05-28.basil",
@@ -31,6 +33,15 @@ export async function POST(req: Request) {
       console.log("User ID:", userId);
       console.log("Course IDs:", courseIds);
       console.log("Access IDs:", accessIds);
+      let enrolledCourse;
+      for (const courseId of courseIds.split(",")) {
+        logger.info(`Processing course ID: ${courseId}`);
+
+        const lessons = await enrolledCourseActions.getLessons(courseId);
+
+        logger.info(`Lessons: ${lessons}`);
+        console.dir(lessons, { depth: null });
+      }
     }
     return NextResponse.json({ recieved: true });
   } catch (error) {

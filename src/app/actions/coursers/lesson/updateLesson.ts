@@ -139,6 +139,8 @@ export async function updateLessons(
     revalidateTag(`course-${courseId}`);
     revalidateTag("client-courses");
     revalidateTag(`lessons-${courseId}`);
+    revalidateTag(`user-lesson-${courseId}`);
+    revalidateTag(`client-lessons-${courseId}`);
 
     logger.success(`Successfully updated lessons for course ${courseId}`);
 

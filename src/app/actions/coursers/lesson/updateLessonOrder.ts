@@ -50,6 +50,8 @@ export async function updateLessonOrder(
     revalidateTag(`course-${courseId}`);
     revalidateTag(`courses`);
     revalidateTag("client-courses");
+    revalidateTag(`user-lesson-${courseId}`);
+    revalidateTag(`client-lessons-${courseId}`);
     return {
       success: true,
       message: "Lesson order updated successfully",

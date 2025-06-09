@@ -3,6 +3,7 @@ import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { logger } from "@/app/utils/logger";
 import { muxActions } from "@/app/actions/mux";
+import { revalidateTag } from "next/cache";
 
 interface BlurPlaceholderData {
   blurDataURL: string;
@@ -43,6 +44,13 @@ export async function storeBlurPlaceholder(
     logger.success(
       `Successfully stored blur placeholder for lesson ${lessonId}`
     );
+
+    revalidateTag(`course-${courseId}`);
+    revalidateTag(`user-lesson-${courseId}`);
+    revalidateTag(`client-lessons-${courseId}`);
+    revalidateTag(`courses`);
+    
+
     return placeholder;
   } catch (error) {
     logger.error(`Error storing blur placeholder: ${error}`);

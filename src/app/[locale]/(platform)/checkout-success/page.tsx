@@ -6,6 +6,8 @@ import { Clock, BookOpen } from "lucide-react";
 import { convertTime } from "@/app/utils/converToMinutes";
 import Image from "next/image";
 import StartLearningButton from "./StartLearningButton";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/auth";
 
 const CheckoutSuccessPage = async ({
   searchParams,
@@ -14,6 +16,8 @@ const CheckoutSuccessPage = async ({
 }) => {
   let orderDetails = null;
   let courses = [] as Course[];
+
+  const userId = await getServerSession(authOptions).then((session) => session?.user.id);
   const { session_id } = await searchParams;
 
   if (session_id) {
@@ -119,7 +123,7 @@ const CheckoutSuccessPage = async ({
         </div>
       </div>
 
-      <ClearCartComponent />
+      <ClearCartComponent userId={userId} />
     </div>
   );
 };

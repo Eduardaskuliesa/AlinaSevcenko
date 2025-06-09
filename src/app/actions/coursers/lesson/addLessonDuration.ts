@@ -79,6 +79,8 @@ export async function addLessonDuration(data: AddDurationData) {
     ]);
 
     revalidateTag(`course-${data.courseId}`);
+    revalidateTag(`admin-lesson-${data.courseId}`);
+    revalidateTag(`user-lesson-${data.courseId}`);
     revalidateTag(`courses`);
     const path = `admin/courses/${data.courseId}/lessons`;
     revalidatePath(path);
