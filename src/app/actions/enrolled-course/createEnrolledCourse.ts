@@ -13,6 +13,7 @@ export interface PurschaseCourseData {
   expiresAt: string;
   status: "ACTIVE" | "EXPIRED";
   languge: string;
+  pricePaid: number;
   thumbnailImage: string;
   accessPlanName: string;
   accessPlanDuration: number;

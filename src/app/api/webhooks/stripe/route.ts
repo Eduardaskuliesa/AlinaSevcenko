@@ -1,8 +1,8 @@
 import { logger } from "@/app/utils/logger";
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
-import { coursesAction } from "@/app/actions/coursers";
 import { enrolledCourseActions } from "@/app/actions/enrolled-course";
+import { PurschaseCourseData } from "@/app/actions/enrolled-course/createEnrolledCourse";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-05-28.basil",
@@ -30,17 +30,69 @@ export async function POST(req: Request) {
       console.log("Metadata:", metadata);
 
       const { courseIds, accessIds, userId } = metadata as Stripe.Metadata;
-      console.log("User ID:", userId);
-      console.log("Course IDs:", courseIds);
-      console.log("Access IDs:", accessIds);
-      let enrolledCourse;
-      for (const courseId of courseIds.split(",")) {
-        logger.info(`Processing course ID: ${courseId}`);
 
+      const courseIdArray = courseIds.split(",");
+      const accessIdArray = accessIds.split(",");
+      for (let i = 0; i < courseIdArray.length; i++) {
+        const courseId = courseIdArray[i];
+        const accessPlanId = accessIdArray[i]; // Match by index
+
+        logger.info(
+          `Processing course ID: ${courseId}, Access Plan: ${accessPlanId}`
+        );
+
+        const course = (await enrolledCourseActions.getCourse(courseId)).cousre;
         const lessons = await enrolledCourseActions.getLessons(courseId);
 
-        logger.info(`Lessons: ${lessons}`);
-        console.dir(lessons, { depth: null });
+        const accessPlan = course?.accessPlans?.find(
+          (plan) => plan.id === accessPlanId
+        );
+
+        if (!accessPlan) {
+          logger.error(
+            `Access plan ${accessPlanId} not found for course ${courseId}`
+          );
+          continue;
+        }
+
+        const lessonProgress: {
+          [lessonId: string]: {
+            progress: number;
+            completedAt?: string;
+            wasReworked?: boolean;
+          };
+        } = {};
+
+        lessons?.forEach((lesson) => {
+          lessonProgress[lesson.lessonId] = {
+            progress: 0,
+            completedAt: undefined,
+            wasReworked: false,
+          };
+        });
+
+        const enrolledCourseData: PurschaseCourseData = {
+          purchaseId: event.data.object.id,
+          paymentId: event.data.object.payment_intent as string,
+          userId: userId,
+          courseId: courseId,
+          title: course?.title || "",
+          languge: course?.language || "lt",
+          accessPlanName: accessPlan.name,
+          accessPlanDuration: accessPlan.duration,
+          pricePaid: accessPlan.price,
+          thumbnailImage: course?.thumbnailImage || "",
+          purchaseDate: new Date().toISOString(),
+          expiresAt: accessPlan.duration
+            ? new Date(
+                Date.now() + accessPlan.duration * 24 * 60 * 60 * 1000
+              ).toISOString()
+            : new Date().toISOString(),
+          status: "ACTIVE",
+          lessonProgress: lessonProgress,
+        };
+
+        console.dir(enrolledCourseData, { depth: null });
       }
     }
     return NextResponse.json({ recieved: true });
