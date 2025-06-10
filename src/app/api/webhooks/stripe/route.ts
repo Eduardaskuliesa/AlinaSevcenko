@@ -3,6 +3,8 @@ import Stripe from "stripe";
 import { NextResponse } from "next/server";
 import { enrolledCourseActions } from "@/app/actions/enrolled-course";
 import { PurschaseCourseData } from "@/app/actions/enrolled-course/createEnrolledCourse";
+import { cloudflareWorkerActions } from "@/app/actions/cloudflareWorker";
+import { revalidateTag } from "next/cache";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-05-28.basil",
@@ -35,7 +37,7 @@ export async function POST(req: Request) {
       const accessIdArray = accessIds.split(",");
       for (let i = 0; i < courseIdArray.length; i++) {
         const courseId = courseIdArray[i];
-        const accessPlanId = accessIdArray[i]; // Match by index
+        const accessPlanId = accessIdArray[i];
 
         logger.info(
           `Processing course ID: ${courseId}, Access Plan: ${accessPlanId}`
@@ -66,10 +68,16 @@ export async function POST(req: Request) {
         lessons?.forEach((lesson) => {
           lessonProgress[lesson.lessonId] = {
             progress: 0,
-            completedAt: undefined,
+            completedAt: "",
             wasReworked: false,
           };
         });
+
+        const expiresAt = accessPlan.duration
+          ? new Date(
+              Date.now() + accessPlan.duration * 24 * 60 * 60 * 1000
+            ).toISOString()
+          : new Date().toISOString();
 
         const enrolledCourseData: PurschaseCourseData = {
           purchaseId: event.data.object.id,
@@ -83,16 +91,40 @@ export async function POST(req: Request) {
           pricePaid: accessPlan.price,
           thumbnailImage: course?.thumbnailImage || "",
           purchaseDate: new Date().toISOString(),
-          expiresAt: accessPlan.duration
-            ? new Date(
-                Date.now() + accessPlan.duration * 24 * 60 * 60 * 1000
-              ).toISOString()
-            : new Date().toISOString(),
+          expiresAt: expiresAt,
           status: "ACTIVE",
           lessonProgress: lessonProgress,
         };
 
-        console.dir(enrolledCourseData, { depth: null });
+        const createResponse =
+          await enrolledCourseActions.createPurchasedCourse(enrolledCourseData);
+
+        if (!createResponse.success) {
+          logger.error(
+            `Failed to create enrolled course: ${createResponse.error}`
+          );
+
+          return new Response("Course creation failed", { status: 500 });
+        }
+
+        if (createResponse.success) {
+          await enrolledCourseActions.updateEnrollmentCount(courseId);
+
+          await cloudflareWorkerActions.reminder1Days(
+            courseId,
+            userId,
+            expiresAt
+          );
+
+          await cloudflareWorkerActions.reminder7Days(
+            courseId,
+            userId,
+            expiresAt
+          );
+        }
+
+        revalidateTag(`users-course-${userId}`);
+        logger.success("Enrolled course created successfully:");
       }
     }
     return NextResponse.json({ recieved: true });

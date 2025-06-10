@@ -1,9 +1,13 @@
 import { logger } from "@/app/utils/logger";
 
-export async function reminder1Days(courseId: string, userId: string) {
+export async function reminder1Days(
+  courseId: string,
+  userId: string,
+  expiresAt: string
+) {
   try {
     const response = await fetch(
-      `${process.env.WORKER_URL}/schedule-expiry-1day`,
+      `${process.env.WORKER_URL}/schedule-expiry-1day?userId=${userId}`,
       {
         method: "POST",
         headers: {
@@ -11,21 +15,22 @@ export async function reminder1Days(courseId: string, userId: string) {
           "x-api-key": process.env.WORKER_API_KEY || "",
         },
         body: JSON.stringify({
-          courseId,
           userId,
+          courseId,
+          expiresAt,
         }),
       }
     );
 
     if (!response.ok) {
       const errorData = await response.json();
+      console.log("Error scheduling reminder:", errorData);
       console.error("Error scheduling reminder:", errorData);
       logger.error("Error scheduling reminder for 1day");
     }
 
     if (response.ok) {
-      const data = await response.json();
-      console.log("Reminder scheduled successfully:", data);
+      await response.json();
       logger.success("Reminder scheduled for 1day successfully");
     }
 
