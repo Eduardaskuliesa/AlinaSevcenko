@@ -1,7 +1,7 @@
 import { useCartStore } from "@/app/store/useCartStore";
 import { AccessPlan, Course } from "@/app/types/course";
 import { convertTime } from "@/app/utils/converToMinutes";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "motion/react";
 import { useSession } from "next-auth/react";
@@ -13,19 +13,23 @@ export function CartPageItem({
   item: Course;
   accessPlanId: string;
 }) {
+  console.log("CartPageItem Props:", { item });
+  console.log("CartPageItem Rendered:");
   const { updateCartItem, removeFromCart, addToWishlist } = useCartStore();
   const userId = useSession().data?.user.id;
-  const [selectedPlan, setSelectedPlan] = useState(() => {
+  const [selectedPlan, setSelectedPlan] = useState<AccessPlan | undefined>();
+
+  useEffect(() => {
     let plan = item.accessPlans.find(
       (plan) => plan.isActive && plan.id === accessPlanId
     );
+
     if (!plan) {
       plan = item.accessPlans.find((plan) => plan.isActive);
     }
-    return plan;
-  });
 
-  console.log("Selected Plan:", selectedPlan);
+    setSelectedPlan(plan);
+  }, [item.accessPlans, accessPlanId]);
 
   const formatDuration = (days: number) => {
     if (days === 0) return "Lifetime";
@@ -40,12 +44,16 @@ export function CartPageItem({
 
   const handlePlanChange = (plan: AccessPlan) => {
     setSelectedPlan(plan);
-    updateCartItem(item.courseId, {
-      accessDuration: plan.duration,
-      accessPlanId: plan.id,
-      price: plan.price,
-      isFromPrice: false,
-    }, userId || "");
+    updateCartItem(
+      item.courseId,
+      {
+        accessDuration: plan.duration,
+        accessPlanId: plan.id,
+        price: plan.price,
+        isFromPrice: false,
+      },
+      userId || ""
+    );
   };
 
   const handleRemove = () => {

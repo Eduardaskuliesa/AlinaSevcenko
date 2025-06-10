@@ -10,10 +10,13 @@ interface CourseListProps {
 
 const CourseList = ({ courses, isLoading }: CourseListProps) => {
   const coursesWithLowestPrices = courses.map((course) => {
+    const activePlans =
+      course.accessPlans?.filter((plan) => plan.isActive) || [];
+
     const lowestPrice =
-      course.accessPlans && course.accessPlans.length > 0
-        ? course.accessPlans
-            .map((plan) => plan?.price)
+      activePlans.length > 0
+        ? activePlans
+            .map((plan) => plan.price)
             .reduce((a, b) => Math.min(a, b), Infinity)
         : null;
 
@@ -24,8 +27,6 @@ const CourseList = ({ courses, isLoading }: CourseListProps) => {
   });
 
   const sortedCourses = courses.sort((a, b) => a.sort - b.sort);
-
-  console.dir(sortedCourses);
 
   if (isLoading) {
     return (

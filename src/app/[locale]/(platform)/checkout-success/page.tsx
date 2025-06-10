@@ -9,15 +9,19 @@ import StartLearningButton from "./StartLearningButton";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/auth";
 
+export const dynamic = "force-static";
+
 const CheckoutSuccessPage = async ({
   searchParams,
 }: {
-  searchParams: { session_id?: string };
+  searchParams: Promise<{ session_id: string }>;
 }) => {
   let orderDetails = null;
   let courses = [] as Course[];
 
-  const userId = await getServerSession(authOptions).then((session) => session?.user.id);
+  const userId = await getServerSession(authOptions).then(
+    (session) => session?.user.id
+  );
   const { session_id } = await searchParams;
 
   if (session_id) {

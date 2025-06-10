@@ -37,12 +37,18 @@ const CartPage = () => {
 
               toast(
                 (t) => (
-                  <div className="flex items-center gap-2">
-                    <span>Want this course back?</span>
-                    <div className="flex gap-2">
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center">
+                      <span>Want this course back?</span>
+                    </div>
+
+                    <div className="flex gap-2 justify-end">
                       <button
                         onClick={() => {
-                          window.open(`alinaanancenko@gmail.com`, "_blank");
+                          window.open(
+                            `mailto:alinaanancenko@gmail.com?subject=Access Plan Issue`,
+                            "_blank"
+                          );
                           toast.dismiss(t.id);
                         }}
                         className="bg-primary flex items-center text-white px-2 py-1 rounded text-sm"
@@ -81,11 +87,48 @@ const CartPage = () => {
                   { duration: 6000 }
                 );
 
-                updateCartItem(cartItem.courseId, {
-                  accessPlanId: firstActivePlan.id,
-                  accessDuration: firstActivePlan.duration,
-                  price: firstActivePlan.price,
-                }, userId || "");
+                toast(
+                  (t) => (
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center">
+                        <span>Need help with access plans?</span>
+                      </div>
+
+                      <div className="flex gap-2 justify-end">
+                        <button
+                          onClick={() => {
+                            window.open(
+                              `mailto:alinaanancenko@gmail.com?subject=Access Plan Issue`,
+                              "_blank"
+                            );
+                            toast.dismiss(t.id);
+                          }}
+                          className="bg-primary flex items-center text-white px-2 py-1 rounded text-sm"
+                        >
+                          <Mail className="mr-1 h-4 w-4" />
+                          Email Us
+                        </button>
+                        <button
+                          onClick={() => toast.dismiss(t.id)}
+                          className="bg-gray-500 flex items-center text-white px-2 py-1 rounded text-sm"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ),
+                  { duration: Infinity, position: "bottom-right" }
+                );
+
+                updateCartItem(
+                  cartItem.courseId,
+                  {
+                    accessPlanId: firstActivePlan.id,
+                    accessDuration: firstActivePlan.duration,
+                    price: firstActivePlan.price,
+                  },
+                  userId || ""
+                );
               } else {
                 toast.error(
                   `No access plans are currently available for "${cartItem.title}". Please contact support.`,
@@ -94,9 +137,12 @@ const CartPage = () => {
 
                 toast(
                   (t) => (
-                    <div className="flex items-center gap-2">
-                      <span>Need help with access plans?</span>
-                      <div className="flex gap-2">
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center">
+                        <span>Need help with access plans?</span>
+                      </div>
+
+                      <div className="flex gap-2 justify-end">
                         <button
                           onClick={() => {
                             window.open(
@@ -134,9 +180,9 @@ const CartPage = () => {
       );
       return results.filter(Boolean);
     },
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    staleTime: 1000 * 60 * 60 * 2,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    staleTime: 10,
     enabled: cartItems.length > 0 && hydrated,
   });
 
