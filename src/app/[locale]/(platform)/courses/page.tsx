@@ -29,7 +29,6 @@ export default async function CoursePage() {
           </h1>
         </div>
       </header>
-
       <CoursePageContent />
     </HydrationBoundary>
   );

@@ -9,8 +9,6 @@ import StartLearningButton from "./StartLearningButton";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/auth";
 
-export const dynamic = "force-static";
-
 const CheckoutSuccessPage = async ({
   searchParams,
 }: {

@@ -3,8 +3,6 @@ import RegisterForm from "./components/RegisterForm";
 import { getTranslations } from "next-intl/server";
 import CardWrapper from "../components/CardWrapper";
 
-export const dynamic = "force-static";
-
 interface PageProps {
   searchParams: Promise<{
     status?: string;
@@ -12,11 +10,10 @@ interface PageProps {
   }>;
 }
 
-
 export default async function Page({ searchParams }: PageProps) {
   const t = await getTranslations("RegisterPage");
   const params = await searchParams;
-  
+
   const status = params.status;
   const email = params.email;
 

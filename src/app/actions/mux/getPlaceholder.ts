@@ -32,25 +32,22 @@ export async function getPlaceholder(playbackId: string) {
     const metadata = await sharp(buffer).metadata();
     const aspectRatio = (metadata.width ?? 1) / (metadata.height ?? 1);
 
-    // Advanced blur implementation for enhanced aesthetic quality
-    // 1. Process the main blurred base image with higher quality
     const baseImage = await sharp(buffer)
-      .resize(40, null) // Larger width for better color fidelity
-      .modulate({ brightness: 1.1, saturation: 1.2 }) // Boost colors slightly
-      .blur(12) // Strong but not excessive blur
-      .gamma(1.1) // Slightly increase gamma for better contrast
-      .jpeg({ quality: 75 }) // Higher quality for better colors
+      .resize(40, null) 
+      .modulate({ brightness: 1.1, saturation: 1.2 }) 
+      .blur(12) 
+      .gamma(1.1) 
+      .jpeg({ quality: 75 }) 
       .toBuffer();
 
-    // 2. Create a second processed version with color adjustments
+
     const overlayImage = await sharp(buffer)
       .resize(40, null)
-      .modulate({ brightness: 1.05, saturation: 1.3 }) // More color saturation
-      .blur(8) // Less blur to preserve some details
+      .modulate({ brightness: 1.05, saturation: 1.3 }) 
+      .blur(8)
       .jpeg({ quality: 70 })
       .toBuffer();
 
-    // 3. Composite the two images together with an opacity blend
     const finalImage = await sharp(baseImage)
       .composite([
         {

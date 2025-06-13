@@ -95,6 +95,7 @@ const CourseList = ({ courses, isLoading }: CourseListProps) => {
         ))}
       </AnimatePresence>
     </div>
+      
   );
 };
 

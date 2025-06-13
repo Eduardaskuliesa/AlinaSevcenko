@@ -121,6 +121,10 @@ const RegisterForm = () => {
           htmlLang === "lt" || htmlLang === "ru"
             ? (htmlLang as "lt" | "ru")
             : "lt";
+        await userActions.preferences.createPreferences(
+          result.userId,
+          userLang
+        );
         const verificationResult =
           await emailActions.authentication.sendVerificationEmail(
             email,
