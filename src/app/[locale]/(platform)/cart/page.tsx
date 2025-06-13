@@ -25,10 +25,10 @@ const CartPage = () => {
       const results = await Promise.all(
         cartItems.map(async (cartItem) => {
           try {
-            const result = await coursesAction.courses.getCourse(
+            const result = await coursesAction.courses.getCourseClient(
               cartItem.courseId
             );
-            const course = result.cousre as Course;
+            const course = result.course as Course;
             if (!course || !course.isPublished) {
               toast.error(
                 `Course "${cartItem.title}" has been removed from your cart because it's no longer available.`,
@@ -253,9 +253,9 @@ const CartPage = () => {
           ) : (
             freshCartItems?.map((item, index) => (
               <CartPageItem
-                key={item?.cousre?.courseId}
+                key={item?.course?.courseId}
                 accessPlanId={cartItems[index].accessPlanId}
-                item={item?.cousre as Course}
+                item={item?.course as Course}
               />
             ))
           )}

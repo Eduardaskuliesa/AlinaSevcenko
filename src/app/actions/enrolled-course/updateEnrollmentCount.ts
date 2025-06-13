@@ -1,3 +1,4 @@
+"use server";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { revalidateTag } from "next/cache";

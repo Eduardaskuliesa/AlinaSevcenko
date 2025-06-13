@@ -5,6 +5,7 @@ import { enrolledCourseActions } from "@/app/actions/enrolled-course";
 import { PurschaseCourseData } from "@/app/actions/enrolled-course/createEnrolledCourse";
 import { cloudflareWorkerActions } from "@/app/actions/cloudflareWorker";
 import { revalidateTag } from "next/cache";
+import { userActions } from "@/app/actions/user";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-05-28.basil",
@@ -24,6 +25,8 @@ export async function POST(req: Request) {
       signature,
       webhookSecret
     );
+
+    const coursePreferences = [];
 
     if (event.type === "checkout.session.completed") {
       const metadata = event.data.object.metadata;
@@ -73,11 +76,18 @@ export async function POST(req: Request) {
           };
         });
 
+        const lifeTime = accessPlan.duration === 0;
+
         const expiresAt = accessPlan.duration
           ? new Date(
               Date.now() + accessPlan.duration * 24 * 60 * 60 * 1000
             ).toISOString()
           : new Date().toISOString();
+
+        coursePreferences.push({
+          courseId: courseId,
+          expiresAt: lifeTime ? "lifetime" : expiresAt,
+        });
 
         const enrolledCourseData: PurschaseCourseData = {
           purchaseId: event.data.object.id,
@@ -121,12 +131,18 @@ export async function POST(req: Request) {
             userId,
             expiresAt
           );
+
+          await userActions.preferences.updateCoursePreferences(
+            userId,
+            coursePreferences
+          );
         }
 
         revalidateTag(`users-course-${userId}`);
         logger.success("Enrolled course created successfully:");
       }
     }
+
     return NextResponse.json({ recieved: true });
   } catch (error) {
     logger.error("Error processing Stripe webhook:", error);

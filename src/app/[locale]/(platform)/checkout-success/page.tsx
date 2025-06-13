@@ -8,6 +8,7 @@ import Image from "next/image";
 import StartLearningButton from "./StartLearningButton";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/auth";
+import { redirect } from "next/navigation";
 
 const CheckoutSuccessPage = async ({
   searchParams,
@@ -22,17 +23,25 @@ const CheckoutSuccessPage = async ({
   );
   const { session_id } = await searchParams;
 
+  if (!session_id) {
+    redirect("/cart");
+  }
+
   if (session_id) {
     orderDetails = await stripe.checkout.sessions.retrieve(session_id, {
       expand: ["line_items"],
     });
 
+    if (orderDetails.status !== "complete") {
+      redirect("/cart");
+    }
+
     if (orderDetails.metadata?.courseIds) {
       const courseIds = orderDetails.metadata.courseIds.split(",");
       courses = await Promise.all(
         courseIds.map(async (courseId: string) => {
-          return (await coursesAction.courses.getCourse(courseId))
-            .cousre as Course;
+          return (await coursesAction.courses.getCourseClient(courseId))
+            .course as Course;
         })
       );
     }

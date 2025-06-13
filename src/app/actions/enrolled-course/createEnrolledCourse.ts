@@ -1,3 +1,5 @@
+"use server";
+
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { EnrolledCourse } from "@/app/types/enrolled-course";
 import { logger } from "@/app/utils/logger";
