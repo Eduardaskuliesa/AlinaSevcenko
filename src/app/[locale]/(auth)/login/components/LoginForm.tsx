@@ -8,11 +8,9 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 
 import { getSession, signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
 
 const LoginForm = () => {
   const t = useTranslations("LoginPage");
-  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -77,14 +75,14 @@ const LoginForm = () => {
       });
 
       if (result?.ok) {
-        const session = await getSession();
-        if (session?.user.role === "STUDENT") {
-          router.push("/user/profile");
-        } else if (session?.user.role === "ADMIN") {
-          router.push("/admin/courses");
-        }
-
-        console.log("Session:", session);
+        setTimeout(async () => {
+          const session = await getSession();
+          if (session?.user.role === "STUDENT") {
+            window.location.href = "/user/profile";
+          } else if (session?.user.role === "ADMIN") {
+            window.location.href = "/admin/courses";
+          }
+        }, 50);
       } else {
         if (result?.error === "INVALID_CREDENTIALS") {
           setIsLoading(false);

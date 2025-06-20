@@ -6,6 +6,7 @@ const withNextIntl = createNextIntilPlugin();
 
 const nextConfig: NextConfig = {
   /* config options here */
+
   experimental: {
     viewTransition: true,
   },
@@ -15,7 +16,8 @@ const nextConfig: NextConfig = {
   env: {
     CLOUDFLARE_STREAM_TOKEN: process.env.CLOUDFLARE_STREAM_TOKEN,
     CLOUDFLARE_ACCOUNT_ID: process.env.CLOUDFLARE_ACCOUNT_ID,
-    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
+      process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     WORKER_API_KEY: process.env.WORKER_API_KEY,

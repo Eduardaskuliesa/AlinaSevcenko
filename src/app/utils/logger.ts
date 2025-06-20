@@ -1,7 +1,11 @@
 export const logger = {
-  info: (message: string) => {
+  info: (message: string, data?: unknown) => {
     const timestamp = new Date().toISOString();
-    console.log(`[${timestamp}] 🖥️ SERVER: ${message}`);
+    if (data) {
+      console.log(`[${timestamp}] 🖥️ SERVER: ${message}`, data);
+    } else {
+      console.log(`[${timestamp}] 🖥️ SERVER: ${message}`);
+    }
   },
 
   success: (message: string) => {

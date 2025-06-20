@@ -1,8 +1,10 @@
 "use server";
 import { dynamoTableName, dynamoDb } from "@/app/services/dynamoDB";
+import { logger } from "@/app/utils/logger";
 import { QueryCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 
 export async function verifyToken(token: string) {
+  logger.info(`Verification request for token: ${token}`);
   try {
     const verifyCommand = new QueryCommand({
       TableName: dynamoTableName,
@@ -63,7 +65,7 @@ export async function verifyToken(token: string) {
       TableName: dynamoTableName,
       Key: {
         PK: `PROFILE`,
-        SK: `USER#${userId}` ,
+        SK: `USER#${userId}`,
       },
       UpdateExpression: "SET #status = :status",
       ExpressionAttributeNames: {
