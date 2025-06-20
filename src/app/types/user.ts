@@ -6,4 +6,6 @@ export interface UserPreferences {
   }[];
   createdAt: string;
   updatedAt: string;
+  languge: string;
+  languageSuggestionDismissedAt?: number;
 }
