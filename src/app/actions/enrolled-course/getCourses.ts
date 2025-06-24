@@ -1,9 +1,9 @@
 "use server";
-import { Course } from "@/app/types/course";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { logger } from "@/app/utils/logger";
 import { unstable_cache } from "next/cache";
+import { EnrolledCourse } from "@/app/types/enrolled-course";
 
 async function fetchCourses(userId: string) {
   logger.info(`Fetching users Purschased Courses`);
@@ -18,7 +18,7 @@ async function fetchCourses(userId: string) {
 
     const course = await dynamoDb.send(getCommand);
     return {
-      cousre: course.Items as Course[],
+      cousre: course.Items as EnrolledCourse[],
     };
   } catch (error) {
     return {

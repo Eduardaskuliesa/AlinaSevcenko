@@ -11,6 +11,11 @@ export interface PurschaseCourseData {
   purchaseId: string;
   paymentId: string;
   title: string;
+  slug: string;
+  shortDescription: string;
+  longDescription: string;
+  duration: number;
+  lessonCount: number;
   purchaseDate: string;
   expiresAt: string;
   status: "ACTIVE" | "EXPIRED";
@@ -37,7 +42,12 @@ export async function createPurchasedCourse(courseData: PurschaseCourseData) {
       SK: `COURSE#${courseData.courseId}`,
       courseId: courseData.courseId,
       userId: courseData.userId,
+      slug: courseData.slug,
+      shortDescription: courseData.shortDescription,
+      longDescription: courseData.longDescription,
+      duration: courseData.duration,
       purchaseId: courseData.purchaseId,
+      lessonCount: courseData.lessonCount,
       paymentId: courseData.paymentId,
       title: courseData.title,
       purchaseDate: courseData.purchaseDate,
@@ -53,6 +63,7 @@ export async function createPurchasedCourse(courseData: PurschaseCourseData) {
       lastLessonWatchTime: 0,
       overallProgress: 0,
       lastSyncedAt: timestamp,
+      lastWatchedAt: timestamp,
       createdAt: timestamp,
       updatedAt: timestamp,
     };

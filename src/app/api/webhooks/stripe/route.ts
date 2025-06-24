@@ -78,11 +78,11 @@ export async function POST(req: Request) {
 
         const lifeTime = accessPlan.duration === 0;
 
-        const expiresAt = accessPlan.duration
-          ? new Date(
+        const expiresAt = lifeTime
+          ? "lifetime"
+          : new Date(
               Date.now() + accessPlan.duration * 24 * 60 * 60 * 1000
-            ).toISOString()
-          : new Date().toISOString();
+            ).toISOString();
 
         coursePreferences.push({
           courseId: courseId,
@@ -94,6 +94,11 @@ export async function POST(req: Request) {
           paymentId: event.data.object.payment_intent as string,
           userId: userId,
           courseId: courseId,
+          slug: course?.slug || "",
+          duration: course?.duration || 0,
+          shortDescription: course?.shortDescription || "",
+          longDescription: course?.description || "",
+          lessonCount: course?.lessonCount || 0,
           title: course?.title || "",
           languge: course?.language || "lt",
           accessPlanName: accessPlan.name,

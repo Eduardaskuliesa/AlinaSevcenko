@@ -16,6 +16,12 @@ export interface EnrolledCourse {
   courseVersion: number;
   lastSyncedAt: string;
   overallProgress: number;
+  slug: string;
+  shortDescription: string;
+  longDescription: string;
+  duration: number;
+  lessonCount: number;
+  lastWatchedAt: string;
   lastLessonId: string | null;
   lastLessonWatchTime: number;
 
