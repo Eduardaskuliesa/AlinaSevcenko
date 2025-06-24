@@ -8,7 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(req: NextRequest) {
   try {
-    const { items, locale, userId } = await req.json();
+    const { items, locale, userId, cancelUrl } = await req.json();
 
     const formatDuration = (days: number, locale: string) => {
       if (days === 0) {
@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
       })),
       mode: "payment",
       success_url: `${req.nextUrl.origin}/${locale}/checkout-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.nextUrl.origin}/${locale}/cart`,
+      cancel_url: `${req.nextUrl.origin}/${cancelUrl}`,
       metadata: {
         courseIds: items.map((item: CartItem) => item.courseId).join(","),
         accessIds: items.map((item: CartItem) => item.accessPlanId).join(","),

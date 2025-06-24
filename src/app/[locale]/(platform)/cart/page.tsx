@@ -13,10 +13,11 @@ import CartSummary from "./components/CartSummary";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
 
+
 const CartPage = () => {
   const { cartItems, hydrated, removeFromCart, updateCartItem } =
     useCartStore();
-
+  
   const userId = useSession().data?.user.id;
 
   const { data: freshCartItems, isLoading } = useQuery({
@@ -186,6 +187,7 @@ const CartPage = () => {
     enabled: cartItems.length > 0 && hydrated,
   });
 
+ 
   if (!hydrated) {
     return (
       <>

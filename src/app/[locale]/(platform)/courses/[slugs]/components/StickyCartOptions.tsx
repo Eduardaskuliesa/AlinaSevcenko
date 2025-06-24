@@ -1,14 +1,14 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-
 import type { Course } from "@/app/types/course";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Heart } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { CardContent } from "@/components/ui/card";
 import { useCartStore } from "@/app/store/useCartStore";
 import { motion, AnimatePresence } from "motion/react";
-import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 interface AccessPlan {
   name: string;
@@ -22,8 +22,10 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
   const [hearts, setHearts] = useState<{ id: number; x: number; y: number }[]>(
     []
   );
-  const searchParams = useSearchParams();
-  const price = searchParams.get("price");
+  const [isHydrated, setIsHydrated] = useState(false);
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
   const userId = useSession().data?.user.id;
 
   const {
@@ -39,20 +41,30 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
     .filter((plan) => plan.isActive)
     .sort((a, b) => a.price - b.price);
 
-  const getInitialSelectedPlan = () => {
-    if (price) {
-      const priceNumber = parseFloat(price);
+  const getInitialSelectedPlan = useCallback(() => {
+    if (cartItems.length > 0) {
+      const selectedPlan = cartItems.find(
+        (item) => item.courseId === courseData.courseId
+      );
       const matchingPlan = activeAccessPlans.find(
-        (plan) => plan.price === priceNumber
+        (plan) =>
+          plan.price === selectedPlan?.price &&
+          plan.id === selectedPlan?.accessPlanId
       );
       return matchingPlan || activeAccessPlans[0] || null;
     }
     return activeAccessPlans[0] || null;
-  };
+  }, [activeAccessPlans, cartItems, courseData.courseId]);
 
   const [selectedPlan, setSelectedPlan] = useState<AccessPlan>(
     getInitialSelectedPlan()
   );
+
+  useEffect(() => {
+    if (isHydrated) {
+      setSelectedPlan(getInitialSelectedPlan());
+    }
+  }, [isHydrated]);
 
   const handleHeartClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -167,6 +179,73 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
         return 540;
     }
   };
+
+  const handleProcceedWithPurchase = () => {
+    if (!selectedPlan) return;
+    addToCart(
+      {
+        userId: userId || "",
+        accessPlanId: selectedPlan.id,
+        courseId: courseData.courseId,
+        title: courseData.title,
+        slug: courseData.slug,
+        language: courseData.language,
+        duration: courseData.duration,
+        lessonCount: courseData.lessonCount,
+        price: selectedPlan.price,
+        imageUrl: courseData.thumbnailImage || "",
+        accessDuration: selectedPlan.duration,
+      },
+      false
+    );
+  };
+
+  if (!isHydrated || !selectedPlan) {
+    return (
+      <div
+        style={{ maxHeight: `${getDynamicHeight(activeAccessPlans.length)}px` }}
+        className="w-[30%] mt-6 sticky top-[2rem] bg-white border-gray-200 border-2 rounded-lg"
+      >
+        <div className="p-4 h-full">
+          <div className="space-y-3">
+            <div className="h-6 bg-gray-200 rounded animate-pulse w-3/4"></div>
+
+            <div className="space-y-2">
+              {Array.from({ length: activeAccessPlans.length || 2 }).map(
+                (_, i) => (
+                  <div key={i} className="border border-gray-200 rounded-md">
+                    <div className="p-4">
+                      <div className="flex justify-between items-center">
+                        <div className="space-y-2">
+                          <div className="h-4 bg-gray-200 rounded animate-pulse w-20"></div>
+                          <div className="h-3 bg-gray-200 rounded animate-pulse w-16"></div>
+                        </div>
+                        <div className="h-5 bg-gray-200 rounded animate-pulse w-12"></div>
+                      </div>
+                    </div>
+                  </div>
+                )
+              )}
+            </div>
+          </div>
+
+          <div className="text-center py-4">
+            <div className="h-8 bg-gray-200 rounded animate-pulse w-16 mx-auto mb-1"></div>
+            <div className="h-4 bg-gray-200 rounded animate-pulse w-20 mx-auto"></div>
+          </div>
+
+          <div className="space-y-3">
+            <div className="flex gap-2">
+              <div className="flex-1 h-9 bg-gray-200 rounded-md animate-pulse"></div>
+              <div className="w-9 h-9 bg-gray-200 rounded-md animate-pulse"></div>
+            </div>
+            <div className="w-full h-9 bg-gray-200 rounded-md animate-pulse"></div>
+            <div className="h-4 bg-gray-200 rounded animate-pulse w-32 mx-auto"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!activeAccessPlans.length) {
     return (
@@ -290,13 +369,14 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
               </AnimatePresence>
             </motion.button>
           </div>
-
-          <motion.button
-            whileTap={{ scale: 0.98, translateY: 2 }}
-            className="w-full bg-primary hover:bg-primary/80 text-gray-100 font-medium rounded-md text-sm py-2 px-4"
-          >
-            Proceed with Purchase
-          </motion.button>
+          <Link href={"/cart"} onClick={handleProcceedWithPurchase}>
+            <motion.button
+              whileTap={{ scale: 0.98, translateY: 2 }}
+              className="w-full bg-primary hover:bg-primary/80 mt-3 text-gray-100 font-medium rounded-md text-sm py-2 px-4"
+            >
+              Proceed with Purchase
+            </motion.button>
+          </Link>
 
           <div className="text-center pt-2">
             <motion.button

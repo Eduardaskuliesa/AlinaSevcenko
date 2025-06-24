@@ -23,6 +23,7 @@ const CartSummary = () => {
           items: cartItems,
           locale: locale,
           userId: userId,
+          cancelUrl: `${locale}/cart`,
         }),
       });
 
