@@ -1,34 +1,28 @@
-import type { EnrolledCourse } from "@/app/types/enrolled-course";
-import { convertTime } from "@/app/utils/converToMinutes";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { BookOpen, Clock4, Play, Star } from "lucide-react";
+"use client";
 import Image from "next/image";
+import { Clock, BookOpen, Play, CheckCircle2 } from "lucide-react";
+import { convertTime } from "@/app/utils/converToMinutes";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import type { EnrolledCourse } from "@/app/types/enrolled-course";
+import { motion } from "framer-motion";
+import Link from "next/link";
 import { format } from "date-fns";
 
 interface CourseCardProps {
-  courseData: EnrolledCourse;
+  course: EnrolledCourse;
 }
 
-const CourseCard = ({ courseData }: CourseCardProps) => {
-  console.log("courseLessonProgress", courseData.lessonProgress);
-  const totalLessons = Object.keys(courseData.lessonProgress).length;
-  const completedLessons = Object.values(courseData.lessonProgress).filter(
+const CourseCard = ({ course }: CourseCardProps) => {
+  const totalLessons = Object.keys(course.lessonProgress).length;
+  const completedLessons = Object.values(course.lessonProgress).filter(
     (lesson) => lesson.progress === 100
   ).length;
-  const progressPercentage = Math.round(
-    (completedLessons / courseData.lessonCount) * 100
-  );
 
-  const formatExpirationDate = (expiresAt: string) => {
+  const getExpirationInfo = (expiresAt: string) => {
     if (expiresAt === "lifetime") {
-      return {
-        text: "Lifetime Access",
-        color: "bg-green-100 text-green-800",
-        showStar: true,
-      };
+      return { text: "Lifetime Access", color: "bg-green-100 text-green-800" };
     }
 
     const expirationDate = new Date(expiresAt);
@@ -38,112 +32,134 @@ const CourseCard = ({ courseData }: CourseCardProps) => {
     );
 
     if (daysLeft < 0) {
-      return {
-        text: "Expired",
-        color: "bg-red-100 text-red-800",
-        showStar: false,
-      };
+      return { text: "Expired", color: "bg-red-100 text-red-800" };
     } else if (daysLeft <= 7) {
       return {
         text: `${daysLeft} days left`,
         color: "bg-orange-100 text-orange-800",
-        showStar: false,
       };
     } else {
       return {
         text: `Expires ${format(expirationDate, "MMM dd")}`,
         color: "bg-blue-100 text-blue-800",
-        showStar: false,
       };
     }
   };
 
-  const expiration = formatExpirationDate(courseData.expiresAt);
+  const expiration = getExpirationInfo(course.expiresAt);
 
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 bg-white py-0 flex">
-      <CardContent className="p-0">
-        {/* Image Section */}
-        <div className="relative h-[14rem] w-full">
+    <Link href={`/learn/${course.courseId}`}>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{
+          duration: 0.4,
+          ease: "easeInOut",
+        }}
+        viewport={{ once: true }}
+        className="flex flex-row border shadow-sm border-primary-light/60 group hover:bg-gray-50 rounded-md bg-white p-4 mb-4 cursor-pointer pb-4"
+      >
+        <div className="relative min-w-[300px] min-h-[150px] max-h-[200px] overflow-hidden rounded-md">
           <Image
+            quality={100}
+            height={240}
+            width={240}
+            alt="Course Thumbnail"
             src={
-              courseData.thumbnailImage ||
-              "/placeholder.svg?height=128&width=350" ||
-              "/placeholder.svg"
+              course?.thumbnailImage || "/placeholder.svg?height=180&width=300"
             }
-            alt={courseData.title}
-            fill
-            className="object-cover object-center"
+            className="object-cover w-full h-full group-hover:scale-[1.02] transition-transform duration-300 ease-out transform-gpu"
           />
-          <div className="absolute top-2 left-2">
-            <Badge
-              variant="secondary"
-              className={`text-xs ${expiration.color}`}
-            >
-              {expiration.showStar && <Star></Star>}
-              {expiration.text}
-            </Badge>
-          </div>
+
+          {/* Progress Badge */}
+          <Badge
+            variant="secondary"
+            className="absolute top-2 left-2 border-white border text-gray-800 text-xs font-bold"
+          >
+            {course.overallProgress}% Complete
+          </Badge>
+
+          {/* Completion Badge */}
+          {course.overallProgress === 100 && (
+            <div className="absolute top-2 right-2 bg-green-500 text-white rounded-full p-1">
+              <CheckCircle2 className="w-4 h-4" />
+            </div>
+          )}
         </div>
 
-        {/* Content Section */}
-        <div className="p-3 space-y-2">
-          {/* Title */}
-          <div>
-            <h3 className="text-xl font-semibold text-gray-900 line-clamp-1 leading-tight">
-              {courseData.title}
-            </h3>
-          </div>
+        <div className="flex flex-col flex-1 justify-between ml-6">
+          <div className="flex flex-row justify-between w-full mb-auto">
+            <div className="flex-1">
+              <h3 className="text-lg font-bold text-gray-800 mb-1 line-clamp-2">
+                {course?.title}
+              </h3>
+              <p className="text-sm text-gray-600 line-clamp-2 mb-3">
+                {course?.shortDescription}
+              </p>
 
-          {/* Description */}
-          <div>
-            <p className="text-base text-gray-600 line-clamp-2 leading-relaxed h-12">
-              {courseData.shortDescription}
-            </p>
-          </div>
+              <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
+                <div className="flex items-center gap-1">
+                  <BookOpen className="h-4 w-4 text-primary" />
+                  <span>{totalLessons} lessons</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Clock className="h-4 w-4 text-primary" />
+                  <span>{convertTime(course?.duration)}</span>
+                </div>
+              </div>
 
-          {/* Course Stats */}
-          <div className="flex items-center gap-3 text-sm text-gray-500">
-            <div className="flex items-center gap-1">
-              <BookOpen className="w-3 h-3" />
-              <span>{totalLessons} lessons</span>
+              {/* Progress Bar */}
+              <div className="space-y-1">
+                <div className="flex justify-between text-xs text-gray-500">
+                  <span>
+                    {completedLessons}/{totalLessons} lessons completed
+                  </span>
+                  <span>{course.overallProgress}%</span>
+                </div>
+                <Progress value={course.overallProgress} className="h-2" />
+              </div>
             </div>
-            <div className="flex items-center gap-1">
-              <Clock4 className="w-3 h-3" />
-              <span>{convertTime(courseData.duration)}</span>
+
+            {/* Access Status */}
+            <div className="ml-4 min-w-[120px] flex justify-end">
+              <Badge
+                variant="secondary"
+                className={`px-3 py-1 rounded-full font-semibold text-sm h-fit ${expiration.color}`}
+              >
+                {expiration.text}
+              </Badge>
             </div>
           </div>
 
-          {/* Progress Section */}
-          <div className="space-y-1">
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-gray-600">Progress</span>
-              <span className="font-medium text-gray-900">
-                {completedLessons}/{totalLessons} ({courseData.overallProgress}
-                %)
+          <div className="flex justify-between items-center w-full mt-4">
+            {/* Last accessed info */}
+            <div className="flex items-center gap-2 text-xs text-gray-500">
+              <span>
+                Last accessed:{" "}
+                {format(
+                  new Date(course.lastWatchedAt || Date.now()),
+                  "MMM dd, yyyy"
+                )}
               </span>
             </div>
-            <Progress
-              value={courseData.overallProgress}
-              className="h-1.5 bg-gray-200"
-            />
-          </div>
 
-          {/* Action Button */}
-          <div className="mt-auto pt-2">
+            {/* Action button */}
             <Button
-              variant="default"
-              className="w-full flex items-center justify-center gap-1 text-gray-50"
+              size="sm"
+              className="bg-primary hover:bg-primary/90 text-white px-4 py-2 text-sm font-medium"
+              onClick={(e) => {
+                e.preventDefault();
+                // Handle continue/start action
+              }}
             >
-              <Play className="w-3 h-3" />
-              <span className="text-base font-medium ">
-                {progressPercentage > 0 ? "Continue" : "Start"}
-              </span>
+              {course.overallProgress > 0 ? "Continue" : "Start"}
+              <Play className="w-4 h-4 mr-2 group-hover:translate-x-2 transition-all" />
             </Button>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </motion.div>
+    </Link>
   );
 };
 

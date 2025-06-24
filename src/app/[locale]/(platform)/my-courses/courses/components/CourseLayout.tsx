@@ -1,5 +1,4 @@
-import { EnrolledCourse } from "@/app/types/enrolled-course";
-import React from "react";
+import type { EnrolledCourse } from "@/app/types/enrolled-course";
 import CourseCard from "./CourseCard";
 
 interface CourseLayoutProps {
@@ -8,9 +7,9 @@ interface CourseLayoutProps {
 
 const CourseLayout = ({ courseData }: CourseLayoutProps) => {
   return (
-    <div className="grid gap-4 grid-cols-2 lg:grid-cols-2 pb-20">
+    <div className="space-y-4 pb-20">
       {courseData.map((course) => (
-        <CourseCard key={course.courseId} courseData={course} />
+        <CourseCard key={course.courseId} course={course} />
       ))}
     </div>
   );

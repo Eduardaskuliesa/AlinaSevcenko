@@ -4,18 +4,19 @@ import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import CourseLayout from "./CourseLayout";
 import { Loader } from "lucide-react";
+import { useSession } from "next-auth/react";
 
-interface MyLearningPagepProps {
-  userId: string | null;
-}
+const MyLearningPage = () => {
+  const userId = useSession().data?.user.id;
 
-const MyLearningPage = ({ userId }: MyLearningPagepProps) => {
   const { data, isLoading } = useQuery({
     queryKey: ["user-client-courses"],
     queryFn: () => enrolledCourseActions.getUsersCourses(userId as string),
+    enabled: !!userId,
   });
-
+  console.log("MyLearningPage userId", userId);
   console.log("MyLearningPage data", data);
+
   return (
     <div>
       {isLoading ? (

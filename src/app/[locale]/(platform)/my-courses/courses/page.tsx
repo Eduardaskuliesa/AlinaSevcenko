@@ -1,28 +1,14 @@
 import React from "react";
 import PageWrapper from "../../components/PageWrapper";
-import { getQueryClient } from "@/app/lib/getQueryClient";
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import { enrolledCourseActions } from "@/app/actions/enrolled-course";
-import { getUserIdServer } from "@/app/lib/getUserIdServer";
 import MyLearningPage from "./components/MyLearningPage";
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-static";
 
 const page = async () => {
-  const queryClient = getQueryClient();
-  const userId = await getUserIdServer();
-
-  queryClient.prefetchQuery({
-    queryKey: ["user-client-courses"],
-    queryFn: () => enrolledCourseActions.getUsersCourses(userId as string),
-  });
-
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <PageWrapper>
-        <MyLearningPage userId={userId as string} />
-      </PageWrapper>
-    </HydrationBoundary>
+    <PageWrapper>
+      <MyLearningPage></MyLearningPage>
+    </PageWrapper>
   );
 };
 
