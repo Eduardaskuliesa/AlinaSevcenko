@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 const page = async () => {
   const queryClient = getQueryClient();
   const userId = await getUserIdServer();
-  console.log(userId);
+
   queryClient.prefetchQuery({
     queryKey: ["user-client-courses"],
     queryFn: () => enrolledCourseActions.getUsersCourses(userId as string),
