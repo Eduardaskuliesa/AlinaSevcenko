@@ -23,6 +23,15 @@ export default function CoursePageClient({ slugs }: CoursePageClientProps) {
   if (!data?.course) return <div>Course not found</div>;
 
   const { course, previewLesson, courseLessons } = data;
+
+ const sortedLessons = courseLessons?.sort((a, b) => {
+  const orderA = course?.lessonOrder?.find((order) => order.lessonId === a.lessonId)?.sort ?? 999;
+  const orderB = course?.lessonOrder?.find((order) => order.lessonId === b.lessonId)?.sort ?? 999;
+  return orderA - orderB;
+}) ?? [];
+
+  console.log("CoursePageClient sortedLessons", sortedLessons);
+
   return (
     <>
       <header className="h-[5rem] bg-primary w-full flex">
@@ -38,7 +47,7 @@ export default function CoursePageClient({ slugs }: CoursePageClientProps) {
           <BackButton />
           {previewLesson && <PreviewPlayer lessonData={previewLesson} />}
           <LessonDescription courseData={course} />
-          <LessonContent courseLessons={courseLessons ?? []} />
+          <LessonContent courseLessons={sortedLessons ?? []} />
         </div>
         <StickyCartOptions courseData={course}></StickyCartOptions>
       </section>

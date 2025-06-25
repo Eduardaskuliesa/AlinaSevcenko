@@ -3,7 +3,7 @@ import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { Course } from "@/app/types/course";
 import { GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function updateLessonOrder(
   courseId: Course["courseId"],
@@ -47,11 +47,13 @@ export async function updateLessonOrder(
     });
 
     await dynamoDb.send(updateCourseCommand);
+    revalidatePath(`/courses`);
+    revalidateTag(`client-lessons-${courseId}`);
     revalidateTag(`course-${courseId}`);
     revalidateTag(`courses`);
     revalidateTag("client-courses");
     revalidateTag(`user-lesson-${courseId}`);
-    revalidateTag(`client-lessons-${courseId}`);
+
     return {
       success: true,
       message: "Lesson order updated successfully",

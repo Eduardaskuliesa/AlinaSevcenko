@@ -231,8 +231,8 @@ export const useLessonStore = create<LessonState>()(
           const lessonsOrder = courseData?.lessonOrder || [];
 
           const orderMap = new Map();
-          lessonsOrder.forEach((item: { lessonId: string; order: number }) => {
-            orderMap.set(item.lessonId, item.order);
+          lessonsOrder.forEach((item: { lessonId: string; sort: number }) => {
+            orderMap.set(item.lessonId, item.sort);
           });
 
           if (lessonsResponse) {

@@ -1,6 +1,7 @@
 import CartSync from "./components/CartSync";
 import LanguageSuggestion from "./components/LanguageSuggestion";
 import PlatformNavBar from "./components/PlatformNavBar";
+
 import SyncUserPreferences from "./components/SyncUserPreferences";
 
 export default function PlatformLayout({

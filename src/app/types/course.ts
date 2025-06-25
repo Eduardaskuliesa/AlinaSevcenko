@@ -28,7 +28,7 @@ export interface Course {
     {
       lessonId: string;
       isPreview: boolean;
-      order: number;
+      sort: number;
     }
   ];
   authorId: string;

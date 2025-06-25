@@ -17,6 +17,7 @@ export async function fetchLessons(courseId: Course["courseId"]) {
     });
 
     const response = await dynamoDb.send(getCommand);
+
     return response.Items as Lesson[];
   } catch (error) {
     logger.error(
