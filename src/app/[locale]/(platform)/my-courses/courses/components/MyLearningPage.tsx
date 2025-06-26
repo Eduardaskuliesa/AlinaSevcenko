@@ -14,8 +14,6 @@ const MyLearningPage = () => {
     queryFn: () => enrolledCourseActions.getUsersCourses(userId as string),
     enabled: !!userId,
   });
-  console.log("MyLearningPage userId", userId);
-  console.log("MyLearningPage data", data);
 
   return (
     <div>

@@ -29,7 +29,7 @@ async function fetchLessons(courseId: Course["courseId"]) {
 
 export async function getLessons(courseId: Course["courseId"]) {
   const cacheTag = `user-lesson-${courseId}`;
-  const revalidateTime = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
+  const revalidateTime = 2 * 60 * 60 * 1000; 
   return unstable_cache(
     async () => {
       return fetchLessons(courseId);
