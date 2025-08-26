@@ -13,8 +13,6 @@ export function CartPageItem({
   item: Course;
   accessPlanId: string;
 }) {
-  console.log("CartPageItem Props:", { item });
-  console.log("CartPageItem Rendered:");
   const { updateCartItem, removeFromCart, addToWishlist } = useCartStore();
   const userId = useSession().data?.user.id;
   const [selectedPlan, setSelectedPlan] = useState<AccessPlan | undefined>();

@@ -18,7 +18,7 @@ export async function updateSlug(
         PK: "SLUG",
         SK: `SLUG#${slugId}`,
       },
-      UpdateExpression: "SET slug = :slug",
+      UpdateExpression: "SET slug = :slug, GSI1PK = :slug",
       ExpressionAttributeValues: {
         ":slug": slug,
       },
@@ -42,6 +42,7 @@ export async function updateSlug(
     revalidateTag("client-courses");
     revalidateTag(`course-client-${courseId}`);
     revalidateTag(`course-${courseId}`);
+    revalidateTag("slugs");
     return {
       success: true,
       message: "Slug updated successfully",

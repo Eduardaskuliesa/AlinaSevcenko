@@ -58,6 +58,7 @@ export async function updateCategory(
     const result = await dynamoDb.send(command);
 
     revalidateTag("categories");
+    revalidateTag("client-categories");
     logger.success("Category updated successfully");
     return {
       success: true,

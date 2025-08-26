@@ -91,7 +91,7 @@ export async function deleteLesson(
         ":lessonOrder": updatedLessonOrder,
         ":timestamp": timestamp,
         ":lessonComplete": hasRemainingLessons,
-        ":duration": -lessonDuration, // Subtract the lesson duration
+        ":duration": -lessonDuration,
       },
     });
 

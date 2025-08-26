@@ -24,13 +24,16 @@ export default function CoursePageClient({ slugs }: CoursePageClientProps) {
 
   const { course, previewLesson, courseLessons } = data;
 
- const sortedLessons = courseLessons?.sort((a, b) => {
-  const orderA = course?.lessonOrder?.find((order) => order.lessonId === a.lessonId)?.sort ?? 999;
-  const orderB = course?.lessonOrder?.find((order) => order.lessonId === b.lessonId)?.sort ?? 999;
-  return orderA - orderB;
-}) ?? [];
-
-  console.log("CoursePageClient sortedLessons", sortedLessons);
+  const sortedLessons =
+    courseLessons?.sort((a, b) => {
+      const orderA =
+        course?.lessonOrder?.find((order) => order.lessonId === a.lessonId)
+          ?.sort ?? 999;
+      const orderB =
+        course?.lessonOrder?.find((order) => order.lessonId === b.lessonId)
+          ?.sort ?? 999;
+      return orderA - orderB;
+    }) ?? [];
 
   return (
     <>

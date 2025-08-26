@@ -6,6 +6,7 @@ import { PurschaseCourseData } from "@/app/actions/enrolled-course/createEnrolle
 import { cloudflareWorkerActions } from "@/app/actions/cloudflareWorker";
 import { revalidateTag } from "next/cache";
 import { userActions } from "@/app/actions/user";
+import { coursesAction } from "@/app/actions/coursers";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-05-28.basil",
@@ -30,9 +31,6 @@ export async function POST(req: Request) {
 
     if (event.type === "checkout.session.completed") {
       const metadata = event.data.object.metadata;
-      logger.info(`Metadata: ${JSON.stringify(metadata)}`);
-
-      console.log("Metadata:", metadata);
 
       const { courseIds, accessIds, userId } = metadata as Stripe.Metadata;
 
@@ -46,8 +44,8 @@ export async function POST(req: Request) {
           `Processing course ID: ${courseId}, Access Plan: ${accessPlanId}`
         );
 
-        const course = (await enrolledCourseActions.getCourse(courseId)).cousre;
-        const lessons = await enrolledCourseActions.getLessons(courseId);
+        const course = (await coursesAction.courses.getCourseClient(courseId)).course;
+        const lessons = await coursesAction.lessons.getClientLessons(courseId);
 
         const accessPlan = course?.accessPlans?.find(
           (plan) => plan.id === accessPlanId

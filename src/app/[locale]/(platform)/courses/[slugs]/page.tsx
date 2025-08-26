@@ -4,9 +4,8 @@ import CoursePageClient from "./ClientCoursePage";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/app/lib/getQueryClient";
 
-export const dynamicParams = false;
+export const dynamicParams = true;
 export const revalidate = 72000;
-export const dynamic = "force-static";
 
 export async function generateStaticParams() {
   const slugsData = await getSlugs();
@@ -39,6 +38,7 @@ export default async function CourseIdPage({
     queryFn: () => getCourseWithPreviewLesson(slugs),
   });
 
+ 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <CoursePageClient slugs={slugs} />

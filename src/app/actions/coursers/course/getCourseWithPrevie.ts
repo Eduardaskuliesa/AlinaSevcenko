@@ -5,6 +5,7 @@ import { getSlugs } from "./getSlugs";
 
 export async function getCourseWithPreviewLesson(slug: string) {
   const slugsData = await getSlugs();
+
   const matchedSlug = slugsData?.slugs?.find((s) => s.slug === slug);
 
   if (!matchedSlug?.courseId) {

@@ -5,6 +5,7 @@ import { Course, Lesson } from "@/app/types/course";
 import { logger } from "@/app/utils/logger";
 import {
   BatchWriteCommand,
+  DeleteCommand,
   GetCommand,
   QueryCommand,
 } from "@aws-sdk/lib-dynamodb";
@@ -91,12 +92,26 @@ export async function deleteCourse(courseId: string) {
 
       await dynamoDb.send(batchWriteCommand);
     }
+
+    const deleteSlugCommand = new DeleteCommand({
+      TableName: dynamoTableName,
+      Key: {
+        PK: "SLUG",
+        SK: `SLUG#${course.slugId}`,
+      },
+    });
+
+    const deleteSlugResult = await dynamoDb.send(deleteSlugCommand);
+    if (deleteSlugResult.$metadata.httpStatusCode === 200) {
+      logger.success("Slug deleted successfully");
+    }
     logger.success("Course and all associated lessons deleted successfully");
 
     revalidateTag(`course-${courseId}`);
     revalidateTag(`courses`);
     revalidateTag("client-courses");
     revalidateTag(`course-client-${courseId}`);
+    revalidateTag("slugs");
     return {
       success: true,
       message: "Course and all associated lessons deleted successfully",

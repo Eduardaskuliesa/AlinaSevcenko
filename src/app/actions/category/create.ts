@@ -34,6 +34,7 @@ export async function createCategory(createData: CreateCategoryData) {
     await dynamoDb.send(createCommand);
     logger.success("Category created successfully");
     revalidateTag("categories");
+    revalidateTag("client-categories");
 
     return {
       success: true,

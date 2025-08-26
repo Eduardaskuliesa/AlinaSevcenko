@@ -51,7 +51,7 @@ export async function createCourse(initialData: CreateCourseInitialData) {
       SK: `COURSE#${courseId}`,
       courseId: courseId,
       title: initialData.title,
-      slug: slug,
+      slug: slugResponse.finalSlug,
       slugId: slugResponse.slugId,
       description: "",
       shortDescription: "",
@@ -86,6 +86,7 @@ export async function createCourse(initialData: CreateCourseInitialData) {
       Item: courseData,
     });
     revalidateTag(`courses`);
+    revalidateTag("slugs");
     revalidateTag("client-courses");
     revalidateTag(`course-${courseId}`);
     await dynamoDb.send(command);
