@@ -26,6 +26,7 @@ interface CartState {
   addToWishlist: (item: CartItem, isFromPrice?: boolean) => void;
   removeFromWishlist: (courseId: string) => void;
   clearWishlist: () => void;
+  clearCartOnLogout: () => void;
 }
 
 const workerUrl = process.env.WORKER_URL;
@@ -201,6 +202,14 @@ export const useCartStore = create<CartState>()(
       clearWishlist: () => {
         set((state) => {
           state.wishlistItems = [];
+        });
+      },
+
+      clearCartOnLogout: () => {
+        set((state) => {
+          state.cartItems = [];
+          state.totalPrice = 0;
+          state.totalItems = 0;
         });
       },
     })),

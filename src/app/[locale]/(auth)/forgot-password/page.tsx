@@ -50,6 +50,11 @@ const ForgotPasswordPage = () => {
       const token = await userActions.authentication.generateMagicLinkToken(
         email
       );
+      if(token.error === "USER_NOT_FOUND") {
+        setEmailError(t("userNotFound"));
+        setIsLoading(false);
+        return;
+      }
       if (token.success) {
         const htmlLang = document.documentElement.lang as string;
         const userLang =

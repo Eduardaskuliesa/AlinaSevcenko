@@ -1,7 +1,5 @@
 "use client";
-
 import type React from "react";
-
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import {
@@ -13,10 +11,9 @@ import {
   LogOut,
   LibraryBig,
 } from "lucide-react";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
 import WhisList from "./WhisList";
 import CartList from "./CartList";
 import { useCartStore } from "@/app/store/useCartStore";
@@ -24,8 +21,15 @@ import { useCartStore } from "@/app/store/useCartStore";
 const PlatformNavBar = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const { totalItems } = useCartStore();
-  const router = useRouter();
+  const { totalItems, clearCartOnLogout } = useCartStore();
+
+  const session = useSession();
+
+  const userInitials = session.data?.user.fullName
+    ?.split(" ")
+    .map((name) => name.charAt(0).toUpperCase())
+    .join("");
+
   useEffect(() => {
     return () => {
       if (timeoutRef.current) {
@@ -49,13 +53,12 @@ const PlatformNavBar = () => {
 
   const handleLogout = async () => {
     try {
+      window.location.replace("/login");
       toast.success("Successfully logged out");
-
       await signOut({
         redirect: false,
       });
-
-      router.push("/login");
+      clearCartOnLogout();
     } catch (error) {
       console.error("Logout error:", error);
       toast.error("There was an error logging out. Please try again.");
@@ -152,7 +155,7 @@ const PlatformNavBar = () => {
               openDropdown === "profile" ? "" : "hover:opacity-90"
             )}
           >
-            EK
+            {userInitials}
           </div>
 
           <div

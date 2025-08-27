@@ -8,8 +8,7 @@ import bcrypt from "bcryptjs";
 export interface RegisterFormData {
   email: string;
   password: string;
-  firstName?: string;
-  lastName?: string;
+  fullName: string
 }
 
 export async function register(formData: RegisterFormData) {
@@ -26,8 +25,7 @@ export async function register(formData: RegisterFormData) {
         email: formData.email,
         password: hashedPassword,
         userId: userId,
-        firstName: formData.firstName || "",
-        lastName: formData.lastName || "",
+        fullName: formData.fullName,
         registrationMethod: "EMAIL",
         roles: "STUDENT",
         status: "PENDING_VERIFICATION",

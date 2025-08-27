@@ -35,6 +35,7 @@ function ValidateItem({ isValid, label, shouldShake }: RequirementItemProps) {
 }
 
 interface ValidateBoxProps {
+  isFullnameValid: boolean | null;
   isEmailValid: boolean | null;
   isLengthValid: boolean | null;
   hasCapital: boolean | null;
@@ -42,6 +43,7 @@ interface ValidateBoxProps {
 }
 
 const ValidateBox = ({
+  isFullnameValid,
   isEmailValid,
   isLengthValid,
   hasCapital,
@@ -55,6 +57,11 @@ const ValidateBox = ({
         {t("requirements")}
       </h3>
       <div className="flex gap-2 flex-wrap">
+        <ValidateItem
+          isValid={isFullnameValid}
+          label={t("fullNameFormat")}
+          shouldShake={shouldShakeInvalid}
+        />
         <ValidateItem
           isValid={isEmailValid}
           label={t("validEmail")}

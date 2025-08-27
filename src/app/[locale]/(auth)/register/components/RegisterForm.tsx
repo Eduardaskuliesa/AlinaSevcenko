@@ -17,12 +17,15 @@ const RegisterForm = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
+  const [fullname, setFullname] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [fullnameError, setFullnameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [shouldShakeInvalid, setShouldShakeInvalid] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState<boolean | null>(null);
+  const [isFullnameValid, setIsFullnameValid] = useState<boolean | null>(null);
   const [isLengthValid, setIsLengthValid] = useState<boolean | null>(null);
   const [hasCapital, setHasCapital] = useState<boolean | null>(null);
 
@@ -38,6 +41,20 @@ const RegisterForm = () => {
       setEmailError("");
     }
   }, [email]);
+
+  useEffect(() => {
+    if (fullname.length === 0) {
+      setIsFullnameValid(null);
+      return;
+    }
+
+    const nameRegex = /^[a-zA-ZÀ-ÿ]+\s+[a-zA-ZÀ-ÿ]+.*$/;
+    setIsFullnameValid(nameRegex.test(fullname.trim()));
+
+    if (fullnameError) {
+      setFullnameError("");
+    }
+  }, [fullname]);
 
   useEffect(() => {
     if (password.length === 0) {
@@ -58,9 +75,15 @@ const RegisterForm = () => {
     e.preventDefault();
 
     setEmailError("");
+    setFullnameError("");
     setPasswordError("");
 
     let hasError = false;
+
+    if (!fullname.trim()) {
+      setFullnameError(t("fullNameRequired"));
+      hasError = true;
+    }
 
     if (!email.trim()) {
       setEmailError(t("emailRequired"));
@@ -80,7 +103,7 @@ const RegisterForm = () => {
       return;
     }
 
-    if (!isEmailValid || !isLengthValid || !hasCapital) {
+    if (!isFullnameValid || !isEmailValid || !isLengthValid || !hasCapital) {
       setShouldShakeInvalid(true);
       setTimeout(() => {
         setShouldShakeInvalid(false);
@@ -94,6 +117,7 @@ const RegisterForm = () => {
       const formData: RegisterFormData = {
         email,
         password,
+        fullName: fullname,
       };
 
       const emailCheckResult = await userActions.authentication.checkEmail(
@@ -150,6 +174,12 @@ const RegisterForm = () => {
       : "border-gray-800 ring-secondary bg-gray-50"
   }`;
 
+  const fullnameInputClasses = `w-full h-12 lg:text-lg ${
+    fullnameError
+      ? "border-red-500 ring-red-300 focus:ring-red-300 focus:border-red-500"
+      : "border-gray-800 ring-secondary bg-gray-50"
+  }`;
+
   const passwordInputClasses = `w-full h-12 pr-10 lg:text-lg ${
     passwordError
       ? "border-red-500 ring-red-300 focus:ring-red-300 focus:border-red-500"
@@ -158,6 +188,39 @@ const RegisterForm = () => {
 
   return (
     <form className="flex flex-col" onSubmit={handleSubmit}>
+      <div className="mb-4">
+        <label
+          htmlFor="fullname"
+          className="block text-sm font-medium text-gray-700 mb-1"
+        >
+          {t("fullName")}
+        </label>
+        <div className="relative">
+          <Input
+            id="fullname"
+            className={fullnameInputClasses}
+            placeholder={t("fullNamePlaceholder")}
+            value={fullname}
+            onChange={(e) => setFullname(e.target.value)}
+            aria-invalid={!!fullnameError}
+            aria-describedby={fullnameError ? "fullname-error" : undefined}
+          />
+          {fullnameError && (
+            <div className="absolute right-3 top-3 text-red-500">
+              <AlertCircle size={20} />
+            </div>
+          )}
+        </div>
+        {fullnameError && (
+          <p
+            id="fullname-error"
+            className="mt-1 text-base font-semibold text-red-500"
+          >
+            {fullnameError}
+          </p>
+        )}
+      </div>
+
       <div className="mb-4">
         <label
           htmlFor="email"
@@ -228,6 +291,7 @@ const RegisterForm = () => {
       </div>
 
       <ValidateBox
+        isFullnameValid={isFullnameValid}
         isEmailValid={isEmailValid}
         isLengthValid={isLengthValid}
         hasCapital={hasCapital}

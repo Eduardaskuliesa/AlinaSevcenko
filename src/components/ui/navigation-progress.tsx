@@ -20,8 +20,13 @@ export function NavigationProgress() {
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      const link = target.closest("a");
 
+      const button = target.closest("button");
+      if (button) {
+        return;
+      }
+
+      const link = target.closest("a");
       if (!link) return;
 
       const href = link.getAttribute("href");
@@ -43,13 +48,10 @@ export function NavigationProgress() {
           ? targetPath
           : "/" + targetPath;
 
-        console.log("Current:", currentPath);
-        console.log("Target:", targetPath);
-        console.log("Current without locale:", currentPathWithoutLocale);
-        console.log(
-          "Same page?",
-          currentPathWithoutLocale === normalizedTarget
-        );
+        console.log("Navigation detected:", {
+          currentPathWithoutLocale,
+          normalizedTarget,
+        });
 
         if (currentPathWithoutLocale !== normalizedTarget) {
           NProgress.start();
@@ -57,10 +59,10 @@ export function NavigationProgress() {
       }
     };
 
-    document.addEventListener("click", handleClick, true);
+    document.addEventListener("click", handleClick);
 
     return () => {
-      document.removeEventListener("click", handleClick, true);
+      document.removeEventListener("click", handleClick);
     };
   }, []);
 

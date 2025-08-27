@@ -38,7 +38,7 @@ export default async function Page({ searchParams }: PageProps) {
           </>
         ) : (
           <>
-            <div className="space-y-3 mb-6">
+            <div className="space-y-3 mb-2">
               <h1 className="header text-4xl">{t("title")}</h1>
               <p className="text-lg text-gray-700">{t("description")}</p>
             </div>
