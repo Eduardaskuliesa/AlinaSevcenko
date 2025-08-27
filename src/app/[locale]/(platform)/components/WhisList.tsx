@@ -7,17 +7,20 @@ import Link from "next/link";
 import { CartItem } from "@/app/types/cart";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 function WishListItem({ item, isLast }: { item: CartItem; isLast: boolean }) {
   const { addToCart, removeFromWishlist } = useCartStore();
   const [isRemoving, setIsRemoving] = useState(false);
+
+  const userId = useSession().data?.user.id || "";
 
   const handleAddToCart = () => {
     setIsRemoving(true);
 
     setTimeout(() => {
       addToCart(item, item.isFromPrice);
-      removeFromWishlist(item.courseId);
+      removeFromWishlist(item.courseId, userId);
     }, 200);
   };
 

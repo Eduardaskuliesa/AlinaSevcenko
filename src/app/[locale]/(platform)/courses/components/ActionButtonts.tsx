@@ -32,7 +32,7 @@ const ActionButtons = ({
     e.preventDefault();
 
     if (isInWishlist) {
-      removeFromWishlist(course.courseId);
+      removeFromWishlist(course.courseId, userId || "");
     } else {
       addToWishlist(
         {

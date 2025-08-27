@@ -71,7 +71,7 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
     e.preventDefault();
 
     if (isInWishlist) {
-      removeFromWishlist(courseData.courseId);
+      removeFromWishlist(courseData.courseId, userId || "");
     } else {
       addToWishlist(
         {

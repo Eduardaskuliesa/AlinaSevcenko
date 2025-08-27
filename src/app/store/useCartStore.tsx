@@ -24,7 +24,7 @@ interface CartState {
     userId: string
   ) => void;
   addToWishlist: (item: CartItem, isFromPrice?: boolean) => void;
-  removeFromWishlist: (courseId: string) => void;
+  removeFromWishlist: (courseId: string, userId: string) => void;
   clearWishlist: () => void;
   clearCartOnLogout: () => void;
 }
@@ -49,28 +49,55 @@ export const useCartStore = create<CartState>()(
 
       syncWithBackend: async (userId: string) => {
         try {
-          const response = await fetch(`${workerUrl}/cart?userId=${userId}`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "x-api-key": `${workerKey}` || "",
-            },
+          set((state) => {
+            state.loading = true;
           });
 
-          const data = await response.json();
+          const [cartResponse, wishlistResponse] = await Promise.all([
+            fetch(`${workerUrl}/cart?userId=${userId}`, {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                "x-api-key": `${workerKey}` || "",
+              },
+            }),
+            fetch(`${workerUrl}/whishlist?userId=${userId}`, {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                "x-api-key": `${workerKey}` || "",
+              },
+            }),
+          ]);
 
-          if (data.success) {
-            set((state) => {
-              state.cartItems = data.cart;
-              state.totalPrice = data.cart.reduce(
+          const [cartData, wishlistData] = await Promise.all([
+            cartResponse.json(),
+            wishlistResponse.json(),
+          ]);
+
+          set((state) => {
+            if (cartData.success) {
+              state.cartItems = cartData.cart || [];
+              state.totalPrice = state.cartItems.reduce(
                 (sum: number, item: CartItem) => sum + item.price,
                 0
               );
-              state.totalItems = data.cart.length;
-            });
-          }
+              state.totalItems = state.cartItems.length;
+            }
+
+            if (wishlistData.success) {
+              state.wishlistItems = wishlistData.whishlist || [];
+            }
+
+            console.log("Wishlist items after sync:", state.wishlistItems);
+
+            state.loading = false;
+          });
         } catch (error) {
           console.error("Failed to sync with backend:", error);
+          set((state) => {
+            state.loading = false;
+          });
         }
       },
 
@@ -176,7 +203,7 @@ export const useCartStore = create<CartState>()(
         });
       },
 
-      addToWishlist: (item: CartItem, isFromPrice = false) => {
+      addToWishlist: async (item: CartItem, isFromPrice = false) => {
         set((state) => {
           const existingItem = state.wishlistItems.find(
             (wishlistItem) => wishlistItem.courseId === item.courseId
@@ -189,17 +216,43 @@ export const useCartStore = create<CartState>()(
             });
           }
         });
+
+        try {
+          await fetch(`${workerUrl}/whishlist/add?userId=${item.userId}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-api-key": `${workerKey}` || "",
+            },
+            body: JSON.stringify({ ...item, isFromPrice }),
+          });
+        } catch (error) {
+          console.error("Failed to add to wishlist:", error);
+        }
       },
 
-      removeFromWishlist: (courseId: string) => {
+      removeFromWishlist: async (courseId: string, userId: string) => {
         set((state) => {
           state.wishlistItems = state.wishlistItems.filter(
             (wishlistItem) => wishlistItem.courseId !== courseId
           );
         });
+
+        try {
+          await fetch(`${workerUrl}/whishlist/remove?userId=${userId}`, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              "x-api-key": `${workerKey}` || "",
+            },
+            body: JSON.stringify({ courseId }),
+          });
+        } catch (error) {
+          console.error("Failed to remove from wishlist:", error);
+        }
       },
 
-      clearWishlist: () => {
+      clearWishlist: async () => {
         set((state) => {
           state.wishlistItems = [];
         });

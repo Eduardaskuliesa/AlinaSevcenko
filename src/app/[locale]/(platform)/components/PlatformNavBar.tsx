@@ -21,7 +21,7 @@ import { useCartStore } from "@/app/store/useCartStore";
 const PlatformNavBar = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const { totalItems, clearCartOnLogout } = useCartStore();
+  const { totalItems, clearCartOnLogout, clearWishlist } = useCartStore();
 
   const session = useSession();
 
@@ -59,6 +59,7 @@ const PlatformNavBar = () => {
         redirect: false,
       });
       clearCartOnLogout();
+      clearWishlist();
     } catch (error) {
       console.error("Logout error:", error);
       toast.error("There was an error logging out. Please try again.");
