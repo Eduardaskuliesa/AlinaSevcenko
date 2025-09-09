@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import DOMPurify from 'dompurify';
+import DOMPurify from "dompurify";
 import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
 
 // --- Tiptap Core Extensions ---
@@ -58,7 +58,13 @@ export function CourseEditor({
       Highlight.configure({ multicolor: true }),
       Selection,
       TrailingNode,
-      Link.configure({ openOnClick: false }),
+      Link.configure({
+        openOnClick: false,
+        HTMLAttributes: {
+          target: "_blank",
+          rel: "noopener noreferrer",
+        },
+      }),
     ],
     content: initialValue,
     onUpdate: ({ editor }) => {

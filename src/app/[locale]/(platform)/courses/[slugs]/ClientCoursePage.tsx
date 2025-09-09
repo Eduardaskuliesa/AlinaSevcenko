@@ -24,6 +24,8 @@ export default function CoursePageClient({ slugs }: CoursePageClientProps) {
 
   const { course, previewLesson, courseLessons } = data;
 
+  console.log("Course data:", data.course.description);
+
   const sortedLessons =
     courseLessons?.sort((a, b) => {
       const orderA =
@@ -45,7 +47,7 @@ export default function CoursePageClient({ slugs }: CoursePageClientProps) {
         </div>
       </header>
 
-      <section className="flex gap-8 mx-auto max-w-7xl h-[200vh]">
+      <section className="flex gap-8 mx-auto max-w-7xl h-full">
         <div className="w-[70%] h-auto px-4 py-4">
           <BackButton />
           {previewLesson && <PreviewPlayer lessonData={previewLesson} />}

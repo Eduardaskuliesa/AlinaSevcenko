@@ -55,7 +55,6 @@ const LessonVideoUpload = ({
   const MAX_POLLING_ATTEMPTS = 20;
 
   useEffect(() => {
-    console.log("Playback ID:", playbackId);
     const loadTokens = async () => {
       if (playbackId) {
         const fetchedTokens = await getOrGenerateTokens(playbackId);
@@ -91,27 +90,19 @@ const LessonVideoUpload = ({
           );
 
           if (currentLesson) {
-            if (
-              (currentLesson.status === "preparing" &&
-                videoStatus === "waiting") ||
-              (currentLesson.status === "ready" &&
-                (videoStatus === "waiting" || videoStatus === "preparing"))
-            ) {
-              updateLesson(selectedLessonId, {
-                status: currentLesson.status,
-                videoUrl: currentLesson.playbackId || "",
-              });
-            }
-
             if (currentLesson.status === "ready") {
-              setIsPolling(false);
-              setPollingAttempts(0);
-              onChange(currentLesson.playbackId || "");
               await coursesAction.lessons.storeBlurPlaceholder(
                 selectedLessonId,
                 courseId,
                 currentLesson.playbackId as string
               );
+              setIsPolling(false);
+              setPollingAttempts(0);
+              onChange(currentLesson.playbackId || "");
+              updateLesson(selectedLessonId, {
+                status: currentLesson.status,
+                videoUrl: currentLesson.playbackId || "",
+              });
               toast.success("Video processing complete!");
             }
           }
