@@ -8,6 +8,7 @@ import { getLessons } from "./getLessons";
 import { storeBlurPlaceholder } from "./sotreBlurdata";
 import { updateLessons } from "./updateLesson";
 import { updateLessonOrder } from "./updateLessonOrder";
+import { updateLessonStatus } from "./updateLessonStatus";
 
 export const lessons = {
   createLesson,
@@ -20,4 +21,5 @@ export const lessons = {
   updateLessons,
   storeBlurPlaceholder,
   addLessonDuration,
+  updateLessonStatus,
 };

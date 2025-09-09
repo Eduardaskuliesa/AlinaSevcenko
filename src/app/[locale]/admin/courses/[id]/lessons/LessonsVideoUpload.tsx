@@ -19,6 +19,7 @@ import toast from "react-hot-toast";
 import { coursesAction } from "@/app/actions/coursers";
 import { getOrGenerateTokens } from "@/app/utils/media-tokens";
 import { useQuery } from "@tanstack/react-query";
+import { UpdateLessonStatusData } from "@/app/actions/coursers/lesson/updateLessonStatus";
 
 interface LessonVideoUploadProps {
   initialValue?: string;
@@ -48,6 +49,7 @@ const LessonVideoUpload = ({
     playbackToken: string;
     storyboardToken: string;
   } | null>(null);
+  const [isTokensLoading, setIsTokensLoading] = useState(false);
 
   const [isPolling, setIsPolling] = useState(false);
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -57,8 +59,16 @@ const LessonVideoUpload = ({
   useEffect(() => {
     const loadTokens = async () => {
       if (playbackId) {
-        const fetchedTokens = await getOrGenerateTokens(playbackId);
-        setTokens(fetchedTokens);
+        setIsTokensLoading(true);
+        try {
+          const fetchedTokens = await getOrGenerateTokens(playbackId);
+          setTokens(fetchedTokens);
+        } catch (error) {
+          console.error("Error loading tokens:", error);
+          setTokens(null);
+        } finally {
+          setIsTokensLoading(false);
+        }
       }
     };
 
@@ -133,6 +143,15 @@ const LessonVideoUpload = ({
       if (!selectedLessonId) {
         toast.error("Selected lesson ID is required");
         return null;
+      }
+
+      if (videoStatus === "ready") {
+        const lessonData: UpdateLessonStatusData = {
+          lessonId: selectedLessonId,
+          courseId,
+          status: "waiting",
+        };
+        await coursesAction.lessons.updateLessonStatus(lessonData);
       }
 
       const { uploadUrl } = await muxActions.createUploadUrl(
@@ -233,27 +252,37 @@ const LessonVideoUpload = ({
                 videoStatus === "preparing" && "bg-gray-900 animate-pulse"
               )}
             >
-              {videoStatus === "ready" && playbackId && tokens && (
-                <>
-                  <MuxPlayer
-                    tokens={{
-                      thumbnail: tokens?.thumbnailToken,
-                      playback: tokens?.playbackToken,
-                      storyboard: tokens?.storyboardToken,
-                    }}
-                    streamType="on-demand"
-                    accentColor="#998ea7"
-                    className="aspect-[16/9] overflow-hidden rounded-md"
-                    playbackId={playbackId}
-                  />
-                  {isPublished && (
-                    <div className="absolute top-2 right-2 bg-gray-900/70 text-white rounded-md px-2 py-1 text-xs flex items-center">
-                      <LockIcon className="h-3 w-3 mr-1" />
-                      Published
-                    </div>
-                  )}
-                </>
-              )}
+              {videoStatus === "ready" &&
+                playbackId &&
+                tokens &&
+                !isTokensLoading && (
+                  <>
+                    <MuxPlayer
+                      tokens={{
+                        thumbnail: tokens?.thumbnailToken,
+                        playback: tokens?.playbackToken,
+                        storyboard: tokens?.storyboardToken,
+                      }}
+                      streamType="on-demand"
+                      accentColor="#998ea7"
+                      className="aspect-[16/9] overflow-hidden rounded-md"
+                      playbackId={playbackId}
+                    />
+                    {isPublished && (
+                      <div className="absolute top-2 right-2 bg-gray-900/70 text-white rounded-md px-2 py-1 text-xs flex items-center">
+                        <LockIcon className="h-3 w-3 mr-1" />
+                        Published
+                      </div>
+                    )}
+                    {videoStatus === "ready" &&
+                      playbackId &&
+                      (tokens === null || isTokensLoading) && (
+                        <div className="w-full h-full flex items-center justify-center bg-gray-900 rounded-lg relative">
+                          <div className="w-4 h-4 border-2 right-4 top-4 absolute border-white border-t-transparent rounded-full animate-spin" />
+                        </div>
+                      )}
+                  </>
+                )}
 
               {videoStatus === "preparing" && (
                 <div className="text-white text-center">
