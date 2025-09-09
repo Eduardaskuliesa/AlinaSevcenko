@@ -47,6 +47,7 @@ const middleware = withAuth(
           "/admin",
           "/account",
           "/my-courses",
+          "/courses",
           "/user",
           "/cart",
           "/checkout-success",
