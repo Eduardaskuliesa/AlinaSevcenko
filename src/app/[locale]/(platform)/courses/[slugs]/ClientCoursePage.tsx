@@ -24,8 +24,6 @@ export default function CoursePageClient({ slugs }: CoursePageClientProps) {
 
   const { course, previewLesson, courseLessons } = data;
 
-  console.log("Course data:", data.course.description);
-
   const sortedLessons =
     courseLessons?.sort((a, b) => {
       const orderA =
