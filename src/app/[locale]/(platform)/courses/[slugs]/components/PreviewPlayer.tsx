@@ -27,7 +27,11 @@ const PreviewPlayer = ({ lessonData }: { lessonData: Lesson }) => {
   return (
     <div className="aspect-[16/9] w-full relative  rounded-lg">
       {!tokens || !lessonData?.playbackId ? (
-        <>{lessonData?.blurPlaceholder && <div className="bg-black w-full h-full" />}</>
+        <>
+          {lessonData?.blurPlaceholder && (
+            <div className="bg-black w-full h-full" />
+          )}
+        </>
       ) : (
         <MuxPlayer
           tokens={{
@@ -43,8 +47,8 @@ const PreviewPlayer = ({ lessonData }: { lessonData: Lesson }) => {
         />
       )}
       {isTokensLoading && (
-        <div className="absolute top-2 right-2 bg-black/50 rounded px-2 py-1">
-          <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
+        <div className="w-full h-full flex items-center justify-center bg-gray-900 relative">
+          <div className="w-6 h-6 border-2 right-5 top-5 absolute border-primary border-t-transparent rounded-full animate-spin" />
         </div>
       )}
     </div>
