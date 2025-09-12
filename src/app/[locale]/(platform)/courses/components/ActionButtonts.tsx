@@ -108,7 +108,7 @@ const ActionButtons = ({
       <motion.button
         whileTap={{ scale: 0.9 }}
         onClick={handleHeartClick}
-        className="p-2 rounded-full hover:bg-slate-100 bg-white shadow-sm border-primary border transition-colors relative"
+        className="p-2 ignore-progress rounded-full hover:bg-slate-100 bg-white shadow-sm border-primary border transition-colors relative"
       >
         {isInWishlist ? (
           <Heart
@@ -150,7 +150,7 @@ const ActionButtons = ({
       <motion.button
         whileTap={{ scale: 0.9 }}
         onClick={handleCartClick}
-        className={`p-2 rounded-full hover:bg-slate-100 shadow-sm border-primary border transition-colors ${
+        className={`p-2 ignore-progress rounded-full hover:bg-slate-100 shadow-sm border-primary border transition-colors ${
           isInCartList ? "bg-primary/10" : "bg-white"
         }`}
       >

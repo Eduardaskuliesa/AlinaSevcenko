@@ -1,5 +1,6 @@
 "use client";
 import { useCartStore } from "@/app/store/useCartStore";
+import { useCheckoutStore } from "@/app/store/useCheckoutStore";
 import { useEffect } from "react";
 
 export default function ClearCartComponent({
@@ -9,10 +10,12 @@ export default function ClearCartComponent({
 }) {
   console.log("ClearCartComponent rendered with userId:", userId);
   const { clearCart } = useCartStore();
+  const { clearCheckoutData } = useCheckoutStore();
 
   useEffect(() => {
+    clearCheckoutData();
     clearCart(userId as string);
-  }, [clearCart, userId]);
+  }, [clearCart, userId, clearCheckoutData]);
 
   return null;
 }

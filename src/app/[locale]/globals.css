@@ -1,8 +1,8 @@
+@import "../../styles/_keyframe-animations.css";
+@import "../../styles/_variables.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import "../../styles/_keyframe-animations.css";
-@import "../../styles/_variables.css";
 
 :root {
   --font-times: "Times New Roman", Times, serif;

@@ -13,7 +13,7 @@ import { redirect } from "next/navigation";
 const CheckoutSuccessPage = async ({
   searchParams,
 }: {
-  searchParams: Promise<{ session_id: string }>;
+  searchParams: Promise<{ payment_intent: string }>;
 }) => {
   let orderDetails = null;
   let courses = [] as Course[];
@@ -21,18 +21,16 @@ const CheckoutSuccessPage = async ({
   const userId = await getServerSession(authOptions).then(
     (session) => session?.user.id
   );
-  const { session_id } = await searchParams;
+  const { payment_intent } = await searchParams;
 
-  if (!session_id) {
+  if (!payment_intent) {
     redirect("/cart");
   }
 
-  if (session_id) {
-    orderDetails = await stripe.checkout.sessions.retrieve(session_id, {
-      expand: ["line_items"],
-    });
+  if (payment_intent) {
+    orderDetails = await stripe.paymentIntents.retrieve(payment_intent);
 
-    if (orderDetails.status !== "complete") {
+    if (orderDetails.status !== "succeeded") {
       redirect("/cart");
     }
 
@@ -46,7 +44,6 @@ const CheckoutSuccessPage = async ({
       );
     }
   }
-
   return (
     <div className="">
       <div className="bg-primary text-gray-50">
@@ -64,8 +61,8 @@ const CheckoutSuccessPage = async ({
             <span className="font-medium">Order Complete</span>
             <span className="text-xl font-bold">
               €
-              {orderDetails?.amount_total
-                ? (orderDetails.amount_total / 100).toFixed(2)
+              {orderDetails?.amount
+                ? (orderDetails.amount / 100).toFixed(2)
                 : "0.00"}
             </span>
           </div>

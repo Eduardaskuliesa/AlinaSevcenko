@@ -9,17 +9,18 @@ import CourseStoreInitializer from "./CourseStoreInitializer";
 
 interface CourseIdLayoutProps {
   children: React.ReactNode;
-  params: {
+  params: Promise<{
     id: string;
     locale?: string;
-  };
+  }>;
 }
+
 export default async function CourseIdLayout({
   children,
   params,
 }: CourseIdLayoutProps) {
   const queryClient = getQueryClient();
-  const resolvedParams = await Promise.resolve(params);
+  const resolvedParams = await params; 
   const courseId = resolvedParams.id;
 
   await queryClient.prefetchQuery({
@@ -37,7 +38,6 @@ export default async function CourseIdLayout({
       <div className="max-w-7xl lg:px-6">
         <NavBar />
         <AlertComponent />
-        {/* Content */}
         <CourseStoreInitializer courseId={courseId} />
         <div className="">{children}</div>
       </div>

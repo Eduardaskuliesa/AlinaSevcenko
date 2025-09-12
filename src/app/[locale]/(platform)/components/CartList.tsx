@@ -6,6 +6,7 @@ import Image from "next/image";
 import { motion } from "motion/react";
 import { useCartStore } from "@/app/store/useCartStore";
 
+
 function CartListItem({ item, isLast }: { item: CartItem; isLast: boolean }) {
   return (
     <div className={cn("p-3", !isLast && "border-b border-primary-light")}>
@@ -47,7 +48,12 @@ function GoToCartButton({
       <p className="text-lg font-medium text-gray-800 mb-2">
         Total:{totalPrice}$
       </p>
-      <Link onClick={closeDropdown} href={"/cart"}>
+      <Link
+        onClick={() => {
+          closeDropdown();
+        }}
+        href={"/cart"}
+      >
         <motion.button
           whileTap={{ scale: 0.96, translateY: 2 }}
           className="w-full bg-primary-light border hover:bg-primary-light/80 text-gray-800 font-medium py-1 rounded-md transition-colors"

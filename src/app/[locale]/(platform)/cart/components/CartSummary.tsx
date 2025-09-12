@@ -1,41 +1,72 @@
+"use client";
 import { useCartStore } from "@/app/store/useCartStore";
 import React, { useState } from "react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { ArrowRight, Loader2 } from "lucide-react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { useCheckoutStore } from "@/app/store/useCheckoutStore";
 
 const CartSummary = () => {
   const { totalPrice, totalItems, cartItems } = useCartStore();
+  const { setCheckoutData } = useCheckoutStore();
   const [redirecting, setRedirecting] = useState(false);
+  const router = useRouter();
 
   const params = useParams();
   const locale = params.locale;
   const userId = useSession().data?.user.id;
+
   const handleCheckout = async () => {
     setRedirecting(true);
     try {
-      const response = await fetch("/api/stripe", {
+      const response = await fetch("/api/create-payment-intent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          items: cartItems,
-          locale: locale,
+          cartItems: cartItems,
           userId: userId,
-          cancelUrl: `${locale}/cart`,
         }),
       });
-
-      const { url } = await response.json();
-      if (url) {
-        window.location.href = url;
+      const { clientSecret } = await response.json();
+      if (clientSecret) {
+        console.log("Client Secret:", clientSecret);
+        setCheckoutData({
+          clientSecret: clientSecret,
+          items: cartItems,
+          userId: userId || "",
+        });
+        router.push(`/${locale}/checkout`);
       }
     } catch (error) {
       console.error("Checkout error:", error);
       setRedirecting(false);
     }
   };
+  // const handleCheckout = async () => {
+  //   setRedirecting(true);
+  //   try {
+  //     const response = await fetch("/api/stripe", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({
+  //         items: cartItems,
+  //         locale: locale,
+  //         userId: userId,
+  //         cancelUrl: `${locale}/cart`,
+  //       }),
+  //     });
+
+  //     const { url } = await response.json();
+  //     if (url) {
+  //       window.location.href = url;
+  //     }
+  //   } catch (error) {
+  //     console.error("Checkout error:", error);
+  //     setRedirecting(false);
+  //   }
+  // };
 
   const formatDuration = (days: number) => {
     if (days === 0) return "Lifetime";

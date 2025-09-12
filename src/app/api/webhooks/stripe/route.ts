@@ -29,7 +29,7 @@ export async function POST(req: Request) {
 
     const coursePreferences = [];
 
-    if (event.type === "checkout.session.completed") {
+    if (event.type === "payment_intent.succeeded") {
       const metadata = event.data.object.metadata;
 
       const { courseIds, accessIds, userId } = metadata as Stripe.Metadata;
@@ -89,7 +89,7 @@ export async function POST(req: Request) {
 
         const enrolledCourseData: PurschaseCourseData = {
           purchaseId: event.data.object.id,
-          paymentId: event.data.object.payment_intent as string,
+          paymentId: event.data.object.id as string,
           userId: userId,
           courseId: courseId,
           slug: course?.slug || "",

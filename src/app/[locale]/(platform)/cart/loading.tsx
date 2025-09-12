@@ -1,6 +1,6 @@
 import { Loader } from "lucide-react";
 import React from "react";
-import { CartSummarySkeleton } from "./components/CartSummarySkeleton";
+import { CartSummarySkeleton } from "./components/skeletons/CartSummarySkeleton";
 
 const loading = () => {
   return (
