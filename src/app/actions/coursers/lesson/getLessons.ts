@@ -32,6 +32,6 @@ export async function getLessons(courseId: Course["courseId"]) {
       return fetchAdminLessons(courseId);
     },
     [cacheTag],
-    { revalidate: 10, tags: [cacheTag] }
+    { revalidate: 120, tags: [cacheTag] }
   )();
 }

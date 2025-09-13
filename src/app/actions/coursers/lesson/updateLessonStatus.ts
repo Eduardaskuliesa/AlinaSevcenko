@@ -35,6 +35,7 @@ export async function updateLessonStatus(data: UpdateLessonStatusData) {
     logger.success(`Lesson status updated to ${data.status}`);
     revalidateTag(`course-${data.courseId}`);
     revalidateTag(`user-lesson-${data.courseId}`);
+    revalidateTag(`client-lessons-${data.courseId}`);
     revalidateTag(`lesson-${data.lessonId}`);
     revalidateTag(`courses`);
 

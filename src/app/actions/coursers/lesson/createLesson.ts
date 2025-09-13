@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 
 export async function createLesson(courseId: Course["courseId"]) {
   try {
-     await verifyAdminAccess();
+    await verifyAdminAccess();
     const checkCourseCommand = new GetCommand({
       TableName: dynamoTableName,
       Key: {
@@ -89,6 +89,7 @@ export async function createLesson(courseId: Course["courseId"]) {
 
     revalidateTag(`course-${courseId}`);
     revalidateTag(`user-lesson-${courseId}`);
+    revalidateTag(`client-lessons-${courseId}`);
     revalidateTag(`courses`);
     return {
       success: true,

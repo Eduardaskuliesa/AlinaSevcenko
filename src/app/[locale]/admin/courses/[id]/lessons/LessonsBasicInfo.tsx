@@ -6,7 +6,11 @@ import LessonAccessType from "./LessonAccessType";
 import { Loader } from "lucide-react";
 import LessonVideoUpload from "./LessonsVideoUpload";
 
-const LessonsBasicInfo = () => {
+const LessonsBasicInfo = ({
+  courseIsPublished,
+}: {
+  courseIsPublished?: boolean;
+}) => {
   const { selectedLesson, selectedLessonId, updateLesson, hydrated } =
     useLessonStore();
 
@@ -60,6 +64,7 @@ const LessonsBasicInfo = () => {
             onChange={handleDescriptionChange}
           />
           <LessonAccessType
+            isPublshed={courseIsPublished}
             initialValue={selectedLesson.isPreview || false}
             onChange={handleAccessTypeChange}
           />

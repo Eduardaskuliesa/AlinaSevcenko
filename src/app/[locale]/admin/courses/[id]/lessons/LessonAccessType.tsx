@@ -4,12 +4,14 @@ import { Label } from "@/components/ui/label";
 import { Lock, Unlock } from "lucide-react";
 
 interface LessonAccessTypeProps {
+  isPublshed?: boolean;
   initialValue?: boolean;
   onChange: (isFree: boolean) => void;
 }
 
 const LessonAccessType: React.FC<LessonAccessTypeProps> = ({
   initialValue,
+  isPublshed,
   onChange,
 }) => {
   const [isFree, setIsFree] = useState(false);
@@ -41,6 +43,7 @@ const LessonAccessType: React.FC<LessonAccessTypeProps> = ({
       <div className="border-2 rounded-lg p-3 sm:p-4 bg-white flex gap-2 sm:gap-4">
         <Button
           type="button"
+          disabled={isPublshed}
           variant={isFree ? "default" : "ghost"}
           onClick={() => {
             setIsFree(true);
@@ -54,6 +57,7 @@ const LessonAccessType: React.FC<LessonAccessTypeProps> = ({
           Free Preview
         </Button>
         <Button
+          disabled={isPublshed}
           type="button"
           variant={!isFree ? "default" : "ghost"}
           onClick={() => {

@@ -14,7 +14,7 @@ export async function deleteLesson(
   lessonId: Lesson["lessonId"]
 ) {
   try {
-     await verifyAdminAccess();
+    await verifyAdminAccess();
     const getCourseCommand = new GetCommand({
       TableName: dynamoTableName,
       Key: {
@@ -99,6 +99,7 @@ export async function deleteLesson(
 
     revalidateTag(`course-${courseId}`);
     revalidateTag(`user-lesson-${courseId}`);
+    revalidateTag(`client-lessons-${courseId}`);
     revalidateTag(`courses`);
     return {
       success: true,

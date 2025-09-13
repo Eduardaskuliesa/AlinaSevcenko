@@ -40,8 +40,9 @@ export async function addAssetPlaybackId(data: AddAssetPlaybackIdData) {
 
     revalidateTag(`course-${data.courseId}`);
     revalidateTag(`user-lesson-${data.courseId}`);
+    revalidateTag(`client-lessons-${data.courseId}`);
     revalidateTag(`courses`);
-    
+
     const path = `admin/courses/${data.courseId}/lessons`;
     revalidatePath(path);
     logger.success(

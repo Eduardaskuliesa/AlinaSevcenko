@@ -31,6 +31,11 @@ const ClientLessonPage: React.FC = () => {
     queryFn: () => coursesAction.courses.getCourse(courseId),
   });
   const course = courseData?.cousre;
+
+  console.log("courseData", courseData?.cousre?.lessonOrder);
+  console.log("lessons from store", lessons);
+
+  const courseIsPublished = course?.isPublished || false;
   const queryClient = useQueryClient();
   const router = useRouter();
   const params = useParams();
@@ -337,8 +342,8 @@ const ClientLessonPage: React.FC = () => {
       </div>
 
       <div className="flex flex-col  xl:flex-row gap-6">
-        <DragAndDropLessons />
-        <LessonsBasicInfo />
+        <DragAndDropLessons courseIsPublished={courseIsPublished} />
+        <LessonsBasicInfo courseIsPublished={courseIsPublished} />
       </div>
     </div>
   );

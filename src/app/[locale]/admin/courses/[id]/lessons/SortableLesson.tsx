@@ -11,11 +11,16 @@ import { coursesAction } from "@/app/actions/coursers";
 import toast from "react-hot-toast";
 
 interface SortableLessonProps {
+  isPublished?: boolean;
   lesson: LocalLesson;
   index: number;
 }
 
-const SortableLesson: React.FC<SortableLessonProps> = ({ lesson, index }) => {
+const SortableLesson: React.FC<SortableLessonProps> = ({
+  lesson,
+  index,
+  isPublished,
+}) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { setSelectedLesson, selectedLesson, hydrated, deleteLesson } =
@@ -27,7 +32,7 @@ const SortableLesson: React.FC<SortableLessonProps> = ({ lesson, index }) => {
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: lesson.lessonId });
+  } = useSortable({ id: lesson.lessonId, disabled: isPublished });
 
   const { courseId } = useGetCourseId();
 
@@ -92,15 +97,17 @@ const SortableLesson: React.FC<SortableLessonProps> = ({ lesson, index }) => {
       >
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center">
-            <div
-              {...attributes}
-              {...listeners}
-              data-drag-handle="true"
-              className="cursor-grab active:cursor-grabbing hover:text-primary"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <GripVertical size={18} className="text-gray-800 mr-2" />
-            </div>
+            {!isPublished && (
+              <div
+                {...attributes}
+                {...listeners}
+                data-drag-handle="true"
+                className="cursor-grab active:cursor-grabbing hover:text-primary"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <GripVertical size={18} className="text-gray-800 mr-2" />
+              </div>
+            )}
 
             <div className="mr-2 text-gray-800 w-6 border ring-2 ring-secondary-light h-6 flex items-center justify-center font-medium bg-primary-light rounded-full">
               {index + 1}

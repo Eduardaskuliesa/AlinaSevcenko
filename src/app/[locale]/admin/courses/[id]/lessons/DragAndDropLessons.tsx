@@ -24,7 +24,11 @@ import SortableLesson from "./SortableLesson";
 import { useLessonStore } from "@/app/store/useLessonStore";
 import LessonSkeleton from "./LessonSkeleton";
 
-const DragAndDropLessons = () => {
+const DragAndDropLessons = ({
+  courseIsPublished,
+}: {
+  courseIsPublished?: boolean;
+}) => {
   const { lessons, reorderLessons, hydrated, loading } = useLessonStore();
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -94,6 +98,7 @@ const DragAndDropLessons = () => {
               )}
               {lessons.map((lesson, index) => (
                 <SortableLesson
+                  isPublished={courseIsPublished}
                   key={lesson.lessonId}
                   lesson={lesson}
                   index={index}

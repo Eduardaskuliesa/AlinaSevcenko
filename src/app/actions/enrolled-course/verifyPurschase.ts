@@ -17,7 +17,6 @@ async function verify(userId: string, courseId: string) {
     });
 
     const response = (await dynamoDb.send(getCommand)).Item as EnrolledCourse;
-    console.log(response);
 
     if (response === undefined) {
       logger.info(

@@ -9,11 +9,11 @@ const PerspectiveText = ({ label }: PerspectiveTextProps) => {
   return (
     <div
       style={{
-        transformStyle: "preserve-3d",
+        transformStyle:"preserve-3d",
       }}
-      className="w-full h-full group flex items-center justify-center hover:[transform:rotateX(90deg)] duration-[0.75s] ease-[cubic-bezier(0.76,0,0.24,1)]"
+      className="w-full h-full group flex items-center justify-center"
     >
-      <p className="group-hover:-translate-y-full group-hover:opacity-0 duration-[0.75s] ease-[cubic-bezier(0.76,0,0.24,1)]">
+      <p className="">
         {label}
       </p>
       <p
@@ -21,7 +21,7 @@ const PerspectiveText = ({ label }: PerspectiveTextProps) => {
           transformOrigin: "bottom center",
           transform: "rotateX(-90deg) translateY(10px)",
         }}
-        className="absolute opacity-0  group-hover:opacity-100 duration-[0.75s] ease-[cubic-bezier(0.76,0,0.24,1)]"
+        className="absolute opacity-0 "
       >
         {label}
       </p>

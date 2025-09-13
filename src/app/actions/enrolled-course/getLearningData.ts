@@ -1,3 +1,4 @@
+"use server";
 import { logger } from "@/app/utils/logger";
 import { enrolledCourseActions } from ".";
 import { coursesAction } from "../coursers";
@@ -116,6 +117,7 @@ const syncEnrolledCourse = async (
 };
 
 async function fetchLearningData(courseId: string, userId: string) {
+  logger.info(`Fetching fresh learning data`);
   try {
     const enrolledCourseData = await enrolledCourseActions.getCourse(
       courseId,
@@ -129,7 +131,8 @@ async function fetchLearningData(courseId: string, userId: string) {
       return;
     }
 
-    const lessonData = await coursesAction.lessons.getLessons(courseId);
+    const lessonData = await coursesAction.lessons.getClientLessons(courseId);
+
     if (lessonData?.length === 0) {
       logger.error(`No lesson data found for courseId: ${courseId}`);
       return;
@@ -190,12 +193,13 @@ export async function getLearningData(
   courseId: EnrolledCourse["courseId"],
   userId: string
 ) {
+  logger.info(`Called get lerning data`)
   const cacheTag = `learning-data-${courseId}`;
   return unstable_cache(
     async () => {
       return fetchLearningData(courseId, userId);
     },
     [cacheTag],
-    { revalidate: 320, tags: [cacheTag] }
+    { revalidate: 1, tags: [cacheTag] }
   )();
 }
