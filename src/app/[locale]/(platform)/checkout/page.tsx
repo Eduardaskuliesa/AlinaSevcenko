@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
+import { loadStripe, StripeElementsOptions } from "@stripe/stripe-js";
 import { useCheckoutStore } from "@/app/store/useCheckoutStore";
 import CheckoutSummary from "./components/CheckoutSummary";
 import { BackToCartButton } from "./components/BackToCartButton";
@@ -9,7 +9,7 @@ import PaymentList from "./components/PaymentList";
 import { CartSummarySkeleton } from "../cart/components/skeletons/CartSummarySkeleton";
 import PaymentListSkeleton from "./components/PaymentListSkeleton";
 import { useCartStore } from "@/app/store/useCartStore";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 const stripePromise = loadStripe(
@@ -22,6 +22,10 @@ const CheckoutPage = () => {
   const { cartItems, hydrated } = useCartStore();
   const [isHydrated, setIsHydrated] = useState(false);
   const router = useRouter();
+  const params = useParams();
+  const locale = params.locale as string;
+
+  console.log(locale)
 
   useEffect(() => {
     if (clientSecret) {
@@ -73,8 +77,9 @@ const CheckoutPage = () => {
     );
   }
 
-  const options = {
+  const options: StripeElementsOptions  = {
     clientSecret,
+    locale: locale as StripeElementsOptions["locale"],
     appearance: {
       theme: "stripe" as const,
       variables: {

@@ -1,7 +1,5 @@
 import { SESClient } from "@aws-sdk/client-ses";
 
-console.log(process.env.REGION)
-
 const sesClient = new SESClient({
   credentials: {
     accessKeyId: process.env.SES_ACCESS_KEY || process.env.DYNAMO_ACCESS_KEY!,
