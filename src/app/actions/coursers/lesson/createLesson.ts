@@ -64,9 +64,15 @@ export async function createLesson(courseId: Course["courseId"]) {
 
     const currentLessonOrder = course.lessonOrder || [];
 
+    console.log("currentLessonOrder", currentLessonOrder);
+
     const newLessonOrder = [
       ...currentLessonOrder,
-      { lessonId: lessonId, sort: currentLessonCount },
+      {
+        lessonId: lessonId,
+        sort: currentLessonCount,
+        isPreview: false,
+      },
     ];
 
     const updateCourseCommand = new UpdateCommand({

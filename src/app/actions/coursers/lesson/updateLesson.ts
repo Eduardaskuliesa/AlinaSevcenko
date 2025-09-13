@@ -24,6 +24,7 @@ export async function updateLessons(
   logger.info(
     `Updating ${lessonUpdates.length} lessons for course ${courseId}`
   );
+  
 
   try {
     const getCourseCommand = new GetCommand({
@@ -57,7 +58,7 @@ export async function updateLessons(
       const standardLesson = {
         lessonId: lesson.lessonId,
         sort: lesson.sort,
-        isPreview: lesson.isPreview !== undefined ? lesson.isPreview : false,
+        isPreview: lesson.isPreview,
       };
 
       const update = lessonUpdates.find((u) => u.lessonId === lesson.lessonId);

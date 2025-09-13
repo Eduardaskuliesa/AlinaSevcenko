@@ -131,7 +131,9 @@ async function fetchLearningData(courseId: string, userId: string) {
       return;
     }
 
-    const lessonData = await coursesAction.lessons.getClientLessons(courseId);
+    const lessonData = await enrolledCourseActions.getLessons(courseId);
+
+    console.log("lessonData", lessonData?.length);
 
     if (lessonData?.length === 0) {
       logger.error(`No lesson data found for courseId: ${courseId}`);
@@ -193,7 +195,7 @@ export async function getLearningData(
   courseId: EnrolledCourse["courseId"],
   userId: string
 ) {
-  logger.info(`Called get lerning data`)
+  logger.info(`Called get lerning data`);
   const cacheTag = `learning-data-${courseId}`;
   return unstable_cache(
     async () => {

@@ -65,7 +65,7 @@ export interface FilteredCourse {
   ];
   accessPlans: AccessPlan[];
   isPublished: boolean;
-  lessonCount: number;
+  readyLessonCount: number;
   duration: number;
 }
 

@@ -61,7 +61,7 @@ const CourseCard = ({ course, lowestPrice }: CourseCardProps) => {
               <div className="flex items-center gap-4 text-sm text-gray-500">
                 <div className="flex items-center gap-1">
                   <BookOpen className="h-4 w-4 text-primary" />
-                  <span>{course?.lessonCount} lessons</span>
+                  <span>{course.readyLessonCount} lessons</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Clock className="h-4 w-4 text-primary" />
@@ -70,7 +70,6 @@ const CourseCard = ({ course, lowestPrice }: CourseCardProps) => {
               </div>
             </div>
 
-            {/* Price */}
             <div className="ml-4 min-w-[120px] flex justify-end">
               {lowestPrice !== null && (
                 <div className="bg-secondary px-3 py-1 rounded-full text-orange-900 font-semibold text-sm h-fit">
@@ -81,7 +80,6 @@ const CourseCard = ({ course, lowestPrice }: CourseCardProps) => {
           </div>
 
           <div className="flex justify-between items-center w-full mt-4">
-            {/* Category badges on the left */}
             <div className="flex flex-wrap gap-1">
               {course.categories?.map((category) => (
                 <Badge

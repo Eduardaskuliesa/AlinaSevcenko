@@ -10,6 +10,7 @@ export async function updateLessonOrder(
   lessonOrder: Array<{ lessonId: string; sort: number }>
 ) {
   try {
+    console.log("updateLessonOrder INPUT:", JSON.stringify(lessonOrder, null, 2));
     await verifyAdminAccess();
     const getCommand = new GetCommand({
       TableName: dynamoTableName,

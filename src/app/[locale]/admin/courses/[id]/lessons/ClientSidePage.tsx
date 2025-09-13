@@ -33,14 +33,13 @@ const ClientLessonPage: React.FC = () => {
   const course = courseData?.cousre;
 
   console.log("courseData", courseData?.cousre?.lessonOrder);
-  console.log("lessons from store", lessons);
+  console.log("lessons", lessons);
 
   const courseIsPublished = course?.isPublished || false;
   const queryClient = useQueryClient();
   const router = useRouter();
   const params = useParams();
 
-  // Sticky functionality
   const [isSticky, setIsSticky] = useState(false);
   const actionButtonsRef = useRef<HTMLDivElement>(null);
   const placeholderRef = useRef<HTMLDivElement>(null);
@@ -114,6 +113,7 @@ const ClientLessonPage: React.FC = () => {
         const lessonOrder = lessons.map((lesson) => ({
           lessonId: lesson.lessonId,
           sort: lesson.order || 0,
+          isPreview: lesson.isPreview,
         }));
 
         const updateOrderResult = await coursesAction.lessons.updateLessonOrder(

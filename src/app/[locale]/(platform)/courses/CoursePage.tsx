@@ -13,7 +13,6 @@ import { Loader, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import QuickCategoryBar from "./components/QuickCategoryBar";
 
-
 type FilterState = {
   durations: string[];
   languages: string[];
@@ -33,6 +32,9 @@ const CoursePageContent = () => {
     queryKey: ["client-courses"],
     queryFn: coursesAction.courses.getAllCoursesUP,
   });
+
+  console.log("courseData", courseData?.courses);
+
 
   const clearFitlers = () => {
     setFilters({
