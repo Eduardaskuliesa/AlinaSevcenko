@@ -34,7 +34,7 @@ export async function fetchCourse(
 }
 
 export async function getCourse(courseId: EnrolledCourse["courseId"], userId: string) {
-  const cacheTag = `enrolled-course-${courseId}`;
+  const cacheTag = `enrolled-course-${userId}`;
   return unstable_cache(
     async () => {
       return fetchCourse(courseId, userId);

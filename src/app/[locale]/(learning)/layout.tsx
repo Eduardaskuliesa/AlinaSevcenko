@@ -4,7 +4,7 @@ export default function LearningLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="h-screen">
+    <div className="h-screen bg-gray-50">
       {children}
     </div>
   );

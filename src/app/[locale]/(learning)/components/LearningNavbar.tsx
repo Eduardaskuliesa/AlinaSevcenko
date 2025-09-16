@@ -15,7 +15,7 @@ const LearningNavbar = ({
   });
 
   return (
-    <div className="bg-primary py-3 px-10 text-xl font-medium text-gray-50 border-b-gray-50 border-b">
+    <div className="bg-primary py-4 px-10 text-xl font-medium text-gray-50 border-b-gray-50 border-b">
       <div className="flex">
         {courseLoading ? (
           <>

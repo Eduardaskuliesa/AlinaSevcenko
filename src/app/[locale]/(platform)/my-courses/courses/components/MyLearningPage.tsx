@@ -13,6 +13,8 @@ const MyLearningPage = () => {
     queryKey: ["user-client-courses"],
     queryFn: () => enrolledCourseActions.getUsersCourses(userId as string),
     enabled: !!userId,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: "always",
   });
 
   return (

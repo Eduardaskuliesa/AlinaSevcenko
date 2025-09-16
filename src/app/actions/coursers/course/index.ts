@@ -11,6 +11,8 @@ import { publishCourse } from "./publishCourse";
 import { toggleAccessPlanStatus } from "./updateAccessPlanStatus";
 import { updateCourseInfo } from "./updateCourseInfo";
 import { updateCourseSettings } from "./updateCourseLanguge";
+import { updateLastPlayedLesson } from "./updateLastPlayedCourse";
+import { updateLastWatchedTime } from "./updateLastWatchedTime";
 import { updateSlug } from "./updateSlug";
 
 export const courses = {
@@ -25,6 +27,8 @@ export const courses = {
   toggleAccessPlanStatus,
   updateCourseSettings,
   getAllCoursesUP,
+  updateLastPlayedLesson,
+  updateLastWatchedTime,
   deleteCourse,
   createSlug,
   updateSlug,
