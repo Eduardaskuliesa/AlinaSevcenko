@@ -56,6 +56,7 @@ export interface FilteredCourse {
   sort: number;
   language: string;
   thumbnailImage: string;
+  lessonCount?: number;
   categories: [
     {
       categoryId: string;
