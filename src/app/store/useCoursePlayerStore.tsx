@@ -6,7 +6,9 @@ import { coursesAction } from "../actions/coursers";
 
 interface CoursePlayerState {
   selectedLessonId: string | null;
+  isLessonChanging?: boolean;
   setSelectedLessonId: (lessonId: string) => void;
+  setIsLessonChanging: (changing: boolean) => void;
   updateSelectedLessonId: (
     courseId: string,
     userId: string,
@@ -23,6 +25,10 @@ export const useCoursePlayerStore = create<CoursePlayerState>()(
         set((state) => {
           state.selectedLessonId = lessonId;
         }),
+      setIsLessonChanging: (changing) =>
+        set((state) => {
+          state.isLessonChanging = changing;
+        }),
       updateSelectedLessonId: async (
         courseId,
         userId,
@@ -35,11 +41,11 @@ export const useCoursePlayerStore = create<CoursePlayerState>()(
           lessonId,
           lastWatchTime
         );
-        set((state) => {
-          state.selectedLessonId = lessonId;
-        });
       },
     })),
-    { name: "course-player-storage" }
+    {
+      name: "course-player-storage",
+      partialize: (state) => ({ selectedLessonId: state.selectedLessonId }),
+    }
   )
 );

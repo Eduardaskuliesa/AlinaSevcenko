@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import React, { useEffect } from "react";
 import LessonList from "./LessonList";
 import { useCoursePlayerStore } from "@/app/store/useCoursePlayerStore";
+import LearningPlayer from "./LearningPlayer";
 
 interface CoursePlayerPageClient {
   courseId?: string;
@@ -16,9 +17,8 @@ const CoursePlayerPageClient = ({
   courseId,
   userId,
 }: CoursePlayerPageClient) => {
-  const { selectedLessonId, setSelectedLessonId, updateSelectedLessonId } =
-    useCoursePlayerStore();
-  const { data: learningData } = useQuery({
+  const { selectedLessonId, setSelectedLessonId } = useCoursePlayerStore();
+  const { data: learningData, isLoading: learningDataLoading } = useQuery({
     queryKey: ["learning-course-data", userId, courseId],
     queryFn: () =>
       enrolledCourseActions.getLearningData(
@@ -66,44 +66,26 @@ const CoursePlayerPageClient = ({
     updateLastWatchedTime();
   }, [courseId, userId]);
 
-  const playbackId = learningData?.lessons?.find((lesson) => {
-    return lesson.lessonId === learningData?.course?.lastLessonId;
-  })?.playbackId;
-  
-  // useEffect(() => {
-  //   const loadTokens = async () => {
-  //     if (playbackId) {
-  //       setIsTokensLoading(true);
-  //       try {
-  //         const fetchedTokens = await getOrGenerateTokens(playbackId);
-  //         setTokens(fetchedTokens);
-  //       } catch (error) {
-  //         console.error("Error loading tokens:", error);
-  //         setTokens(null);
-  //       } finally {
-  //         setIsTokensLoading(false);
-  //       }
-  //     }
-  //   };
+  const currentLesson = learningData?.lessons?.find((lesson) => {
+    return lesson.lessonId === selectedLessonId;
+  });
 
-  //   loadTokens();
-  // });
   return (
     <div className="text-gray-50 h-[calc(100vh-64px)]">
       <div className="flex flex-row h-full ">
-        <div className="w-full bg-blue-50"></div>
+        <div className="w-full h-full">
+          {learningDataLoading ? (
+            <div className="bg-black w-full h-[90%] flex flex-col items-center justify-center">
+              <div className="w-12 h-12 border-4 border-gray-600 border-t-white rounded-full animate-spin mb-4" />
+            </div>
+          ) : (
+            <LearningPlayer currentLesson={currentLesson} />
+          )}
+        </div>
         <LessonList
+          userId={userId as string}
+          courseId={courseId as string}
           lessons={learningData?.lessons || []}
-          currentLessonId={selectedLessonId || undefined}
-          onLessonSelect={(lessonId) => {
-            setSelectedLessonId(lessonId);
-            updateSelectedLessonId(
-              courseId as string,
-              userId as string,
-              lessonId,
-              0
-            );
-          }}
         />
       </div>
     </div>

@@ -1,3 +1,5 @@
+import { useCoursePlayerStore } from "@/app/store/useCoursePlayerStore";
+
 interface LessonListProps {
   lessons: Array<{
     lessonId: string;
@@ -5,15 +7,18 @@ interface LessonListProps {
     duration: number;
     isPreview: boolean;
   }>;
-  currentLessonId?: string;
-  onLessonSelect: (lessonId: string) => void;
+  courseId: string;
+  userId: string;
 }
 
-const LessonList = ({
-  lessons,
-  currentLessonId,
-  onLessonSelect,
-}: LessonListProps) => {
+const LessonList = ({ lessons, courseId, userId }: LessonListProps) => {
+  const {
+    setIsLessonChanging,
+    selectedLessonId,
+    setSelectedLessonId,
+    updateSelectedLessonId,
+  } = useCoursePlayerStore();
+
   const formatDuration = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     return `${minutes}min`;
@@ -29,9 +34,18 @@ const LessonList = ({
         {lessons.map((lesson, index) => (
           <div
             key={lesson.lessonId}
-            onClick={() => onLessonSelect(lesson.lessonId)}
+            onClick={() => {
+              setSelectedLessonId(lesson.lessonId);
+              setIsLessonChanging(true);
+              updateSelectedLessonId(
+                courseId,
+                userId,
+                lesson.lessonId,
+                lesson.duration
+              );
+            }}
             className={`p-4 cursor-pointer hover:bg-secondary-light/70 ${
-              currentLessonId === lesson.lessonId
+              selectedLessonId === lesson.lessonId
                 ? "bg-secondary-light border-l-2 border-primary"
                 : ""
             }`}
