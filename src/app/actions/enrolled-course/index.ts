@@ -3,6 +3,7 @@ import { getCourse } from "./getCourse";
 import { getUsersCourses } from "./getCourses";
 import { getLearningData } from "./getLearningData";
 import { getLessons } from "./getLessons";
+import { syncCourseAction } from "./syncCourse";
 import { updateEnrollmentCount } from "./updateEnrollmentCount";
 import { verifyPurchase } from "./verifyPurschase";
 
@@ -14,4 +15,5 @@ export const enrolledCourseActions = {
   getUsersCourses,
   getLearningData,
   verifyPurchase,
+  syncCourseAction,
 };

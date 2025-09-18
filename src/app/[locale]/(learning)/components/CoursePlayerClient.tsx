@@ -2,7 +2,7 @@
 "use client";
 import { coursesAction } from "@/app/actions/coursers";
 import { enrolledCourseActions } from "@/app/actions/enrolled-course";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect } from "react";
 import LessonList from "./LessonList";
 import { useCoursePlayerStore } from "@/app/store/useCoursePlayerStore";
@@ -17,6 +17,7 @@ const CoursePlayerPageClient = ({
   courseId,
   userId,
 }: CoursePlayerPageClient) => {
+  const queryClient = useQueryClient();
   const { selectedLessonId, setSelectedLessonId } = useCoursePlayerStore();
   const { data: learningData, isLoading: learningDataLoading } = useQuery({
     queryKey: ["learning-course-data", userId, courseId],
@@ -26,6 +27,18 @@ const CoursePlayerPageClient = ({
         userId as string
       ),
   });
+
+  useEffect(() => {
+    if (learningData?.needsSync) {
+      enrolledCourseActions
+        .syncCourseAction(courseId || "", userId || "")
+        .then(() => {
+          queryClient.invalidateQueries({
+            queryKey: ["learning-course-data", userId, courseId],
+          });
+        });
+    }
+  }, [learningData?.needsSync, courseId, userId, queryClient]);
 
   useEffect(() => {
     const loadLastWatchedLesson = async () => {

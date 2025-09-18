@@ -11,7 +11,6 @@ export default async function LearnCoursePage({
 }) {
   const { courseId } = await params;
   const queryClient = getQueryClient();
-
   const userId = await getUserIdServer();
 
   await queryClient.prefetchQuery({

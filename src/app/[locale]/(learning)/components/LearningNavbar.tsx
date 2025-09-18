@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { enrolledCourseActions } from "@/app/actions/enrolled-course";
 
@@ -9,9 +10,9 @@ const LearningNavbar = ({
   courseId: string;
   userId: string;
 }) => {
-  const { data: courseData, isLoading: courseLoading } = useQuery({
-    queryKey: ["learning-course", courseId],
-    queryFn: () => enrolledCourseActions.getCourse(courseId, userId),
+  const { data: learningData, isLoading: courseLoading } = useQuery({
+    queryKey: ["learning-course-data", userId, courseId],
+    queryFn: () => enrolledCourseActions.getLearningData(courseId, userId),
   });
 
   return (
@@ -24,11 +25,12 @@ const LearningNavbar = ({
         ) : (
           <>
             <h3 className="pr-4 border-r-2">Alina Savcenko</h3>
-            <h3 className="pl-4">{courseData?.cousre?.title}</h3>
+            <h3 className="pl-4">{learningData?.course?.title}</h3>
           </>
         )}
       </div>
     </div>
   );
 };
-export default LearningNavbar;
+
+export default React.memo(LearningNavbar);

@@ -16,13 +16,9 @@ export default async function LearningCourseLayout({
   const userId = await getUserIdServer();
 
   const verify = await enrolledCourseActions.verifyPurchase(
-    courseId as string,
-    userId as string
+    userId as string,
+    courseId as string
   );
-
-  if (verify.hasAccess) {
-    logger.info(`User ${userId} has access to course ${courseId}`);
-  }
 
   if (!verify.hasAccess) {
     logger.error(`User ${userId} does not have access to course ${courseId}`);

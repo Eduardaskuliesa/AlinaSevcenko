@@ -62,7 +62,7 @@ export async function verifyPurchase(
   const cacheTag = `verify-purchase-${courseId}-${userId}`;
   return unstable_cache(
     async () => {
-      return verify(courseId, userId);
+      return verify(userId, courseId);
     },
     [cacheTag],
     { revalidate: 120, tags: [cacheTag] }
