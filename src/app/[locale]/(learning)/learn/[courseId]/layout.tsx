@@ -26,7 +26,7 @@ export default async function LearningCourseLayout({
   }
 
   return (
-    <div className="h-screen">
+    <div >
       <LearningNavbar courseId={courseId} userId={userId as string} />
       {children}
     </div>

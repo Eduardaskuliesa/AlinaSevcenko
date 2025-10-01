@@ -43,7 +43,7 @@ const LearningPlayer = ({ currentLesson }: LearningPlayerProps) => {
   ]);
 
   return (
-    <div className="h-full w-full relative">
+    <div className="h-[calc(100vh-73px)] w-full">
       {isLessonChanging || !tokens || !currentLesson?.playbackId ? (
         <div className="bg-black w-full h-[90%] flex flex-col items-center justify-center">
           <div className="w-12 h-12 border-4 border-gray-600 border-t-white rounded-full animate-spin mb-4" />

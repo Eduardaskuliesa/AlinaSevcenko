@@ -84,11 +84,11 @@ const CoursePlayerPageClient = ({
   });
 
   return (
-    <div className="text-gray-50 h-[calc(100vh-64px)]">
-      <div className="flex flex-row h-full ">
-        <div className="w-full h-full">
+    <div className="text-gray-50 bg-gray-50 ">
+      <div className="flex flex-row h-[200vh]">
+        <div className="flex-1">
           {learningDataLoading ? (
-            <div className="bg-black w-full h-[90%] flex flex-col items-center justify-center">
+            <div className="bg-black w-full h-[calc(100vh-73px)] flex flex-col items-center justify-center">
               <div className="w-12 h-12 border-4 border-gray-600 border-t-white rounded-full animate-spin mb-4" />
             </div>
           ) : (

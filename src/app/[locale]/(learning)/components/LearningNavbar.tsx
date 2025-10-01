@@ -2,6 +2,7 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { enrolledCourseActions } from "@/app/actions/enrolled-course";
+import { BackButton } from "./BackButton";
 
 const LearningNavbar = ({
   courseId,
@@ -17,18 +18,17 @@ const LearningNavbar = ({
 
   return (
     <div className="bg-primary py-4 px-10 text-xl font-medium text-gray-50 border-b-gray-50 border-b">
-      <div className="flex">
-        {courseLoading ? (
-          <>
-            <h3 className="h-7"></h3>
-          </>
-        ) : (
-          <>
-            <h3 className="pr-4 border-r-2">Alina Savcenko</h3>
-            <h3 className="pl-4">{learningData?.course?.title}</h3>
-          </>
-        )}
-      </div>
+      {courseLoading ? (
+        <div className="h-10" />
+      ) : (
+        <div className="flex items-center gap-6">
+          <BackButton />
+          <div className="flex items-center gap-4">
+            <h3 className="pr-4 border-r-2 border-gray-50">Alina Savcenko</h3>
+            <h3>{learningData?.course?.title}</h3>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
