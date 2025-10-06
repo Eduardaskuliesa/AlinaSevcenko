@@ -55,7 +55,6 @@ export async function deleteLesson(
 
     const lessonResult = await dynamoDb.send(getLessonCommand);
     const lessonDuration = lessonResult.Item?.duration || 0;
-    console.log("lessonResult", lessonResult.Item as Lesson);
     const course = courseResult.Item;
     const currentLessonCount = course.lessonCount || 0;
     const currentLessonOrder = course.lessonOrder || [];

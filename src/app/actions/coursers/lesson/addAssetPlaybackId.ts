@@ -1,8 +1,9 @@
 "use server";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
+import { mux } from "@/app/services/mux";
 import { Course, Lesson } from "@/app/types/course";
 import { logger } from "@/app/utils/logger";
-import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { revalidatePath, revalidateTag } from "next/cache";
 
 export interface AddAssetPlaybackIdData {
@@ -15,6 +16,22 @@ export interface AddAssetPlaybackIdData {
 
 export async function addAssetPlaybackId(data: AddAssetPlaybackIdData) {
   try {
+    const getLessonCommand = new GetCommand({
+      TableName: dynamoTableName,
+      Key: {
+        PK: `COURSE#${data.courseId}`,
+        SK: `LESSON#${data.lessonId}`,
+      },
+    });
+    const lesson = (await dynamoDb.send(getLessonCommand)).Item as Lesson;
+
+    if (lesson.assetId) {
+      mux.video.assets.delete(lesson.assetId);
+      logger.info(
+        `Deleted old asset with ID: ${lesson.assetId} for lesson ${data.lessonId}`
+      );
+    }
+
     const updateLessonCommand = new UpdateCommand({
       TableName: dynamoTableName,
       Key: {

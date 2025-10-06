@@ -49,10 +49,6 @@ export async function addLessonDuration(data: AddDurationData) {
 
     const durationDelta = data.duration - oldDuration;
 
-    console.log("oldDuration", oldDuration);
-    console.log("newDuration", data.duration);
-    console.log("durationDelta", durationDelta);
-
     const updateLessonCommand = new UpdateCommand({
       TableName: dynamoTableName,
       Key: {
