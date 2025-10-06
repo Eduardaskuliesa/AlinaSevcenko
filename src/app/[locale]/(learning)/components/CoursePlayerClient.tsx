@@ -18,7 +18,8 @@ const CoursePlayerPageClient = ({
   userId,
 }: CoursePlayerPageClient) => {
   const queryClient = useQueryClient();
-  const { selectedLessonId, setSelectedLessonId } = useCoursePlayerStore();
+  const { selectedLessonId, setSelectedLessonId, setAllLesonsIds } =
+    useCoursePlayerStore();
   const { data: learningData, isLoading: learningDataLoading } = useQuery({
     queryKey: ["learning-course-data", userId, courseId],
     queryFn: () =>
@@ -69,6 +70,13 @@ const CoursePlayerPageClient = ({
   ]);
 
   useEffect(() => {
+    if (learningData?.lessons) {
+      const lessonIds = learningData.lessons.map((lesson) => lesson.lessonId);
+      setAllLesonsIds(lessonIds);
+    }
+  }, [learningData?.lessons, setAllLesonsIds]);
+
+  useEffect(() => {
     const updateLastWatchedTime = async () => {
       if (!learningData?.course?.lastLessonId || !courseId || !userId) {
         return;
@@ -92,7 +100,11 @@ const CoursePlayerPageClient = ({
               <div className="w-12 h-12 border-4 border-gray-600 border-t-white rounded-full animate-spin mb-4" />
             </div>
           ) : (
-            <LearningPlayer currentLesson={currentLesson} />
+            <LearningPlayer
+              userId={userId as string}
+              courseId={courseId as string}
+              currentLesson={currentLesson}
+            />
           )}
         </div>
         <LessonList

@@ -8,7 +8,7 @@ export const BackButton = memo(() => {
   return (
     <Link href="/my-courses/courses">
       <motion.div
-        className="bg-primary-light text-gray-800 hover:bg-primary-light/80 rounded-lg items-center py-2 px-3 w-auto inline-flex shadow-md transition-colors duration-300"
+        className="bg-primary-light text-base text-gray-800 hover:bg-primary-light/80 rounded-lg items-center py-2 px-3 w-auto inline-flex shadow-md transition-colors duration-300"
         whileHover={{ transition: { duration: 0.2 } }}
         whileTap={{ scale: 0.94 }}
       >

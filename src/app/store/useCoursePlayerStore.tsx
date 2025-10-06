@@ -6,7 +6,9 @@ import { coursesAction } from "../actions/coursers";
 
 interface CoursePlayerState {
   selectedLessonId: string | null;
+  allLessonsIds: string[];
   isLessonChanging?: boolean;
+  setAllLesonsIds: (lessonIds: string[]) => void;
   setSelectedLessonId: (lessonId: string) => void;
   setIsLessonChanging: (changing: boolean) => void;
   updateSelectedLessonId: (
@@ -15,12 +17,21 @@ interface CoursePlayerState {
     lessonId: string,
     lastWatchTime: number
   ) => Promise<void>;
+
+  nextLesson: (courseId: string, userId: string) => void;
+  previousLesson: (courseId: string, userId: string) => void;
 }
 
 export const useCoursePlayerStore = create<CoursePlayerState>()(
   persist(
     immer((set) => ({
       selectedLessonId: null,
+      allLessonsIds: [],
+      setAllLesonsIds: (lessonsIds) => {
+        set((state) => {
+          state.allLessonsIds = lessonsIds;
+        });
+      },
       setSelectedLessonId: (lessonId) =>
         set((state) => {
           state.selectedLessonId = lessonId;
@@ -42,6 +53,42 @@ export const useCoursePlayerStore = create<CoursePlayerState>()(
           lastWatchTime
         );
       },
+      nextLesson: (courseId: string, userId: string) =>
+        set((state) => {
+          const currentIndex = state.allLessonsIds.indexOf(
+            state.selectedLessonId || ""
+          );
+          if (
+            currentIndex !== -1 &&
+            currentIndex < state.allLessonsIds.length - 1
+          ) {
+            const nextLessonId = state.allLessonsIds[currentIndex + 1];
+            state.selectedLessonId = nextLessonId;
+            coursesAction.courses.updateLastPlayedLesson(
+              courseId,
+              userId,
+              nextLessonId,
+              0
+            );
+          }
+        }),
+      previousLesson: (courseId: string, userId: string) =>
+        set((state) => {
+          const currentIndex = state.allLessonsIds.indexOf(
+            state.selectedLessonId || ""
+          );
+          if (currentIndex > 0) {
+            const prevLessonId = state.allLessonsIds[currentIndex - 1];
+            state.selectedLessonId = prevLessonId;
+
+            coursesAction.courses.updateLastPlayedLesson(
+              courseId,
+              userId,
+              prevLessonId,
+              0
+            );
+          }
+        }),
     })),
     {
       name: "course-player-storage",
