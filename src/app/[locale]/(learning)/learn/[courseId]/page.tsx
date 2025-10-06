@@ -3,6 +3,7 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { enrolledCourseActions } from "@/app/actions/enrolled-course";
 import { getUserIdServer } from "@/app/lib/getUserIdServer";
 import CoursePlayerPageClient from "../../components/CoursePlayerClient";
+import LearningNavbar from "../../components/LearningNavbar";
 
 export default async function LearnCoursePage({
   params,
@@ -21,6 +22,7 @@ export default async function LearnCoursePage({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
+      <LearningNavbar courseId={courseId} userId={userId as string} />
       <CoursePlayerPageClient courseId={courseId} userId={userId} />
     </HydrationBoundary>
   );

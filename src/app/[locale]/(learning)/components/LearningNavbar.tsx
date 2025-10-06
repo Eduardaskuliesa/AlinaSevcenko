@@ -11,9 +11,12 @@ const LearningNavbar = ({
   courseId: string;
   userId: string;
 }) => {
-  const { data: learningData, isLoading: courseLoading } = useQuery({
-    queryKey: ["learning-course-data", userId, courseId],
+  const { data: learningData, isFetching: courseLoading } = useQuery({
+    queryKey: ["course-data", userId, courseId],
     queryFn: () => enrolledCourseActions.getLearningData(courseId, userId),
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    staleTime: Infinity,
   });
 
   return (
@@ -33,4 +36,4 @@ const LearningNavbar = ({
   );
 };
 
-export default React.memo(LearningNavbar);
+export default LearningNavbar;

@@ -1,5 +1,5 @@
 import { getUserIdServer } from "@/app/lib/getUserIdServer";
-import LearningNavbar from "../../components/LearningNavbar";
+
 import { enrolledCourseActions } from "@/app/actions/enrolled-course";
 import { logger } from "@/app/utils/logger";
 import { redirect } from "next/navigation";
@@ -25,10 +25,5 @@ export default async function LearningCourseLayout({
     redirect(`/my-courses/courses?access=false&reason=${verify.reason}`);
   }
 
-  return (
-    <div >
-      <LearningNavbar courseId={courseId} userId={userId as string} />
-      {children}
-    </div>
-  );
+  return <div>{children}</div>;
 }
