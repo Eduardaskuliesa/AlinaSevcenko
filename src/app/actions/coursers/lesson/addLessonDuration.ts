@@ -36,6 +36,23 @@ export async function addLessonDuration(data: AddDurationData) {
       };
     }
 
+    const getLessonCommand = new GetCommand({
+      TableName: dynamoTableName,
+      Key: {
+        PK: `COURSE#${data.courseId}`,
+        SK: `LESSON#${data.lessonId}`,
+      },
+    });
+    const currentLesson = (await dynamoDb.send(getLessonCommand))
+      .Item as Lesson;
+    const oldDuration = currentLesson?.duration || 0;
+
+    const durationDelta = data.duration - oldDuration;
+
+    console.log("oldDuration", oldDuration);
+    console.log("newDuration", data.duration);
+    console.log("durationDelta", durationDelta);
+
     const updateLessonCommand = new UpdateCommand({
       TableName: dynamoTableName,
       Key: {
@@ -53,7 +70,6 @@ export async function addLessonDuration(data: AddDurationData) {
         ":duration": data.duration,
         ":updatedAt": new Date().toISOString(),
       },
-
       ConditionExpression: "attribute_exists(PK)",
     });
 
@@ -63,23 +79,25 @@ export async function addLessonDuration(data: AddDurationData) {
         PK: "COURSE",
         SK: `COURSE#${data.courseId}`,
       },
-      UpdateExpression: "SET updatedAt = :updatedAt ADD #duration :duration",
+      UpdateExpression:
+        "SET updatedAt = :updatedAt ADD #duration :durationDelta",
       ExpressionAttributeNames: {
         "#duration": "duration",
       },
       ExpressionAttributeValues: {
         ":updatedAt": new Date().toISOString(),
-        ":duration": data.duration,
+        ":durationDelta": durationDelta,
       },
       ReturnValues: "UPDATED_NEW",
     });
+
     await Promise.all([
       dynamoDb.send(updateLessonCommand),
       dynamoDb.send(updateCourseCommand),
     ]);
 
     revalidateTag(`course-${data.courseId}`);
-    revalidateTag(`client-lessons-${data.courseId}`)
+    revalidateTag(`client-lessons-${data.courseId}`);
     revalidateTag(`admin-lesson-${data.courseId}`);
     revalidateTag(`user-lesson-${data.courseId}`);
     revalidateTag(`courses`);

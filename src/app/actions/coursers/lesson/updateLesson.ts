@@ -24,7 +24,6 @@ export async function updateLessons(
   logger.info(
     `Updating ${lessonUpdates.length} lessons for course ${courseId}`
   );
-  
 
   try {
     const getCourseCommand = new GetCommand({
@@ -129,7 +128,6 @@ export async function updateLessons(
         };
       });
 
-      // Execute the transaction
       const transactWriteCommand = new TransactWriteCommand({
         TransactItems: transactItems,
       });

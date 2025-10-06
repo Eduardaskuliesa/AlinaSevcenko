@@ -101,7 +101,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
         queryClient.invalidateQueries({
           queryKey: ["course", course.courseId],
         });
-          queryClient.invalidateQueries({
+        queryClient.invalidateQueries({
           queryKey: ["courses"],
         });
       }
@@ -175,7 +175,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
             <div className="flex flex-col text-sm text-muted-foreground gap-3">
               <div className="flex items-center gap-1">
                 <BookOpen className="h-4 w-4" />
-                <span>{course.lessonCount} lessons</span>
+                <span>{course.lessonOrder?.length} lessons</span>
               </div>
               <div className="flex items-center gap-1">
                 <Clock className="h-4 w-4" />

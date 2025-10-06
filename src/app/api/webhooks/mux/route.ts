@@ -27,11 +27,6 @@ export async function POST(req: Request) {
 
   switch (type) {
     case "video.asset.created": {
-      console.log("Status:", data.status);
-      console.log("Lesson ID:", data.passthrough as passthroughData);
-      console.log("Asset ID:", data.id);
-      console.log("Playback ID:", data.playback_ids[0].id);
-
       const passthrough = JSON.parse(data.passthrough) as passthroughData;
       const updateData: AddAssetPlaybackIdData = {
         lessonId: passthrough.lessonId,
@@ -49,10 +44,6 @@ export async function POST(req: Request) {
       break;
     }
     case "video.asset.ready": {
-      console.log("Status:", data.status);
-      console.log("Duration:", data.duration);
-      console.log("Lesson ID:", data.passthrough as passthroughData);
-      console.log("aspectRatio:", data.aspect_ratio);
       const passthrough = JSON.parse(data.passthrough) as passthroughData;
 
       const updateData: AddDurationData = {

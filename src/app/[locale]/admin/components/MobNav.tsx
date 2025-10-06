@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, FolderTree, Menu, X } from "lucide-react";
+import { BookOpen, FolderTree, Home, Menu, X } from "lucide-react";
 
 const MobileNav = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -74,6 +74,24 @@ const MobileNav = () => {
               }
             />
             <span className="font-medium">Categories</span>
+          </Link>
+
+          <Link
+            href={`/${locale}/courses`}
+            className={`flex items-center px-4 py-3 gap-3 ${
+              isActive("/courses")
+                ? "bg-primary-light/40 text-slate-800 border-l-4 rounded-r-sm border-primary"
+                : "text-gray-600 hover:bg-gray-50 border-l-4 border-transparent"
+            }`}
+            onClick={toggleMenu}
+          >
+            <Home
+              size={20}
+              className={
+                isActive("/courses") ? "text-slate-800" : "text-gray-600"
+              }
+            />
+            <span className="font-medium">Courses</span>
           </Link>
         </nav>
       </div>

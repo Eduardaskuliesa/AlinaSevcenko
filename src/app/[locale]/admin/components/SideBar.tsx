@@ -2,7 +2,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, FolderTree, LucideIcon } from "lucide-react";
+import { BookOpen, FolderTree, Home, LucideIcon } from "lucide-react";
 
 interface NavItemProps {
   href: string;
@@ -61,6 +61,13 @@ const Sidebar = () => {
             icon={FolderTree}
             label="Categories"
             isActive={isActive("/admin/categories")}
+          />
+
+          <NavItem
+            href={`/${locale}/courses`}
+            icon={Home}
+            label="Home Page"
+            isActive={isActive("/courses")}
           />
         </nav>
 
