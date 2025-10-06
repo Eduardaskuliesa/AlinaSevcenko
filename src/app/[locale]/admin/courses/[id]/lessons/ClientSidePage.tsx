@@ -32,9 +32,6 @@ const ClientLessonPage: React.FC = () => {
   });
   const course = courseData?.cousre;
 
-  console.log("courseData", courseData?.cousre?.lessonOrder);
-  console.log("lessons", lessons);
-
   const courseIsPublished = course?.isPublished || false;
   const queryClient = useQueryClient();
   const router = useRouter();

@@ -211,11 +211,7 @@ export const useLessonStore = create<LessonState>()(
 
       fetchLessons: async (courseId: string) => {
         const state = get();
-        if (
-          state.courseId === courseId &&
-          state.lessons.length > 0 &&
-          !state.lessons.some((l) => l.isDirty)
-        ) {
+        if (state.courseId === courseId && state.lessons.length > 0) {
           return;
         }
 

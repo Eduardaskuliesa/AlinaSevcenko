@@ -1,12 +1,14 @@
 "use server";
 import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
+import { mux } from "@/app/services/mux";
 import { Course, Lesson } from "@/app/types/course";
 import {
   DeleteCommand,
   UpdateCommand,
   GetCommand,
 } from "@aws-sdk/lib-dynamodb";
+
 import { revalidateTag } from "next/cache";
 
 export async function deleteLesson(
@@ -53,7 +55,7 @@ export async function deleteLesson(
 
     const lessonResult = await dynamoDb.send(getLessonCommand);
     const lessonDuration = lessonResult.Item?.duration || 0;
-
+    console.log("lessonResult", lessonResult.Item as Lesson);
     const course = courseResult.Item;
     const currentLessonCount = course.lessonCount || 0;
     const currentLessonOrder = course.lessonOrder || [];
@@ -96,6 +98,10 @@ export async function deleteLesson(
         ":duration": -lessonDuration,
       },
     });
+
+    if (lessonResult.Item?.assetId) {
+      mux.video.assets.delete(lessonResult.Item.assetId);
+    }
 
     await dynamoDb.send(updateCourseCommand);
 
