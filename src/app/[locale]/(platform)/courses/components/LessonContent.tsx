@@ -12,7 +12,7 @@ const LessonContent = ({ courseLessons }: { courseLessons: Lesson[] }) => {
   const [expandedLessons, setExpandedLessons] = useState<
     Record<string, boolean>
   >({});
-  const [expandAll, setExpandAll] = useState(true);
+  const [expandAll, setExpandAll] = useState(false);
 
   const toggleLesson = (lessonId: string) => {
     setExpandedLessons((prev) => ({

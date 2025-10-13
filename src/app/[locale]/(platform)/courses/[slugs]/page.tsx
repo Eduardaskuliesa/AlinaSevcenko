@@ -45,7 +45,6 @@ export default async function CourseIdPage({
     queryFn: () => getCourseWithPreviewLesson(slugs),
   });
 
- 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <CoursePageClient slugs={slugs} />

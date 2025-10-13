@@ -28,19 +28,10 @@ const CoursePageContent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  useEffect(() => {
-    if (searchParams.get("error") === "course-not-available") {
-      toast.error("This course is not currently available");
-      router.replace("/lt/courses");
-    }
-  }, [searchParams, router]);
-
-  const { data: courseData, isFetching: isCourseLoading } = useQuery({
+  const { data: courseData, isLoading: isCourseLoading } = useQuery({
     queryKey: ["client-courses"],
     queryFn: coursesAction.courses.getAllCoursesUP,
   });
-
-  console.log("courseData", courseData?.courses);
 
   const clearFitlers = () => {
     setFilters({
@@ -134,6 +125,13 @@ const CoursePageContent = () => {
       return true;
     });
   }, [courseData?.courses, deferredFilters]);
+
+  useEffect(() => {
+    if (searchParams.get("error") === "course-not-available") {
+      toast.error("This course is not currently available");
+      router.replace("/lt/courses");
+    }
+  }, [searchParams, router]);
 
   return (
     <>
