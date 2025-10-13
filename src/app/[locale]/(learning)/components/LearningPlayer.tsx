@@ -1,11 +1,11 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import MuxPlayer from "@mux/mux-player-react";
 import { Lesson } from "@/app/types/course";
 import { getOrGenerateTokens } from "@/app/utils/media-tokens";
 import { useCoursePlayerStore } from "@/app/store/useCoursePlayerStore";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import CustomControls from "./CustomControls";
+import { enrolledCourseActions } from "@/app/actions/enrolled-course";
 
 interface LearningPlayerProps {
   currentLesson: Lesson | undefined;
@@ -20,7 +20,6 @@ const LearningPlayer = ({
 }: LearningPlayerProps) => {
   const hideTimeout = useRef<NodeJS.Timeout | null>(null);
   const playerRef = useRef<React.ComponentRef<typeof MuxPlayer>>(null);
-
   const [tokens, setTokens] = useState<null | {
     thumbnailToken: string;
     playbackToken: string;
@@ -35,7 +34,8 @@ const LearningPlayer = ({
     isLessonChanging,
     setIsLessonChanging,
     nextLesson,
-    previousLesson,
+    updateLessonProgress,
+    lessonProgressMap,
   } = useCoursePlayerStore();
 
   useEffect(() => {
@@ -80,6 +80,43 @@ const LearningPlayer = ({
     }
   };
 
+  const handleTimeUpdate = () => {
+    const player = playerRef.current;
+    if (!player || !currentLesson) return;
+
+    const currentTime = player.currentTime || 0;
+    const duration = currentLesson.duration;
+
+    if (duration > 0) {
+      const percentWatched = (currentTime / duration) * 100;
+      const milestone = Math.floor(percentWatched / 10) * 10;
+
+      const lessonProgress = lessonProgressMap[currentLesson.lessonId];
+
+      if (milestone > 0 && milestone > (lessonProgress?.progress || 0)) {
+        updateLessonProgress(currentLesson.lessonId, milestone, false);
+        enrolledCourseActions.updateLessonProgress({
+          userId,
+          courseId,
+          lessonId: currentLesson.lessonId,
+          progress: milestone,
+          completed: false,
+        });
+      }
+
+      if (percentWatched >= 95 && !lessonProgress?.completed) {
+        updateLessonProgress(currentLesson.lessonId, 100, true);
+        enrolledCourseActions.updateLessonProgress({
+          userId,
+          courseId,
+          lessonId: currentLesson.lessonId,
+          progress: 100,
+          completed: true,
+        });
+      }
+    }
+  };
+
   return (
     <div className="h-[calc(100vh-73px)] w-full">
       {isLessonChanging || !tokens || !currentLesson?.playbackId ? (
@@ -92,38 +129,11 @@ const LearningPlayer = ({
           onMouseLeave={handleMouseLeave}
           className="relative h-[90%] w-full"
         >
-          <AnimatePresence>
-            {showCustomControls && (
-              <>
-                <motion.div
-                  onClick={() => {
-                    setIsLessonChanging(true);
-                    previousLesson(courseId, userId);
-                  }}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="absolute hover:cursor-pointer hover:bg-primary/90 flex items-center justify-center bg-primary rounded-md border border-secondary top-[40%] left-0 w-8 h-12 z-10"
-                >
-                  <ChevronLeft className="h-20 w-20" />
-                </motion.div>
-                <motion.div
-                  onClick={() => {
-                    setIsLessonChanging(true);
-                    nextLesson(courseId, userId);
-                  }}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="absolute hover:cursor-pointer hover:bg-primary/90 flex items-center justify-center bg-primary rounded-md border border-secondary top-[40%] right-0 w-8 h-12 z-10"
-                >
-                  <ChevronRight className="h-20 w-20" />
-                </motion.div>
-              </>
-            )}
-          </AnimatePresence>
+          <CustomControls
+            courseId={courseId}
+            userId={userId}
+            showCustomControls={showCustomControls}
+          />
           <MuxPlayer
             ref={playerRef}
             className="absolute"
@@ -134,6 +144,7 @@ const LearningPlayer = ({
               nextLesson(courseId, userId);
               setIsLessonChanging(true);
             }}
+            onTimeUpdate={handleTimeUpdate}
             autoPlay={autoplay}
             tokens={{
               thumbnail: tokens.thumbnailToken,

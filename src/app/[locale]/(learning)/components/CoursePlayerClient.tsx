@@ -18,8 +18,12 @@ const CoursePlayerPageClient = ({
   userId,
 }: CoursePlayerPageClient) => {
   const queryClient = useQueryClient();
-  const { selectedLessonId, setSelectedLessonId, setAllLesonsIds } =
-    useCoursePlayerStore();
+  const {
+    selectedLessonId,
+    setSelectedLessonId,
+    setAllLesonsIds,
+    updateLessonProgress,
+  } = useCoursePlayerStore();
   const { data: learningData, isLoading: learningDataLoading } = useQuery({
     queryKey: ["learning-course-data", userId, courseId],
     queryFn: () =>
@@ -28,6 +32,27 @@ const CoursePlayerPageClient = ({
         userId as string
       ),
   });
+
+  const { data: lessonProgress } = useQuery({
+    queryKey: ["lesson-progress", userId, courseId],
+    queryFn: () =>
+      enrolledCourseActions.getLessonProgress(
+        userId as string,
+        courseId as string
+      ),
+  });
+
+  useEffect(() => {
+    if (lessonProgress) {
+      Object.entries(lessonProgress).forEach(([lessonId, progress]) => {
+        updateLessonProgress(
+          lessonId,
+          progress.progress,
+          progress.progress === 100
+        );
+      });
+    }
+  }, [learningData?.course?.lessonProgress, updateLessonProgress]);
 
   useEffect(() => {
     if (learningData?.needsSync) {
