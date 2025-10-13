@@ -62,6 +62,11 @@ const ClientNavBar = () => {
         animate={isActive ? "open" : "closed"}
         initial="closed"
         className="bg-primary rounded-[25px] relative"
+        style={{
+          width: 350,
+          height: 550,
+          transformOrigin: "top right",
+        }}
       >
         <AnimatePresence>
           {isActive && (
