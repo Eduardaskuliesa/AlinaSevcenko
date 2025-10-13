@@ -150,7 +150,7 @@ const CoursePageContent = () => {
           filteredCourselength={filteredCourses.length}
         />
         <div className="flex flex-col lg:flex-row">
-          <div className="w-full lg:w-[30%] px-2 pt-2 md:p-4 flex flex-col lg:h-[600px]">
+          <div className="w-full lg:w-[30%] sticky top-0 z-10 lg:block lg:px-2 lg:pt-2 md:p-4 flex flex-col lg:h-[600px]">
             <Filter
               clearFitlers={clearFitlers}
               filters={filters}
@@ -159,7 +159,7 @@ const CoursePageContent = () => {
               updateLanguageFilter={updateLanguageFilter}
             />
           </div>
-          <div className="w-full lg:w-[70%] pb-6 md:p-4 h-[650px] overflow-y-auto">
+          <div className="w-full lg:w-[70%] pb-6 lg:p-4 lg:h-[650px] overflow-y-auto">
             <CourseList courses={filteredCourses} isLoading={isCourseLoading} />
           </div>
         </div>

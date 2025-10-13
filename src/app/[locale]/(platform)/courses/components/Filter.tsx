@@ -36,7 +36,7 @@ const Filter = ({
 
   return (
     <>
-      <div className="flex justify-between items-center mb-4 lg:hidden">
+      <div className="px-2 z-10 bg-white py-2 flex justify-between items-center mb-4 lg:hidden">
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="outline" className="w-[60%]">
