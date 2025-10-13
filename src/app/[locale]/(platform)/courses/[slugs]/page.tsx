@@ -3,6 +3,7 @@ import { getCourseWithPreviewLesson } from "@/app/actions/coursers/course/getCou
 import CoursePageClient from "./ClientCoursePage";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/app/lib/getQueryClient";
+import { redirect } from "next/navigation";
 
 export const dynamicParams = true;
 export const revalidate = 72000;
@@ -30,8 +31,14 @@ export default async function CourseIdPage({
 }: {
   params: Promise<{ locale: string; slugs: string }>;
 }) {
-  const { slugs } = await params;
+  const { slugs, locale } = await params;
   const queryClient = getQueryClient();
+
+  const courseData = await getCourseWithPreviewLesson(slugs);
+
+  if (!courseData?.course?.isPublished) {
+    redirect(`/${locale}/courses?error=course-not-available`);
+  }
 
   await queryClient.prefetchQuery({
     queryKey: ["course", slugs],

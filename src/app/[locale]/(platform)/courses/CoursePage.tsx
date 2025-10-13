@@ -1,5 +1,5 @@
 "use client";
-import React, { useDeferredValue, useState } from "react";
+import React, { useDeferredValue, useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { coursesAction } from "@/app/actions/coursers";
 import DurationFilter from "./filters/DurationFilter";
@@ -12,6 +12,8 @@ import { Input } from "@/components/ui/input";
 import { Loader, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import QuickCategoryBar from "./components/QuickCategoryBar";
+import { useRouter, useSearchParams } from "next/navigation";
+import toast from "react-hot-toast";
 
 type FilterState = {
   durations: string[];
@@ -28,13 +30,22 @@ const CoursePageContent = () => {
     searchTerm: "",
   });
 
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (searchParams.get("error") === "course-not-available") {
+      toast.error("This course is not currently available");
+      router.replace("/lt/courses");
+    }
+  }, [searchParams, router]);
+
   const { data: courseData, isFetching: isCourseLoading } = useQuery({
     queryKey: ["client-courses"],
     queryFn: coursesAction.courses.getAllCoursesUP,
   });
 
   console.log("courseData", courseData?.courses);
-
 
   const clearFitlers = () => {
     setFilters({

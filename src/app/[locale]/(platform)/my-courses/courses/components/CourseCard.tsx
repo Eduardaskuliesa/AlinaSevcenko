@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { Clock, BookOpen, Play } from "lucide-react";
+import { Clock, BookOpen, Play, RefreshCw } from "lucide-react";
 import { convertTime } from "@/app/utils/converToMinutes";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 interface CourseCardProps {
   course: EnrolledCourse;
@@ -20,6 +21,8 @@ const CourseCard = ({ course }: CourseCardProps) => {
   const completedLessons = Object.values(course.lessonProgress).filter(
     (lesson) => lesson.progress === 100
   ).length;
+
+  const router = useRouter();
 
   const overallProgress =
     totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
@@ -89,8 +92,8 @@ const CourseCard = ({ course }: CourseCardProps) => {
           ease: "easeInOut",
         }}
         viewport={{ once: true }}
-        className={`flex flex-row border shadow-sm border-primary-light/60 group hover:bg-gray-50 rounded-md bg-white p-4 mb-4 cursor-pointer pb-4 ${
-          expiration.isExpired ? "opacity-60 pointer-events-none" : ""
+        className={`flex flex-row border shadow-sm border-primary-light/60 group/card hover:bg-gray-50 rounded-md bg-white p-4 mb-4 cursor-pointer pb-4 ${
+          expiration.isExpired ? "opacity-60" : ""
         }`}
       >
         <div className="relative min-w-[300px] min-h-[150px] max-h-[200px] overflow-hidden rounded-md">
@@ -102,7 +105,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
             src={
               course?.thumbnailImage || "/placeholder.svg?height=180&width=300"
             }
-            className="object-cover w-full h-full group-hover:scale-[1.02] transition-transform duration-300 ease-out transform-gpu"
+            className="object-cover w-full h-full group-hover/card:scale-[1.02] transition-transform duration-300 ease-out transform-gpu"
           />
         </div>
 
@@ -158,17 +161,31 @@ const CourseCard = ({ course }: CourseCardProps) => {
                 )}
               </span>
             </div>
-
-            <Button
-              size="sm"
-              className="bg-primary hover:bg-primary/90 text-white px-4 py-2 text-sm font-medium"
-              onClick={(e) => {
-                e.preventDefault();
-              }}
-            >
-              {overallProgress > 0 ? "Continue" : "Start"}
-              <Play className="w-4 h-4 mr-2 group-hover:translate-x-2 transition-all" />
-            </Button>
+            {expiration.isExpired ? (
+              <Button
+                size="sm"
+                className="bg-primary hover:bg-primary/90 text-white px-4 py-2 text-sm font-medium pointer-events-auto group/button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  router.push(`/courses/${course.slug}`);
+                }}
+              >
+                Renew Access
+                <RefreshCw className="w-4 h-4 ml-2 group-hover/button:rotate-180 transition-transform duration-300" />
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                className="bg-primary group/button hover:bg-primary/90 text-white px-4 py-2 text-sm font-medium"
+                onClick={(e) => {
+                  e.preventDefault();
+                }}
+              >
+                {overallProgress > 0 ? "Continue" : "Start"}
+                <Play className="w-4 h-4 ml-1 group-hover/button:translate-x-1 transition-transform" />
+              </Button>
+            )}
           </div>
         </div>
       </motion.div>
