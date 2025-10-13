@@ -67,7 +67,7 @@ const PlatformNavBar = () => {
   };
 
   return (
-    <div className="bg-gray-50 border-secondary w-full h-16 flex justify-between px-24 items-center">
+    <div className="bg-gray-50 border-secondary w-full h-16 flex justify-between md:px-4 lg:px-14 2xl:px-24 items-center">
       <div className="font-bold text-xl">Logo</div>
 
       <div className="flex items-center gap-2">

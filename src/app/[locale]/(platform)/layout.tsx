@@ -1,7 +1,7 @@
 import CartSync from "./components/CartSync";
 import Footer from "./components/Footer";
 import LanguageSuggestion from "./components/LanguageSuggestion";
-import PlatformNavBar from "./components/PlatformNavBar";
+import ResponsiveNavBar from "./components/ResponsiveNavBar";
 import SyncUserPreferences from "./components/SyncUserPreferences";
 
 export default function PlatformLayout({
@@ -11,7 +11,7 @@ export default function PlatformLayout({
 }) {
   return (
     <>
-      <PlatformNavBar />
+      <ResponsiveNavBar />
       <main className="bg-gray-50 min-h-[80vh]">
         <CartSync />
         <SyncUserPreferences />

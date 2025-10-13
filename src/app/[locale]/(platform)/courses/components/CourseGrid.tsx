@@ -34,27 +34,31 @@ const CourseList = ({ courses, isLoading }: CourseListProps) => {
         {[...Array(3)].map((_, i) => (
           <div
             key={i}
-            className="flex space-x-4 animate-pulse border-b border-primary pb-4"
+            className="flex flex-col md:flex-row border-b hover:bg-slate-50 px-1 border-primary pb-4 animate-pulse"
           >
-            <div className="min-w-[300px] h-[170px] bg-gray-300 rounded-lg"></div>
-            <div className="flex w-full flex-col justify-between">
-              <div className="flex flex-col space-y-2">
-                <div className="flex justify-between">
-                  <div className="h-6 bg-gray-300 rounded w-44"></div>
-                  <div className="h-7 w-32 bg-gray-300 rounded-full"></div>
+            <div className="relative w-full md:min-w-[300px] md:max-w-[300px] h-[250px] sm:h-[300px] md:h-[180px] bg-gray-300 rounded-md"></div>
+
+            <div className="flex flex-col flex-1 justify-between px-4 md:ml-6 mt-4 md:mt-0">
+              <div className="flex flex-col md:flex-row justify-between w-full mb-auto">
+                <div className="flex-1 space-y-2">
+                  <div className="h-6 bg-gray-300 rounded w-3/4"></div>
+                  <div className="h-4 bg-gray-300 rounded w-full"></div>
+                  <div className="h-4 bg-gray-300 rounded w-5/6"></div>
+                  <div className="flex gap-4 mt-3">
+                    <div className="h-4 bg-gray-300 rounded w-20"></div>
+                    <div className="h-4 bg-gray-300 rounded w-20"></div>
+                  </div>
                 </div>
 
-                <div className="h-4 bg-gray-300 rounded w-[70%]"></div>
-                <div className="h-4 bg-gray-300 rounded w-1/2"></div>
-                <div className="flex gap-4">
-                  <div className="h-4 bg-gray-300 rounded w-12"></div>
-                  <div className="h-4 bg-gray-300 rounded w-12"></div>
+                <div className="md:ml-4 md:min-w-[120px] flex justify-start md:justify-end mt-2 md:mt-0">
+                  <div className="h-7 w-32 bg-gray-300 rounded-full"></div>
                 </div>
               </div>
-              <div className="flex justify-between items-end">
+
+              <div className="flex flex-row justify-between items-center w-full mt-4 gap-3">
                 <div className="flex gap-2">
-                  <div className="h-5 w-12 bg-gray-300 rounded-md"></div>
-                  <div className="h-5 w-12 bg-gray-300 rounded-md"></div>
+                  <div className="h-5 w-16 bg-gray-300 rounded-md"></div>
+                  <div className="h-5 w-16 bg-gray-300 rounded-md"></div>
                 </div>
                 <div className="flex gap-2">
                   <div className="h-10 w-10 bg-gray-300 rounded-full"></div>
@@ -95,7 +99,6 @@ const CourseList = ({ courses, isLoading }: CourseListProps) => {
         ))}
       </AnimatePresence>
     </div>
-      
   );
 };
 

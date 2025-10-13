@@ -204,7 +204,7 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
     return (
       <div
         style={{ maxHeight: `${getDynamicHeight(activeAccessPlans.length)}px` }}
-        className="w-[30%] mt-6 sticky top-[2rem] bg-white border-gray-200 border-2 rounded-lg"
+        className="hidden lg:block w-[30%] mt-6 sticky top-[2rem] bg-white border-gray-200 border-2 rounded-lg"
       >
         <div className="p-4 h-full">
           <div className="space-y-3">
@@ -249,7 +249,7 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
 
   if (!activeAccessPlans.length) {
     return (
-      <div className="w-[30%] bg-white max-h-[540px] p-4 rounded-lg">
+      <div className="hidden lg:block w-[30%] bg-white max-h-[540px] p-4 rounded-lg">
         <div className="text-gray-800 text-center">
           No access plans available
         </div>
@@ -260,7 +260,7 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
   return (
     <div
       style={{ maxHeight: `${getDynamicHeight(activeAccessPlans.length)}px` }}
-      className="w-[30%] mt-6 sticky top-[2rem] bg-white border-primary-light/60 border-2 rounded-lg"
+      className="hidden lg:block w-[30%] mt-6 sticky top-[2rem] bg-white border-primary-light/60 border-2 rounded-lg"
     >
       <div className="p-4 h-full overflow-y-auto overflow-hidden">
         <div className="space-y-3">

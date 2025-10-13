@@ -22,9 +22,9 @@ export default async function CoursePage() {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <header className="h-[5rem] bg-primary w-full flex">
-        <div className="max-w-6xl w-full mx-auto">
-          <h1 className="text-5xl font-times mt-4 font-semibold text-gray-100">
+      <header className="h-auto pb-4 bg-primary w-full flex">
+        <div className="max-w-lg px-2 md:max-w-4xl xl:max-w-5xl 2xl:max-w-6xl w-full mx-auto">
+          <h1 className="text-3xl md:text-4xl  lg:text-5xl font-times mt-4 font-semibold text-gray-100">
             Courses - learn and grow with me
           </h1>
         </div>

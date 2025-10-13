@@ -24,18 +24,17 @@ const CourseCard = ({ course, lowestPrice }: CourseCardProps) => {
           ease: "easeInOut",
         }}
         viewport={{ once: true }}
-        className="flex flex-row border-b hover:bg-slate-50 px-1 cursor-pointer hover:shadow-lg  border-primary pb-4 "
+        className="flex flex-col md:flex-row border-b hover:bg-slate-50 px-1 cursor-pointer hover:shadow-lg border-primary pb-4"
       >
-        <div className="relative min-w-[300px] min-h-[150px] max-h-[200px]">
+        <div className="relative w-full md:min-w-[300px] md:max-w-[300px] h-[250px] sm:h-[300px] md:h-[180px]">
           <Image
             quality={100}
-            height={240}
-            width={240}
+            fill
             alt="Course Thumbnail"
             src={
               course?.thumbnailImage || "/placeholder.svg?height=180&width=300"
             }
-            className="object-cover w-full h-full rounded-md"
+            className="object-cover rounded-md"
           />
 
           {course.language && (
@@ -48,8 +47,8 @@ const CourseCard = ({ course, lowestPrice }: CourseCardProps) => {
           )}
         </div>
 
-        <div className="flex flex-col flex-1 justify-between ml-6">
-          <div className="flex flex-row justify-between w-full mb-auto">
+        <div className="flex flex-col flex-1 justify-between px-4 md:ml-6 mt-4 md:mt-0">
+          <div className="flex flex-col md:flex-row justify-between w-full mb-auto">
             <div className="flex-1">
               <h3 className="text-lg font-bold text-gray-800 mb-1 line-clamp-2">
                 {course?.title}
@@ -70,7 +69,7 @@ const CourseCard = ({ course, lowestPrice }: CourseCardProps) => {
               </div>
             </div>
 
-            <div className="ml-4 min-w-[120px] flex justify-end">
+            <div className="md:ml-4 md:min-w-[120px] flex justify-start md:justify-end mt-2 md:mt-0">
               {lowestPrice !== null && (
                 <div className="bg-secondary px-3 py-1 rounded-full text-orange-900 font-semibold text-sm h-fit">
                   From ${lowestPrice.toFixed(2)}
@@ -79,7 +78,7 @@ const CourseCard = ({ course, lowestPrice }: CourseCardProps) => {
             </div>
           </div>
 
-          <div className="flex justify-between items-center w-full mt-4">
+          <div className="flex flex-row justify-between items-center w-full mt-4 gap-3">
             <div className="flex flex-wrap gap-1">
               {course.categories?.map((category) => (
                 <Badge
@@ -92,7 +91,6 @@ const CourseCard = ({ course, lowestPrice }: CourseCardProps) => {
               ))}
             </div>
 
-            {/* Action buttons */}
             <ActionButtonts course={course} lowestPrice={lowestPrice} />
           </div>
         </div>

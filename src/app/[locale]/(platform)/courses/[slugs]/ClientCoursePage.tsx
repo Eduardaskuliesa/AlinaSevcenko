@@ -6,6 +6,7 @@ import LessonContent from "../components/LessonContent";
 import { useQuery } from "@tanstack/react-query";
 import { getCourseWithPreviewLesson } from "@/app/actions/coursers/course/getCourseWithPrevie";
 import StickyCartOptions from "./components/StickyCartOptions";
+import MobileCartDrawer from "./components/MobileCartDrawer";
 
 interface CoursePageClientProps {
   slugs: string;
@@ -37,22 +38,23 @@ export default function CoursePageClient({ slugs }: CoursePageClientProps) {
 
   return (
     <>
-      <header className="h-[5rem] bg-primary w-full flex">
-        <div className="max-w-6xl w-full mx-auto">
-          <h1 className="text-5xl font-times mt-4 font-semibold text-gray-100">
+      <header className="h-auto pb-4 bg-primary w-full flex">
+        <div className="max-w-lg px-2 md:max-w-4xl xl:max-w-5xl 2xl:max-w-6xl w-full mx-auto">
+          <h1 className="text-3xl md:text-4xl  lg:text-5xl font-times mt-4 font-semibold text-gray-100">
             {course?.title}
           </h1>
         </div>
       </header>
 
       <section className="flex gap-8 mx-auto max-w-7xl h-full">
-        <div className="w-[70%] h-auto px-4 py-4">
+        <div className="w-full lg:w-[70%] h-auto px-2 lg:px-4 py-4">
           <BackButton />
           {previewLesson && <PreviewPlayer lessonData={previewLesson} />}
           <LessonDescription courseData={course} />
           <LessonContent courseLessons={sortedLessons ?? []} />
         </div>
-        <StickyCartOptions courseData={course}></StickyCartOptions>
+        <StickyCartOptions courseData={course} />
+        <MobileCartDrawer courseData={course} />
       </section>
     </>
   );

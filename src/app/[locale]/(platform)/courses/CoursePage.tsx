@@ -2,20 +2,15 @@
 import React, { useDeferredValue, useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { coursesAction } from "@/app/actions/coursers";
-import DurationFilter from "./filters/DurationFilter";
-import LanguageFilter from "./filters/LangugeFilter";
-import CategoryFilter from "./filters/CategoryFilter";
-
 import CourseList from "./components/CourseGrid";
 import { FilteredCourse } from "@/app/types/course";
-import { Input } from "@/components/ui/input";
-import { Loader, Search } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import QuickCategoryBar from "./components/QuickCategoryBar";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
+import SearchBar from "./components/SearchBar";
+import Filter from "./components/Filter";
 
-type FilterState = {
+export type FilterState = {
   durations: string[];
   languages: string[];
   categories: string[];
@@ -145,56 +140,26 @@ const CoursePageContent = () => {
       <QuickCategoryBar
         selectedCategories={filters.categories}
         setSelectedCategories={updateCategoryFilter}
-      ></QuickCategoryBar>
-      <div className="max-w-7xl mx-auto pt-10">
-        <div className="flex flex-row">
-          <div className="w-[30%] px-4">
-            <Button
-              className="cursor-pointer"
-              onClick={clearFitlers}
-              variant={"outline"}
-            >
-              Clear filters
-            </Button>
-          </div>
-          <div className="w-[70%] flex justify-between px-4">
-            <div className="relative w-1/2 flex items-center">
-              <Search className="absolute left-3 text-gray-400" />
-              <Input
-                className="border-2 h-10 border-primary-light/60 pl-10"
-                placeholder="Search courses by title or category..."
-                value={filters.searchTerm}
-                onChange={handleSearchChange}
-              />
-            </div>
-            <div className="text-gray-800">
-              {isCourseLoading ? (
-                <Loader className="h-5 w-5 animate-spin"></Loader>
-              ) : (
-                <span>{`Filtered Courses: ${
-                  filteredCourses.length || 0
-                }`}</span>
-              )}
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-row">
-          <div className="w-[30%] p-4 flex flex-col h-[600px]">
-            <DurationFilter
-              selectedDurations={filters.durations}
-              setSelectedDurations={updateDurationFilter}
-            />
-            <LanguageFilter
-              selectedLanguages={filters.languages}
-              setSelectedLanguages={updateLanguageFilter}
-            />
-
-            <CategoryFilter
-              selectedCategories={filters.categories}
-              setSelectedCategories={updateCategoryFilter}
+      />
+      <div className="max-w-7xl mx-auto pt-4 md:pt-10">
+        <SearchBar
+          clearFitlers={clearFitlers}
+          filters={filters}
+          isCourseLoading={isCourseLoading}
+          handleSearchChange={handleSearchChange}
+          filteredCourselength={filteredCourses.length}
+        />
+        <div className="flex flex-col lg:flex-row">
+          <div className="w-full lg:w-[30%] px-2 pt-2 md:p-4 flex flex-col lg:h-[600px]">
+            <Filter
+              clearFitlers={clearFitlers}
+              filters={filters}
+              updateCategoryFilter={updateCategoryFilter}
+              updateDurationFilter={updateDurationFilter}
+              updateLanguageFilter={updateLanguageFilter}
             />
           </div>
-          <div className="w-[70%] p-4 h-[650px] overflow-y-auto">
+          <div className="w-full lg:w-[70%] pb-6 md:p-4 h-[650px] overflow-y-auto">
             <CourseList courses={filteredCourses} isLoading={isCourseLoading} />
           </div>
         </div>
