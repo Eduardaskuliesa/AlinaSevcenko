@@ -2,7 +2,6 @@
 import { categoryActions } from "@/app/actions/category";
 import { useQuery } from "@tanstack/react-query";
 import React, { useRef } from "react";
-import { motion } from "framer-motion";
 
 interface QuickCategoryBarProps {
   selectedCategories: string[];
@@ -49,14 +48,14 @@ const QuickCategoryBar = ({ setSelectedCategories }: QuickCategoryBarProps) => {
     <div className="max-w-7xl mx-auto lg:px-4 shadow-sm">
       <div
         ref={containerRef}
-        className="overflow-hidden border-b border-primary-light"
+        className="overflow-x-auto overflow-y-hidden border-b border-primary-light scrollbar-hide"
+        style={{
+          scrollSnapType: "x mandatory",
+          WebkitOverflowScrolling: "touch",
+        }}
       >
-        <motion.div
-          drag="x"
-          dragConstraints={containerRef}
-          dragElastic={0.2}
-          dragTransition={{ bounceStiffness: 1000, bounceDamping: 50 }}
-          className="flex flex-row items-center gap-5 cursor-grab active:cursor-grabbing"
+        <div
+          className="flex flex-row items-center gap-5"
           style={{ width: "max-content" }}
         >
           {categories?.categories.map((category, index) => (
@@ -78,7 +77,7 @@ const QuickCategoryBar = ({ setSelectedCategories }: QuickCategoryBarProps) => {
               </button>
             </div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </div>
   );
