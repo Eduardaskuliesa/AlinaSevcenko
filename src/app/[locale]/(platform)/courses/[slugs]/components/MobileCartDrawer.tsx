@@ -218,7 +218,7 @@ const MobileCartDrawer = ({ courseData }: MobileCartDrawerProps) => {
   return (
     <>
       <div className="fixed bottom-0 left-0 right-0 bg-slate-50 border-t-2 border-primary-light shadow-lg z-40 lg:hidden">
-        <div className="px-3 sm:px-6 py-2.5 sm:py-3">
+        <div className="px-2 sm:px-6 py-2.5 sm:py-3">
           <div className="flex items-center justify-between gap-2 sm:gap-3">
             <div className="flex-1 min-w-0">
               <p className="text-xs text-gray-600 truncate">
@@ -309,7 +309,7 @@ const MobileCartDrawer = ({ courseData }: MobileCartDrawerProps) => {
               </SheetTitle>
             </SheetHeader>
 
-            <div className="px-4 sm:px-6 pb-6 overflow-y-auto h-[calc(100%-60px)]">
+            <div className="px-4 sm:px-6  overflow-y-auto h-[calc(100%-60px)]">
               <div className="space-y-3 mb-6 mt-2">
                 {activeAccessPlans.map((plan) => (
                   <div
@@ -324,7 +324,7 @@ const MobileCartDrawer = ({ courseData }: MobileCartDrawerProps) => {
                       handlePlanChange(plan);
                     }}
                   >
-                    <CardContent className="p-4">
+                    <CardContent className="px-4 py-2">
                       <div className="flex justify-between items-center">
                         <div>
                           <div className="flex items-center gap-2">
@@ -352,7 +352,7 @@ const MobileCartDrawer = ({ courseData }: MobileCartDrawerProps) => {
                 ))}
               </div>
 
-              <div className="bg-gradient-to-r from-primary-light/50 to-primary-light/30 rounded-xl p-4 mb-4 border border-primary-light">
+              <div className="bg-gradient-to-r from-primary-light/50 to-primary-light/30 rounded-xl py-2 mb-4 border border-primary-light">
                 <p className="text-sm text-gray-600 text-center mb-1">
                   Selected Plan
                 </p>
@@ -371,7 +371,7 @@ const MobileCartDrawer = ({ courseData }: MobileCartDrawerProps) => {
                   <motion.button
                     whileTap={{ scale: 0.98 }}
                     onClick={handleCartClick}
-                    className="flex-1 font-semibold rounded-lg py-3 px-4 bg-primary-light hover:bg-primary-light/80 text-gray-800 border border-primary-light"
+                    className="flex-1 font-semibold rounded-lg py-2 px-4 bg-primary-light hover:bg-primary-light/80 text-gray-800 border border-primary-light"
                   >
                     {isInCart ? "Remove from cart" : "Add to cart"}
                   </motion.button>
@@ -379,7 +379,7 @@ const MobileCartDrawer = ({ courseData }: MobileCartDrawerProps) => {
                   <motion.button
                     whileTap={{ scale: 0.95 }}
                     onClick={handleHeartClick}
-                    className="p-3 bg-white hover:bg-slate-50 border-2 border-primary-light rounded-lg relative"
+                    className="p-2 bg-white hover:bg-slate-50 border-2 border-primary-light rounded-lg relative"
                   >
                     <Heart
                       className="w-6 h-6 text-primary"
@@ -419,7 +419,7 @@ const MobileCartDrawer = ({ courseData }: MobileCartDrawerProps) => {
                 <Link href="/cart" onClick={handleProceedWithPurchase}>
                   <motion.button
                     whileTap={{ scale: 0.98 }}
-                    className="w-full bg-primary mt-4 hover:bg-primary/90 text-white font-semibold rounded-lg py-3 px-4 text-base"
+                    className="w-full bg-primary mt-4 hover:bg-primary/90 text-white font-semibold rounded-lg py-2 px-4 text-base"
                   >
                     Proceed with Purchase
                   </motion.button>
