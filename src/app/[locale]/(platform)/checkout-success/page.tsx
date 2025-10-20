@@ -47,15 +47,15 @@ const CheckoutSuccessPage = async ({
   return (
     <div className="">
       <div className="bg-primary text-gray-50">
-        <div className="max-w-4xl mx-auto px-6 pt-6 pb-12 text-center">
-          <h1 className="text-5xl font-bold mb-2 font-times">
+        <div className="max-w-4xl mx-auto px-4 pt-4 pb-10 sm:px-6 sm:pt-6 sm:pb-12 text-center">
+          <h1 className="text-4xl sm:text-5xl font-bold mb-2 font-times">
             Payment Successful!
           </h1>
           <p className="text-2xl font-times">Welcome to your new courses!</p>
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-6 -mt-8">
+      <div className="max-w-4xl mx-auto px-2 sm:px-6 -mt-8">
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
           <div className="bg-primary-light text-gray-800 px-6 py-4 flex justify-between items-center">
             <span className="font-medium">Order Complete</span>

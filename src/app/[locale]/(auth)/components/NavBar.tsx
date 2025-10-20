@@ -27,7 +27,6 @@ const AuthNavbar = () => {
   const isResetPasswordPage =
     pathname === "/reset-password" || pathname.startsWith("/reset-password");
 
-  // Check if we're on a page where we shouldn't show login/register buttons
   const hideAuthButtons = isForgotPasswordPage || isResetPasswordPage;
 
   const localeCode = currentLocale.toUpperCase();

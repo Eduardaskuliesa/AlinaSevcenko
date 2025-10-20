@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
     viewTransition: true,
   },
   images: {
-    domains: ["d1qu0ys0a2oc3d.cloudfront.net"],
+    domains: ["d1qu0ys0a2oc3d.cloudfront.net", "flagcdn.com"],
   },
   env: {
     CLOUDFLARE_STREAM_TOKEN: process.env.CLOUDFLARE_STREAM_TOKEN,

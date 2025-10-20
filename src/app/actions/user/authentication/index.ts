@@ -1,3 +1,4 @@
+import { changePassword } from "./changePassword";
 import { checkEmail } from "./checkEmail";
 import { generateMagicLinkToken } from "./generateMagicLink";
 import { generateVerificationToken } from "./generateVerificationCode";
@@ -16,4 +17,5 @@ export const authentication = {
   generateMagicLinkToken,
   verifyMagicLinkToken,
   resetPassword,
+  changePassword,
 };
