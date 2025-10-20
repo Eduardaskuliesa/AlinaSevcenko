@@ -13,11 +13,10 @@ import CartSummary from "./components/CartSummary";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
 
-
 const CartPage = () => {
   const { cartItems, hydrated, removeFromCart, updateCartItem } =
     useCartStore();
-  
+
   const userId = useSession().data?.user.id;
 
   const { data: freshCartItems, isLoading } = useQuery({
@@ -187,20 +186,18 @@ const CartPage = () => {
     enabled: cartItems.length > 0 && hydrated,
   });
 
- 
   if (!hydrated) {
     return (
       <>
-        <header className="h-[5rem] bg-primary w-full flex">
+        <header className="h-auto pb-4 bg-primary w-full flex">
           <div className="max-w-6xl w-full mx-auto">
-            <h1 className="text-5xl font-times mt-4 font-semibold flex items-center text-gray-100">
+            <h1 className="text-4xl px-4 lg:px-2 sm:text-5xl font-times mt-4 font-semibold flex items-center text-gray-100">
               Shopping Cart
-              <Loader className="h-8 w-8 ml-2 animate-spin"></Loader>
             </h1>
           </div>
         </header>
-        <section className="flex gap-8 mx-auto max-w-7xl">
-          <div className="w-[70%] h-auto px-4 py-4 mt-2 items-center justify-center">
+        <section className="flex flex-col lg:flex-row gap-8 mx-auto max-w-7xl">
+          <div className="lg:w-[70%] h-auto px-4 py-4 mt-2 items-center justify-center">
             <Loader className="h-8 w-8 animate-spin mx-auto" />
           </div>
           <CartSummarySkeleton />
@@ -212,18 +209,15 @@ const CartPage = () => {
   if (isLoading) {
     return (
       <>
-        <header className="h-[5rem] bg-primary w-full flex">
+        <header className="h-auto pb-4 bg-primary w-full flex">
           <div className="max-w-6xl w-full mx-auto">
-            <h1 className="text-5xl font-times mt-4 font-semibold flex items-center text-gray-100">
+            <h1 className="text-4xl px-4 lg:px-2 sm:text-5xl font-times mt-4 font-semibold flex items-center text-gray-100">
               Shopping Cart
-              {isLoading && (
-                <Loader className="h-8 w-8 ml-2 animate-spin"></Loader>
-              )}
             </h1>
           </div>
         </header>
-        <section className="flex gap-8 mx-auto max-w-7xl">
-          <div className="w-[70%] h-auto px-4 py-4 mt-2">
+        <section className="flex flex-col lg:flex-row lg:gap-8 mx-auto max-w-7xl pb-4">
+          <div className="lg:w-[70%] h-auto px-4 py-4 mt-2">
             {Array.from({ length: cartItems.length }).map((_, index) => (
               <CartLoaderSkeleton key={index} />
             ))}
@@ -236,19 +230,19 @@ const CartPage = () => {
 
   return (
     <>
-      <header className="h-[5rem] bg-primary w-full flex">
+      <header className="h-auto pb-4 bg-primary w-full flex">
         <div className="max-w-6xl w-full mx-auto">
-          <h1 className="text-5xl font-times mt-4 font-semibold text-gray-100">
+          <h1 className="text-4xl px-4 lg:px-2 sm:text-5xl font-times mt-4 font-semibold text-gray-100">
             Shopping Cart
           </h1>
         </div>
       </header>
-      <section className="flex gap-8 mx-auto max-w-7xl">
-        <div className="w-[70%] h-auto px-4 py-4 mt-2">
+      <section className="flex flex-col lg:flex-row gap-4 lg:gap-8 mx-auto max-w-7xl px-4 lg:px-0">
+        <div className="w-full lg:w-[70%] py-4">
           {cartItems.length === 0 ? (
             <div className="text-center text-gray-500 mt-10">
               <h2 className="text-2xl font-semibold">Your cart is empty</h2>
-              <Link href={"/courses"} className=" underline">
+              <Link href={"/courses"} className="underline">
                 Browse courses
               </Link>
             </div>

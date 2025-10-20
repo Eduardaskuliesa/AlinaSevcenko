@@ -28,7 +28,7 @@ const MobilePlatformNavBar = () => {
           <Menu className="w-6 h-6" />
         </button>
 
-        <div className="font-bold text-xl">Logo</div>
+        <div className="font-bold text-xl xs:text-2xl sm:text-3xl font-times">Alina Savcenko</div>
 
         <div className="flex items-center gap-2">
           <Link

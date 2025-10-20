@@ -15,7 +15,7 @@ export function CartLoaderSkeleton() {
           <Skeleton className="h-5 bg-gray-200 rounded w-20 mb-2"></Skeleton>
           <Skeleton className="h-4 bg-gray-200 rounded w-32"></Skeleton>
         </div>
-        <div className="flex-shrink-0">
+        <div className="hidden sm:block flex-shrink-0">
           <Skeleton className="h-6 bg-gray-200 rounded w-16"></Skeleton>
         </div>
       </div>

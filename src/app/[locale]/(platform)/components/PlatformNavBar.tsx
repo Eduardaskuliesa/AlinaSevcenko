@@ -196,7 +196,7 @@ const PlatformNavBar = () => {
               <div className="h-px bg-gray-200 my-2 mx-3"></div>
 
               <ProfileMenuItem
-                href="/profile"
+                href="/user/profile"
                 icon={<User className="w-4 h-4" />}
                 title="My account"
               />

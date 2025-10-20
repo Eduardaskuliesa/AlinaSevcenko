@@ -18,6 +18,7 @@ export async function POST(req: NextRequest) {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(totalAmount * 100),
       currency: "eur",
+      automatic_payment_methods: { enabled: true },
       metadata: {
         courseIds: cartItems.map((item: CartItem) => item.courseId).join(","),
         accessIds: cartItems

@@ -112,7 +112,7 @@ const CheckoutSummary = () => {
   if (!hydrated) return <CheckoutSummarySkeleton />;
 
   return (
-    <div className="w-[30%] mt-6 sticky top-[2rem] h-fit bg-white border-primary-light/60 border-2 rounded-lg pt-4 px-4 pb-6">
+    <div className="lg:w-[30%]  lg:mt-6 sticky top-[2rem] h-fit bg-white border-primary-light/60 border-2 rounded-lg pt-4 mx-4 mb-4 px-4 pb-6">
       <h3 className="font-semibold text-lg text-gray-800">Checkout summary</h3>
       <p className="text-gray-600">
         {totalItems} {totalItems === 1 ? "item" : "items"}

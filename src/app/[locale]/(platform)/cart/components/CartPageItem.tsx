@@ -89,13 +89,14 @@ export function CartPageItem({
 
       {/* Main cart item */}
       <div className="flex justify-between items-center p-2">
-        <div className="flex items-center gap-4 flex-1">
+        <div className="flex flex-col-reverse sm:flex-row sm:items-center gap-4 flex-1">
+
           <Image
             width={200}
             height={150}
             src={item.thumbnailImage}
             alt={item.title}
-            className="w-24 h-16 rounded-md object-cover flex-shrink-0"
+            className="w-24 h-16 hidden sm:block rounded-md object-cover flex-shrink-0"
           />
           <div className="flex-1">
             <h4 className="text-lg font-semibold">{item.title}</h4>
@@ -110,7 +111,7 @@ export function CartPageItem({
             </div>
           </div>
         </div>
-        <div className="flex-1 max-w-xs items-center">
+        <div className="hidden md:block flex-1 max-w-xs items-center">
           <h4 className="text-lg font-semibold">AccessPlan</h4>
           <div className="flex items-center">
             <div className="h-1 w-1 rounded-full mx-1 mb-0.5 bg-gray-700"></div>
@@ -121,7 +122,7 @@ export function CartPageItem({
             </p>
           </div>
         </div>
-        <div className="flex-shrink-0 text-right">
+        <div className="hidden sm:blockflex-shrink-0 text-right">
           <p className="text-gray-800 text-lg px-2 font-bold">
             €{selectedPlan?.price.toFixed(2)}
           </p>

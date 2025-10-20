@@ -59,15 +59,15 @@ const CheckoutPage = () => {
   if (!isHydrated || !hydrated || !clientSecret) {
     return (
       <>
-        <header className="h-[5rem] bg-primary w-full flex">
+        <header className="h-[5rem]  bg-primary w-full flex">
           <div className="max-w-6xl w-full mx-auto">
-            <h1 className="text-5xl font-times mt-4 font-semibold text-gray-100">
+            <h1 className="text-4xl px-4 lg:px-2 sm:text-5xl font-times mt-4 font-semibold text-gray-100">
               Checkout
             </h1>
           </div>
         </header>
-        <section className="flex gap-8 mx-auto max-w-7xl">
-          <div className="w-[70%] h-auto px-4 py-4 mt-2">
+        <section className="flex flex-col lg:flex-row gap-8 mx-auto max-w-7xl">
+          <div className="lg:w-[70%] h-auto px-4 py-4 mt-2">
             <BackToCartButton />
             <PaymentListSkeleton />
           </div>
@@ -115,13 +115,13 @@ const CheckoutPage = () => {
     <Elements key={elementsKey} stripe={stripePromise} options={options}>
       <header className="h-[5rem] bg-primary w-full flex">
         <div className="max-w-6xl w-full mx-auto">
-          <h1 className="text-5xl font-times mt-4 font-semibold text-gray-100">
+          <h1 className="text-4xl px-4 lg:px-2 sm:text-5xl font-times mt-4 font-semibold text-gray-100">
             Checkout
           </h1>
         </div>
       </header>
-      <section className="flex gap-8 mx-auto max-w-7xl">
-        <div className="w-[70%] h-auto px-4 py-4 mt-2">
+      <section className="flex flex-col lg:flex-row gap-8 mx-auto max-w-7xl">
+        <div className="lg:w-[70%] h-auto px-4 py-4 mt-2">
           <BackToCartButton />
           <PaymentList />
         </div>

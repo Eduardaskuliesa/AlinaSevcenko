@@ -137,15 +137,6 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
               title="Language"
               onClick={onClose}
             />
-
-            <div className="h-px bg-gray-200 my-4 mx-4" />
-
-            <MobileMenuItem
-              href="/profile"
-              icon={<User className="w-5 h-5" />}
-              title="My account"
-              onClick={onClose}
-            />
           </nav>
 
           {/* Footer */}

@@ -3,7 +3,7 @@ import { Loader } from "lucide-react";
 
 export function CartSummarySkeleton() {
   return (
-    <div className="w-[30%] h-[200px] mt-6 sticky top-[2rem] bg-white border-primary-light/60 border-2 rounded-lg p-4">
+    <div className="lg:w-[30%] h-[200px] mt-6 sticky top-[2rem] bg-white border-primary-light/60 border-2 rounded-lg p-4 mx-4">
       <div className="flex items-center gap-2 mb-4">
         <Loader className="animate-spin h-4 w-4 text-primary" />
         <h3 className="font-semibold text-lg text-gray-800">

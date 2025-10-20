@@ -44,29 +44,6 @@ const CartSummary = () => {
       setRedirecting(false);
     }
   };
-  // const handleCheckout = async () => {
-  //   setRedirecting(true);
-  //   try {
-  //     const response = await fetch("/api/stripe", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({
-  //         items: cartItems,
-  //         locale: locale,
-  //         userId: userId,
-  //         cancelUrl: `${locale}/cart`,
-  //       }),
-  //     });
-
-  //     const { url } = await response.json();
-  //     if (url) {
-  //       window.location.href = url;
-  //     }
-  //   } catch (error) {
-  //     console.error("Checkout error:", error);
-  //     setRedirecting(false);
-  //   }
-  // };
 
   const formatDuration = (days: number) => {
     if (days === 0) return "Lifetime";
@@ -76,7 +53,7 @@ const CartSummary = () => {
   };
 
   return (
-    <div className="w-[30%] mt-6 sticky top-[2rem] h-fit bg-white border-primary-light/60 border-2 rounded-lg pt-4 px-4 pb-6">
+    <div className="lg:w-[30%] mb-6 lg:mb-0 lg:mt-6 sticky top-[2rem] h-fit bg-white border-primary-light/60 border-2 rounded-lg pt-4 px-4 pb-6">
       <h3 className="font-semibold text-lg text-gray-800">Cart Summary</h3>
       <p className="text-gray-600">
         {totalItems} {totalItems === 1 ? "item" : "items"}
