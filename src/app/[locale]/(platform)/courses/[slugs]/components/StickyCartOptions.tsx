@@ -202,46 +202,41 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
 
   if (!isHydrated || !selectedPlan) {
     return (
-      <div
-        style={{ maxHeight: `${getDynamicHeight(activeAccessPlans.length)}px` }}
-        className="hidden lg:block w-[30%] mt-6 sticky top-[2rem] bg-white border-gray-200 border-2 rounded-lg"
-      >
-        <div className="p-4 h-full">
-          <div className="space-y-3">
-            <div className="h-6 bg-gray-200 rounded animate-pulse w-3/4"></div>
+      <div className="p-3 h-full">
+        <div className="space-y-2">
+          <div className="h-5 bg-gray-200 rounded animate-pulse w-3/4"></div>
 
-            <div className="space-y-2">
-              {Array.from({ length: activeAccessPlans.length || 2 }).map(
-                (_, i) => (
-                  <div key={i} className="border border-gray-200 rounded-md">
-                    <div className="p-4">
-                      <div className="flex justify-between items-center">
-                        <div className="space-y-2">
-                          <div className="h-4 bg-gray-200 rounded animate-pulse w-20"></div>
-                          <div className="h-3 bg-gray-200 rounded animate-pulse w-16"></div>
-                        </div>
-                        <div className="h-5 bg-gray-200 rounded animate-pulse w-12"></div>
+          <div className="space-y-1.5">
+            {Array.from({ length: activeAccessPlans.length || 2 }).map(
+              (_, i) => (
+                <div key={i} className="border border-gray-200 rounded-md">
+                  <div className="p-2.5">
+                    <div className="flex justify-between items-center">
+                      <div className="space-y-1.5">
+                        <div className="h-3.5 bg-gray-200 rounded animate-pulse w-20"></div>
+                        <div className="h-3 bg-gray-200 rounded animate-pulse w-16"></div>
                       </div>
+                      <div className="h-4 bg-gray-200 rounded animate-pulse w-12"></div>
                     </div>
                   </div>
-                )
-              )}
-            </div>
+                </div>
+              )
+            )}
           </div>
+        </div>
 
-          <div className="text-center py-4">
-            <div className="h-8 bg-gray-200 rounded animate-pulse w-16 mx-auto mb-1"></div>
-            <div className="h-4 bg-gray-200 rounded animate-pulse w-20 mx-auto"></div>
-          </div>
+        <div className="text-center py-3">
+          <div className="h-7 bg-gray-200 rounded animate-pulse w-16 mx-auto mb-1"></div>
+          <div className="h-3 bg-gray-200 rounded animate-pulse w-20 mx-auto"></div>
+        </div>
 
-          <div className="space-y-3">
-            <div className="flex gap-2">
-              <div className="flex-1 h-9 bg-gray-200 rounded-md animate-pulse"></div>
-              <div className="w-9 h-9 bg-gray-200 rounded-md animate-pulse"></div>
-            </div>
-            <div className="w-full h-9 bg-gray-200 rounded-md animate-pulse"></div>
-            <div className="h-4 bg-gray-200 rounded animate-pulse w-32 mx-auto"></div>
+        <div className="space-y-2">
+          <div className="flex gap-2">
+            <div className="flex-1 h-8 bg-gray-200 rounded-md animate-pulse"></div>
+            <div className="w-8 h-8 bg-gray-200 rounded-md animate-pulse"></div>
           </div>
+          <div className="w-full h-8 bg-gray-200 rounded-md animate-pulse"></div>
+          <div className="h-3 bg-gray-200 rounded animate-pulse w-32 mx-auto"></div>
         </div>
       </div>
     );
@@ -262,12 +257,12 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
       style={{ maxHeight: `${getDynamicHeight(activeAccessPlans.length)}px` }}
       className="hidden lg:block w-[30%] mt-6 sticky top-[2rem] bg-white border-primary-light/60 border-2 rounded-lg"
     >
-      <div className="p-4 h-full overflow-y-auto overflow-hidden">
-        <div className="space-y-3">
-          <h3 className="font-semibold text-lg text-gray-800">
+      <div className="p-3 h-full overflow-y-auto overflow-hidden">
+        <div className="space-y-2">
+          <h3 className="font-semibold text-base text-gray-800">
             Choose Your Access Plan
           </h3>
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             {activeAccessPlans.map((plan) => (
               <div
                 key={plan.id}
@@ -281,11 +276,11 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
                   handlePlanChange(plan);
                 }}
               >
-                <CardContent className="p-3">
+                <CardContent className="p-2.5">
                   <div className="flex justify-between items-center">
                     <div>
                       <div className="flex items-center gap-2">
-                        <h4 className="font-medium text-gray-800">
+                        <h4 className="font-medium text-sm text-gray-800">
                           {plan.name}
                         </h4>
                         {plan.duration === 0 && (
@@ -294,12 +289,12 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
                           </Badge>
                         )}
                       </div>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-xs text-gray-600">
                         {formatDuration(plan.duration)}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-lg text-gray-800">
+                      <p className="font-bold text-base text-gray-800">
                         €{plan.price}
                       </p>
                     </div>
@@ -311,22 +306,22 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
         </div>
 
         {selectedPlan && (
-          <div className="text-center py-4">
-            <div className="text-3xl font-bold text-gray-800">
+          <div className="text-center py-3">
+            <div className="text-2xl font-bold text-gray-800">
               €{selectedPlan.price}
             </div>
-            <p className="text-sm text-gray-600 mt-1">
+            <p className="text-xs text-gray-600 mt-0.5">
               {formatDuration(selectedPlan.duration)}
             </p>
           </div>
         )}
 
-        <div className="space-y-3">
+        <div className="space-y-2">
           <div className="flex gap-2">
             <motion.button
               whileTap={{ scale: 0.98, translateY: 2 }}
               onClick={handleCartClick}
-              className="flex-1 font-medium rounded-md text-sm py-2 px-4 transition-colors bg-primary-light hover:bg-primary-light/80 text-gray-800"
+              className="flex-1 font-medium rounded-md text-sm py-1.5 px-3 transition-colors bg-primary-light hover:bg-primary-light/80 text-gray-800"
             >
               {isInCart ? "Remove from cart" : "Add to cart"}
             </motion.button>
@@ -334,7 +329,7 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={handleHeartClick}
-              className="p-2 text-primary bg-white hover:bg-slate-50 border-primary-light border rounded-md relative"
+              className="p-1.5 text-primary bg-white hover:bg-slate-50 border-primary-light border rounded-md relative"
             >
               <Heart
                 className="w-5 h-5"
@@ -372,17 +367,17 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
           <Link href={"/cart"} onClick={handleProcceedWithPurchase}>
             <motion.button
               whileTap={{ scale: 0.98, translateY: 2 }}
-              className="w-full bg-primary hover:bg-primary/80 mt-3 text-gray-100 font-medium rounded-md text-sm py-2 px-4"
+              className="w-full bg-primary hover:bg-primary/80 text-gray-100 font-medium rounded-md text-sm py-1.5 px-3"
             >
               Proceed with Purchase
             </motion.button>
           </Link>
 
-          <div className="text-center pt-2">
+          <div className="text-center pt-1">
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => console.log("Opening support chat")}
-              className="text-sm text-gray-500 hover:text-gray-700 transition-colors underline"
+              className="text-xs text-gray-500 hover:text-gray-700 transition-colors underline"
             >
               Have questions? Message us
             </motion.button>

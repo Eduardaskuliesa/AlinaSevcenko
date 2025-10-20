@@ -2,7 +2,11 @@ import React from "react";
 import PageWrapper from "../../components/PageWrapper";
 
 const page = () => {
-  return <PageWrapper>page</PageWrapper>;
+  return (
+    <PageWrapper>
+      <div>Profile Page</div>
+    </PageWrapper>
+  );
 };
 
 export default page;

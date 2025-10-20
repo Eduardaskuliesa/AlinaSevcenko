@@ -92,46 +92,45 @@ const CourseCard = ({ course }: CourseCardProps) => {
           ease: "easeInOut",
         }}
         viewport={{ once: true }}
-        className={`flex flex-row border shadow-sm border-primary-light/60 group/card hover:bg-gray-50 rounded-md bg-white p-4 mb-4 cursor-pointer pb-4 ${
+        className={`flex flex-col md:flex-row border shadow-sm border-primary-light/60 group/card hover:bg-gray-50 rounded-md bg-white p-3 md:p-4 mb-4 cursor-pointer ${
           expiration.isExpired ? "opacity-60" : ""
         }`}
       >
-        <div className="relative min-w-[300px] min-h-[150px] max-h-[200px] overflow-hidden rounded-md">
+        <div className="relative w-full md:min-w-[280px] md:max-w-[280px] h-[250px] sm:h-[300px] md:h-[190px] overflow-hidden rounded-md">
           <Image
             quality={100}
-            height={240}
-            width={240}
+            fill
             alt="Course Thumbnail"
             src={
               course?.thumbnailImage || "/placeholder.svg?height=180&width=300"
             }
-            className="object-cover w-full h-full group-hover/card:scale-[1.02] transition-transform duration-300 ease-out transform-gpu"
+            className="object-cover group-hover/card:scale-[1.02] transition-transform duration-300 ease-out transform-gpu"
           />
         </div>
 
-        <div className="flex flex-col flex-1 justify-between ml-6">
-          <div className="flex flex-row justify-between w-full mb-auto">
+        <div className="flex flex-col flex-1 justify-between md:ml-4 mt-3 md:mt-0">
+          <div className="flex flex-col md:flex-row justify-between w-full mb-auto">
             <div className="flex-1">
-              <h3 className="text-lg font-bold text-gray-800 mb-1 line-clamp-2">
+              <h3 className=" text-lg font-bold text-gray-800 mb-1 line-clamp-2">
                 {course?.title}
               </h3>
-              <p className="text-sm text-gray-600 line-clamp-2 mb-3">
+              <p className="text-sm text-gray-600 line-clamp-2 mb-2 md:mb-3">
                 {course?.shortDescription}
               </p>
 
-              <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
+              <div className="flex items-center gap-3 md:gap-4 text-sm text-gray-500 mb-2 md:mb-3">
                 <div className="flex items-center gap-1">
-                  <BookOpen className="h-4 w-4 text-primary" />
+                  <BookOpen className="h-3.5 w-3.5 md:h-4 md:w-4 text-primary" />
                   <span>{totalLessons} lessons</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Clock className="h-4 w-4 text-primary" />
+                  <Clock className="h-3.5 w-3.5 md:h-4 md:w-4 text-primary" />
                   <span>{convertTime(course?.duration)}</span>
                 </div>
               </div>
 
               <div className="space-y-1">
-                <div className="flex justify-between text-xs text-gray-500">
+                <div className="flex justify-between text-sm text-gray-500">
                   <span>
                     {completedLessons}/{totalLessons} lessons completed
                   </span>
@@ -141,18 +140,18 @@ const CourseCard = ({ course }: CourseCardProps) => {
               </div>
             </div>
 
-            <div className="ml-4 min-w-[120px] flex justify-end">
+            <div className="md:ml-4 md:min-w-[100px] flex justify-start md:justify-end mt-2 md:mt-0">
               <Badge
                 variant="secondary"
-                className={`px-3 py-1 rounded-full font-semibold text-sm h-fit ${expiration.color}`}
+                className={`px-2.5 py-1 rounded-full font-semibold  text-sm h-fit ${expiration.color}`}
               >
                 {expiration.text}
               </Badge>
             </div>
           </div>
 
-          <div className="flex justify-between items-center w-full mt-4">
-            <div className="flex items-center gap-2 text-xs text-gray-500">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full mt-3 md:mt-4 gap-2 sm:gap-0">
+            <div className="flex items-center gap-2 text-sm text-gray-500">
               <span>
                 Last accessed:{" "}
                 {format(
@@ -164,7 +163,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
             {expiration.isExpired ? (
               <Button
                 size="sm"
-                className="bg-primary hover:bg-primary/90 text-white px-4 py-2 text-sm font-medium pointer-events-auto group/button"
+                className="bg-primary hover:bg-primary/90 text-white px-3 md:px-4 py-1.5 md:py-2  font-medium pointer-events-auto group/button w-full sm:w-auto"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -172,18 +171,18 @@ const CourseCard = ({ course }: CourseCardProps) => {
                 }}
               >
                 Renew Access
-                <RefreshCw className="w-4 h-4 ml-2 group-hover/button:rotate-180 transition-transform duration-300" />
+                <RefreshCw className="w-3.5 h-3.5 md:w-4 md:h-4 ml-1.5 md:ml-2 group-hover/button:rotate-180 transition-transform duration-300" />
               </Button>
             ) : (
               <Button
                 size="sm"
-                className="bg-primary group/button hover:bg-primary/90 text-white px-4 py-2 text-sm font-medium"
+                className="bg-primary group/button hover:bg-primary/90 text-white px-3 md:px-4 py-1.5 md:py-2  font-medium w-full sm:w-auto"
                 onClick={(e) => {
                   e.preventDefault();
                 }}
               >
                 {overallProgress > 0 ? "Continue" : "Start"}
-                <Play className="w-4 h-4 ml-1 group-hover/button:translate-x-1 transition-transform" />
+                <Play className="w-3.5 h-3.5 md:w-4 md:h-4 ml-1 group-hover/button:translate-x-1 transition-transform" />
               </Button>
             )}
           </div>

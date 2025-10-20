@@ -118,7 +118,7 @@ const LearningPlayer = ({
   };
 
   return (
-    <div className="h-[calc(100vh-73px)] w-full">
+    <div className="h-[80vh] xl:h-[calc(100vh-73px)] w-full">
       {isLessonChanging || !tokens || !currentLesson?.playbackId ? (
         <div className="bg-black w-full h-[90%] flex flex-col items-center justify-center">
           <div className="w-12 h-12 border-4 border-gray-600 border-t-white rounded-full animate-spin mb-4" />
@@ -127,7 +127,7 @@ const LearningPlayer = ({
         <div
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
-          className="relative h-[90%] w-full"
+          className="relative h-full xl:h-[90%] w-full"
         >
           <CustomControls
             courseId={courseId}

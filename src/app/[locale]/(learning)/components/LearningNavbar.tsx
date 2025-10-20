@@ -20,16 +20,18 @@ const LearningNavbar = ({
   });
 
   return (
-    <div className="bg-primary py-4 px-10 text-xl font-medium text-gray-50 border-b-gray-50 border-b">
+    <div className="bg-primary py-3 md:py-4 px-4 md:px-10 text-xl font-medium text-gray-50 border-b-gray-50 border-b">
       {courseLoading ? (
         <div className="h-10" />
       ) : (
-        <div className="flex items-center gap-6">
-          <BackButton />
-          <div className="flex items-center gap-4">
-            <h3 className="pr-4 border-r-2 border-gray-50">Alina Savcenko</h3>
-            <h3>{learningData?.course?.title}</h3>
+        <div className="flex flex-col gap-3 md:flex-row-reverse md:items-center md:gap-6">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 min-w-0 flex-1">
+            <h3 className="pr-0 sm:pr-4 sm:border-r-2 border-gray-50 truncate">
+              Alina Savcenko
+            </h3>
+            <h3 className="truncate">{learningData?.course?.title}</h3>
           </div>
+          <BackButton />
         </div>
       )}
     </div>

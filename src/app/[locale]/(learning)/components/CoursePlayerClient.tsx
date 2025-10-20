@@ -42,6 +42,8 @@ const CoursePlayerPageClient = ({
       ),
   });
 
+  console.log("lessonProgress", learningData?.course);
+
   useEffect(() => {
     if (lessonProgress) {
       Object.entries(lessonProgress).forEach(([lessonId, progress]) => {
@@ -118,7 +120,7 @@ const CoursePlayerPageClient = ({
 
   return (
     <div className="text-gray-50 bg-gray-50 ">
-      <div className="flex flex-row h-[calc(100vh-73px)]">
+      <div className="flex flex-col xl:flex-row xl:h-[calc(100vh-73px)]">
         <div className="flex-1">
           {learningDataLoading ? (
             <div className="bg-black w-full h-[calc(100vh-73px)] flex flex-col items-center justify-center">

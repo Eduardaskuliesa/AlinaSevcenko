@@ -7,8 +7,8 @@ export default function MyCoursersLayout({
 }) {
   return (
     <>
-      <header className="h-[9rem] bg-primary w-full flex ">
-        <div className="max-w-4xl w-full mx-auto">
+      <header className="h-auto bg-primary w-full flex">
+        <div className="max-w-4xl px-4 md:px-0 w-full mx-auto">
           <h1 className="text-5xl font-times mt-8 mb-[1.92rem] font-semibold text-gray-100">
             My profile
           </h1>

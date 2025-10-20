@@ -8,9 +8,8 @@ type NavItem = {
 };
 
 const navItems: NavItem[] = [
+  { label: "Courses", href: "/my-courses/courses" },
   { label: "Profile", href: "/user/profile" },
-  { label: "Wishlist", href: "/my-courses/wishlist" },
-  { label: "Certificates", href: "/my-courses/certificates" },
 ];
 
 const Navigation = () => {
