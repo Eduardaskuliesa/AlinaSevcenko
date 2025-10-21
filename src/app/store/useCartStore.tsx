@@ -74,9 +74,6 @@ export const useCartStore = create<CartState>()(
             wishlistResponse.json(),
           ]);
 
-          console.log("Wishlist items after fetch:", wishlistData.whishlist);
-          console.log("Cart items after fetch:", cartData.cart);
-
           set((state) => {
             if (cartData.success) {
               state.cartItems = cartData.cart || [];
@@ -90,8 +87,6 @@ export const useCartStore = create<CartState>()(
             if (wishlistData.success) {
               state.wishlistItems = wishlistData.whishlist || [];
             }
-
-            console.log("Wishlist items after sync:", state.wishlistItems);
 
             state.loading = false;
           });
