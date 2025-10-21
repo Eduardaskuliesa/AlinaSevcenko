@@ -1,8 +1,9 @@
 "use server";
 import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
-import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
-import { revalidateTag } from "next/cache";
+import { Course } from "@/app/types/course";
+import { GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function updateSlug(
   slugId: string,
@@ -11,6 +12,16 @@ export async function updateSlug(
 ) {
   try {
     await verifyAdminAccess();
+
+    const getCourseCommand = new GetCommand({
+      TableName: dynamoTableName,
+      Key: {
+        PK: "COURSE",
+        SK: `COURSE#${courseId}`,
+      },
+    });
+
+    const courseData = (await dynamoDb.send(getCourseCommand)).Item as Course;
 
     const updateSlugCommand = new UpdateCommand({
       TableName: dynamoTableName,
@@ -43,6 +54,8 @@ export async function updateSlug(
     revalidateTag(`course-client-${courseId}`);
     revalidateTag(`course-${courseId}`);
     revalidateTag("slugs");
+    revalidatePath(`/lt/courses/${courseData.slug}`);
+    revalidatePath(`/ru/courses/${courseData.slug}`);
     return {
       success: true,
       message: "Slug updated successfully",

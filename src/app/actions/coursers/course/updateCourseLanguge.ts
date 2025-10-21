@@ -3,8 +3,8 @@ import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { Course } from "@/app/types/course";
 import { logger } from "@/app/utils/logger";
-import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
-import { revalidateTag } from "next/cache";
+import { GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function updateCourseSettings(
   courseId: Course["courseId"],
@@ -14,6 +14,17 @@ export async function updateCourseSettings(
   try {
     await verifyAdminAccess();
     const timestamp = new Date().toISOString();
+
+    const getCommand = new GetCommand({
+      TableName: dynamoTableName,
+      Key: {
+        PK: "COURSE",
+        SK: `COURSE#${courseId}`,
+      },
+    });
+
+    const courseData = (await dynamoDb.send(getCommand)).Item as Course;
+
     const updateCommand = new UpdateCommand({
       TableName: dynamoTableName,
       Key: {
@@ -41,6 +52,8 @@ export async function updateCourseSettings(
     revalidateTag(`course-client-${courseId}`);
     revalidateTag(`courses`);
     revalidateTag(`client-courses`);
+    revalidatePath(`/lt/courses/${courseData.slug}`);
+    revalidatePath(`/ru/courses/${courseData.slug}`);
   } catch (error) {
     logger.error(`Error updating course language for ${courseId}`, error);
     return {

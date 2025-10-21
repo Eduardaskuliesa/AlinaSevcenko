@@ -4,7 +4,7 @@ import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { AccessPlan, Course } from "@/app/types/course";
 import { logger } from "@/app/utils/logger";
 import { GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function deleteAccessPlan(
   courseId: Course["courseId"],
@@ -101,6 +101,9 @@ export async function deleteAccessPlan(
     revalidateTag(`courses`);
     revalidateTag(`course-client-${courseId}`);
     revalidateTag("client-courses");
+    revalidatePath(`/lt/courses/${courseData.Item.slug}`);
+    revalidatePath(`/ru/courses/${courseData.Item.slugg}`);
+
     return {
       success: true,
       result,

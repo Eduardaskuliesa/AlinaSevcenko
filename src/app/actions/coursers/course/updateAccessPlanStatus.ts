@@ -4,7 +4,7 @@ import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { AccessPlan, Course } from "@/app/types/course";
 import { logger } from "@/app/utils/logger";
 import { GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function toggleAccessPlanStatus(
   courseId: Course["courseId"],
@@ -107,6 +107,8 @@ export async function toggleAccessPlanStatus(
     revalidateTag(`course-${courseId}`);
     revalidateTag(`courses`);
     revalidateTag(`course-client-${courseId}`);
+    revalidatePath(`/lt/courses/${course.slug}`);
+    revalidatePath(`/ru/courses/${course.slug}`);
 
     return {
       success: true,

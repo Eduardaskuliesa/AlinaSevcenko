@@ -179,6 +179,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
                 className="bg-primary group/button hover:bg-primary/90 text-white px-3 md:px-4 py-1.5 md:py-2  font-medium w-full sm:w-auto"
                 onClick={(e) => {
                   e.preventDefault();
+                  router.push(`/learn/${course.courseId}`);
                 }}
               >
                 {overallProgress > 0 ? "Continue" : "Start"}

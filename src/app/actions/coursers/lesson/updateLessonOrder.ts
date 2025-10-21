@@ -55,6 +55,8 @@ export async function updateLessonOrder(
     revalidateTag(`courses`);
     revalidateTag("client-courses");
     revalidateTag(`user-lesson-${courseId}`);
+    revalidatePath(`/lt/courses/${course.slug}`);
+    revalidatePath(`/ru/courses/${course.slug}`);
 
     return {
       success: true,

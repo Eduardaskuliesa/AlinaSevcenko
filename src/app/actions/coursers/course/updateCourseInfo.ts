@@ -2,7 +2,7 @@
 import { Course, CourseUpdateInfoData } from "@/app/types/course";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import DOMPurify from "isomorphic-dompurify";
 import { logger } from "@/app/utils/logger";
 import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
@@ -60,7 +60,14 @@ export async function updateCourseInfo(
           "mark",
           "blockquote",
         ],
-        ALLOWED_ATTR: ["href", "class", "style", "target", "data-color", "data-highlight"],
+        ALLOWED_ATTR: [
+          "href",
+          "class",
+          "style",
+          "target",
+          "data-color",
+          "data-highlight",
+        ],
         FORBID_TAGS: ["script", "iframe", "object", "embed"],
       }
     );
@@ -155,6 +162,8 @@ export async function updateCourseInfo(
     revalidateTag(`course-client-${courseId}`);
     revalidateTag(`courses`);
     revalidateTag("client-courses");
+    revalidatePath(`/lt/courses/${course.slug}`);
+    revalidatePath(`/ru/courses/${course.slug}`);
 
     return {
       fieldsUpdate: fieldsResult,

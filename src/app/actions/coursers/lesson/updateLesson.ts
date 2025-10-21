@@ -7,7 +7,7 @@ import {
   TransactWriteCommand,
   UpdateCommand,
 } from "@aws-sdk/lib-dynamodb";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export interface LessonUpdateData {
   lessonId: string;
@@ -140,6 +140,8 @@ export async function updateLessons(
     revalidateTag(`lessons-${courseId}`);
     revalidateTag(`user-lesson-${courseId}`);
     revalidateTag(`client-lessons-${courseId}`);
+    revalidatePath(`/lt/courses/${course.slug}`);
+    revalidatePath(`/ru/courses/${course.slug}`);
 
     logger.success(`Successfully updated lessons for course ${courseId}`);
 

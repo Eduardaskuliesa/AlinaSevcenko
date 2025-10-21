@@ -9,7 +9,7 @@ import {
   GetCommand,
 } from "@aws-sdk/lib-dynamodb";
 
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function deleteLesson(
   courseId: Course["courseId"],
@@ -108,6 +108,8 @@ export async function deleteLesson(
     revalidateTag(`user-lesson-${courseId}`);
     revalidateTag(`client-lessons-${courseId}`);
     revalidateTag(`courses`);
+    revalidatePath(`/lt/courses/${course.slug}`);
+    revalidatePath(`/ru/courses/${course.slug}`);
     return {
       success: true,
       message: "Lesson deleted successfully",

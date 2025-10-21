@@ -3,7 +3,7 @@ import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { Course } from "@/app/types/course";
 import { GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function publishCourse(courseId: string, isPublished: boolean) {
   await verifyAdminAccess();
@@ -58,6 +58,8 @@ export async function publishCourse(courseId: string, isPublished: boolean) {
     revalidateTag(`courses`);
     revalidateTag(`course-client-${courseId}`);
     revalidateTag("client-courses");
+    revalidatePath(`/lt/courses/${course.slug}`);
+    revalidatePath(`/ru/courses/${course.slug}`);
 
     return {
       success: true,

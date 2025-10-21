@@ -1,8 +1,8 @@
 "use server";
 import { AccessPlan, Course } from "@/app/types/course";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
-import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
-import { revalidateTag } from "next/cache";
+import { GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { logger } from "@/app/utils/logger";
 import { v4 as uuidv4 } from "uuid";
 import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
@@ -16,7 +16,16 @@ export async function createAccessPlan(
   accessPlansData: AccessPlansData
 ) {
   try {
-     await verifyAdminAccess();
+    await verifyAdminAccess();
+
+    const getCommand = new GetCommand({
+      TableName: dynamoTableName,
+      Key: {
+        PK: "COURSE",
+        SK: `COURSE#${courseId}`,
+      },
+    });
+    const courseData = (await dynamoDb.send(getCommand)).Item as Course;
     const timestamp = new Date().toISOString();
 
     const plansWithIds = accessPlansData.accessPlans.map((plan) => ({
@@ -60,6 +69,8 @@ export async function createAccessPlan(
     revalidateTag(`courses`);
     revalidateTag(`course-client-${courseId}`);
     revalidateTag("client-courses");
+    revalidatePath(`/lt/courses/${courseData.slug}`);
+    revalidatePath(`/ru/courses/${courseData.slug}`);
 
     return {
       success: true,

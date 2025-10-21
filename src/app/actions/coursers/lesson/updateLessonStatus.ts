@@ -38,6 +38,8 @@ export async function updateLessonStatus(data: UpdateLessonStatusData) {
     revalidateTag(`client-lessons-${data.courseId}`);
     revalidateTag(`lesson-${data.lessonId}`);
     revalidateTag(`courses`);
+    revalidatePath(`/lt/courses/${data.courseId}`);
+    revalidatePath(`/ru/courses/${data.courseId}`);
 
     const path = `admin/courses/${data.courseId}/lessons`;
     revalidatePath(path);

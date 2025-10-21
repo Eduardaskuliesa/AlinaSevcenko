@@ -4,7 +4,7 @@ import { dynamoDb } from "@/app/services/dynamoDB";
 import { dynamoTableName } from "@/app/services/dynamoDB";
 import { Course } from "@/app/types/course";
 import { PutCommand, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { v4 as uuidv4 } from "uuid";
 
 export async function createLesson(courseId: Course["courseId"]) {
@@ -97,6 +97,9 @@ export async function createLesson(courseId: Course["courseId"]) {
     revalidateTag(`user-lesson-${courseId}`);
     revalidateTag(`client-lessons-${courseId}`);
     revalidateTag(`courses`);
+    revalidatePath(`/lt/courses/${course.slug}`);
+    revalidatePath(`/ru/courses/${course.slug}`);
+
     return {
       success: true,
       lessonId,
