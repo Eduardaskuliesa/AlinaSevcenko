@@ -136,8 +136,6 @@ const ClientLessonPage: React.FC = () => {
           }),
         }));
 
-        console.log("Lessons to update:", lessonToUpdate);
-
         if (lessonToUpdate.length > 0) {
           const updateLessonsResult = await coursesAction.lessons.updateLessons(
             courseId,

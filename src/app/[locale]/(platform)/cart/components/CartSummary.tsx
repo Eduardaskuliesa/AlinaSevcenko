@@ -31,7 +31,6 @@ const CartSummary = () => {
       });
       const { clientSecret } = await response.json();
       if (clientSecret) {
-        console.log("Client Secret:", clientSecret);
         setCheckoutData({
           clientSecret: clientSecret,
           items: cartItems,

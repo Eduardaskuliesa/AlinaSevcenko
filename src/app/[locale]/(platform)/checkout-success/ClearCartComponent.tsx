@@ -8,7 +8,6 @@ export default function ClearCartComponent({
 }: {
   userId: string | undefined;
 }) {
-  console.log("ClearCartComponent rendered with userId:", userId);
   const { clearCart } = useCartStore();
   const { clearCheckoutData } = useCheckoutStore();
 

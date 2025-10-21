@@ -172,7 +172,7 @@ const CartPage = () => {
 
             return result;
           } catch (error) {
-            console.log(error);
+            console.error("Error fetching course data:", error);
             removeFromCart(cartItem.courseId, userId || "");
             return null;
           }

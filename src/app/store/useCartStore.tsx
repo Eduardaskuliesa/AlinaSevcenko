@@ -31,7 +31,6 @@ interface CartState {
 
 const workerUrl = process.env.WORKER_URL;
 const workerKey = process.env.WORKER_API_KEY;
-
 export const useCartStore = create<CartState>()(
   persist(
     immer((set) => ({

@@ -197,7 +197,7 @@ const CourseSettingsPage: React.FC = () => {
         queryClient.invalidateQueries({ queryKey: ["course", courseId] });
       }
     } catch (error) {
-      console.log("Error updating plan status", error);
+      console.error("Error updating plan status:", error);
       toast.error("Error updating plan status");
     } finally {
       setLoadingPlanIds((prev) => ({ ...prev, toggle: null }));

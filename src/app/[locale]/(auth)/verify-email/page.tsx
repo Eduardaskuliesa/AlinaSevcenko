@@ -44,7 +44,6 @@ const VerifyEmailPage = () => {
       try {
         const result = await userActions.authentication.verifyToken(token);
 
-        console.log("Verification result:", result);
         if (result.success) {
           setStatus({ type: "success" });
           setTimeout(() => {

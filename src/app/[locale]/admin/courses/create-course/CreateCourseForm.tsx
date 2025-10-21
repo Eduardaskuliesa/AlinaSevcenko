@@ -42,8 +42,6 @@ const CreateCoursePage = () => {
         authorId: session?.user.id || "",
       };
 
-      console.log(session?.user.id);
-
       const result = await coursesAction.courses.createCourse(formData);
 
       if (result.success) {

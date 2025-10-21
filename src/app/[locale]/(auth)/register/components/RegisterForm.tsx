@@ -125,7 +125,6 @@ const RegisterForm = () => {
       );
       if (!emailCheckResult.success) {
         if (emailCheckResult.error === "EMAIL_ALREADY_EXISTS") {
-          console.log("Email already exists:", emailCheckResult.error);
           setEmailError(t("emailAlreadyExists"));
         }
         return;
@@ -134,7 +133,6 @@ const RegisterForm = () => {
       const result = await userActions.authentication.register(formData);
 
       if (result.success && result.userId) {
-        console.log("Registration successful:", result.message);
         const verifyToken =
           await userActions.authentication.generateVerificationToken(
             result.userId

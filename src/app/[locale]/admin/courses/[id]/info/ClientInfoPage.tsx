@@ -31,15 +31,12 @@ const ClientInfoPage: React.FC = () => {
     queryFn: () => coursesAction.courses.getCourse(courseId),
   });
 
-
   const { data: categoriesData, isLoading: isCategoriesLoading } = useQuery({
     queryKey: ["categories"],
     queryFn: () => categoryActions.getCategories(),
   });
 
   const course = courseData?.cousre;
-  
-  console.log("courseData", courseData?.cousre?.description);
 
   const allCategories = (categoriesData?.categories as Category[]) || [];
 

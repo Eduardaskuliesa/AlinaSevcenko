@@ -42,8 +42,6 @@ const CoursePlayerPageClient = ({
       ),
   });
 
-  console.log("lessonProgress", learningData?.course);
-
   useEffect(() => {
     if (lessonProgress) {
       Object.entries(lessonProgress).forEach(([lessonId, progress]) => {

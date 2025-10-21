@@ -12,8 +12,6 @@ const FullDescription: React.FC<FullDescriptionProps> = ({
   initialValue = "",
   onChange,
 }) => {
-
-  console.log("FullDescription initialValue:", initialValue);
   return (
     <div className="mb-4 lg:mb-8">
       <Label
@@ -26,10 +24,7 @@ const FullDescription: React.FC<FullDescriptionProps> = ({
         Full Description
       </Label>
       <div className="border-2 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-secondary focus-within:border-transparent transition-all">
-        <CourseEditor 
-          initialValue={initialValue} 
-          onChange={onChange} 
-        />
+        <CourseEditor initialValue={initialValue} onChange={onChange} />
       </div>
     </div>
   );

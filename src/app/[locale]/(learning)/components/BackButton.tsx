@@ -5,7 +5,6 @@ import Link from "next/link";
 import { memo } from "react";
 
 export const BackButton = memo(() => {
-  console.log("BackButton rendered");
   return (
     <Link href="/my-courses/courses">
       <motion.div

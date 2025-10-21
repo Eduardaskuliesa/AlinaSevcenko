@@ -121,7 +121,6 @@ const CourseCard = ({ course }: CourseCardProps) => {
       );
 
       if (deletedCourse.error) {
-        console.log(deletedCourse.error);
         toast.error(deletedCourse.message || "Failed to delete course");
       }
 
