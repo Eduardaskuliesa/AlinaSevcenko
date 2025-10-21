@@ -27,7 +27,7 @@ const LessonList = ({ lessons, courseId, userId }: LessonListProps) => {
   };
 
   return (
-    <div className="min-w-[450px] h-full">
+    <div className="xl:min-w-[450px] h-full">
       <div className="divide-y sticky top-[0rem] h-fit overflow-y-auto bg-white">
         <div className="p-4 border-b-2 border-primary-light/60">
           <h2 className="font-semibold text-gray-900">Course content</h2>

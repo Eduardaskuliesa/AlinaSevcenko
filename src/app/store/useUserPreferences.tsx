@@ -13,7 +13,10 @@ interface UserPreferencesState {
   //Actions
   setHydrated: (hydrated: boolean) => void;
   setPreferences: () => Promise<void>;
-  updatePreferences: (updates: Partial<UserPreferences>) => void;
+  updatePreferences: (
+    updates: Partial<UserPreferences>,
+    userId: string
+  ) => void;
 }
 
 export const useUserPreferencesStore = create<UserPreferencesState>()(
@@ -29,7 +32,10 @@ export const useUserPreferencesStore = create<UserPreferencesState>()(
         })),
 
       setPreferences: async () => {
-        set(() => ({ loading: true }));
+        set((state) => {
+          if (state.preferences || state.loading) return state;
+          return { loading: true };
+        });
 
         const preferencesResponse =
           await userActions.preferences.getPreferences();
@@ -41,15 +47,22 @@ export const useUserPreferencesStore = create<UserPreferencesState>()(
         }));
       },
 
-      updatePreferences(updates) {
-        set((state) => {
-          if (state.preferences) {
-            state.preferences = {
-              ...state.preferences,
-              ...updates,
-            };
-          }
-        });
+      updatePreferences: async (updates, userId) => {
+        const result = await userActions.preferences.updateLanguagePreferences(
+          updates.languge || "",
+          userId
+        );
+
+        if (result.success) {
+          set((state) => {
+            if (state.preferences) {
+              state.preferences = {
+                ...state.preferences,
+                ...updates,
+              };
+            }
+          });
+        }
       },
     })),
     {

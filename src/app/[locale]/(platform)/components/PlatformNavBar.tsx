@@ -188,7 +188,7 @@ const PlatformNavBar = () => {
               <div className="h-px bg-gray-200 my-2 mx-3"></div>
 
               <ProfileMenuItem
-                href="#"
+                href="/user/profile"
                 icon={<Globe className="w-4 h-4" />}
                 title="Language"
               />

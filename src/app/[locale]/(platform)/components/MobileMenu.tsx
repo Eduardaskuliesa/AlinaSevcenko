@@ -132,7 +132,7 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
             <div className="h-px bg-gray-200 my-4 mx-4" />
 
             <MobileMenuItem
-              href="#"
+              href="/user/profile"
               icon={<Globe className="w-5 h-5" />}
               title="Language"
               onClick={onClose}

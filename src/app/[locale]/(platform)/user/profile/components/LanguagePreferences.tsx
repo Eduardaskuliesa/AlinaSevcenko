@@ -2,18 +2,21 @@
 import { useUserPreferencesStore } from "@/app/store/useUserPreferences";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 
 const LanguagePreference = () => {
   const params = useParams();
+  const session = useSession();
+  const userId = session.data?.user.id;
   const router = useRouter();
   const currentLocale = params.locale as string;
   const { updatePreferences } = useUserPreferencesStore();
 
   const changeLanguage = (locale: string) => {
     if (locale === currentLocale) return;
-    updatePreferences({ languge: locale });
+    updatePreferences({ languge: locale }, userId || "");
     router.push(`/${locale}/user/profile`);
   };
 

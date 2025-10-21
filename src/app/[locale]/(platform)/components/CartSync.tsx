@@ -6,8 +6,10 @@ import { useEffect } from "react";
 
 export default function CartSync() {
   const { syncWithBackend } = useCartStore();
-  const { status } = useSession();
-  const userId = useSession().data?.user.id;
+  const session = useSession();
+  const userId = session.data?.user.id;
+  const status = session.status;
+
   const pathname = usePathname();
 
   const shouldSkipSync = pathname?.includes("/checkout-success");

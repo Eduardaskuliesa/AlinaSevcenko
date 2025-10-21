@@ -5,7 +5,7 @@ import LanguagePreference from "./LanguagePreferences";
 
 const AccountSettingsCard = () => {
   return (
-    <Card className="w-full gap-4 bg-white border-primary-light/60 border-2">
+    <Card className="w-full gap-4 bg-white border-primary-light/60 border-2 mb-6">
       <CardHeader className="px-4">
         <CardTitle className="text-xl">Account Settings</CardTitle>
       </CardHeader>
