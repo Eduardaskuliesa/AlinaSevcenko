@@ -6,6 +6,8 @@ import { motion } from "motion/react";
 import { Book } from "lucide-react";
 import { useEffect, useState } from "react";
 
+let hasShownInitialLoader = false;
+
 export default function PlatformLoader({
   children,
 }: {
@@ -14,20 +16,22 @@ export default function PlatformLoader({
   const { hydrated: preferencesHydrated } = useUserPreferencesStore();
   const { hydrated: cartHydrated } = useCartStore();
   const { status } = useSession();
-  const [minLoadingTime, setMinLoadingTime] = useState(true);
+  const [minLoadingTime, setMinLoadingTime] = useState(!hasShownInitialLoader);
 
   const isLoading =
     status === "loading" || !preferencesHydrated || !cartHydrated;
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setMinLoadingTime(false);
-    }, 1000);
+    if (!hasShownInitialLoader) {
+      const timer = setTimeout(() => {
+        setMinLoadingTime(false);
+        hasShownInitialLoader = true;
+      }, 500);
 
-    return () => clearTimeout(timer);
+      return () => clearTimeout(timer);
+    }
   }, []);
-
-  if (isLoading || minLoadingTime) {
+  if ((isLoading || minLoadingTime) && !hasShownInitialLoader) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-50">
         <div className="text-center">
