@@ -86,7 +86,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-secondary-light/60 mt-8 pt-6 text-sm lg:text-base text-center">
-          <p>&copy; {currentYear} YourBrand. All rights reserved.</p>
+          <p>&copy; {currentYear} Alina Savcenko. All rights reserved.</p>
         </div>
       </div>
     </footer>
