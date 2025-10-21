@@ -23,18 +23,16 @@ export default function CoursePageClient({
   const { data } = useQuery({
     queryKey: ["course", slugs],
     queryFn: () => getCourseWithPreviewLesson(slugs),
-    staleTime: 1000 * 60 * 60 * 2,
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
   });
 
   useEffect(() => {
-    console.log("COURSE DATA:", JSON.stringify(data, null, 2));
-    console.log("IS PUBLISHED:", data?.course?.isPublished);
-  }, [data]);
+    if (data && !data.course?.isPublished) {
+      router.push(`/${locale}/courses?error=course-not-available`);
+    }
+  }, [data, locale, router]);
 
   if (!data?.course?.isPublished) {
-    router.push(`/${locale}/courses?error=course-not-available`);
+    return null;
   }
 
   if (!data?.course) return <div>Course not found</div>;
