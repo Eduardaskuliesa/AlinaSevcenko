@@ -26,7 +26,7 @@ export default function PlatformLoader({
       const timer = setTimeout(() => {
         setMinLoadingTime(false);
         hasShownInitialLoader = true;
-      }, 500);
+      }, 1000);
 
       return () => clearTimeout(timer);
     }
