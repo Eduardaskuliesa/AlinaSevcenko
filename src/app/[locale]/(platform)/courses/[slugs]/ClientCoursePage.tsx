@@ -7,12 +7,18 @@ import { useQuery } from "@tanstack/react-query";
 import { getCourseWithPreviewLesson } from "@/app/actions/coursers/course/getCourseWithPrevie";
 import StickyCartOptions from "./components/StickyCartOptions";
 import MobileCartDrawer from "./components/MobileCartDrawer";
+import { useRouter } from "next/navigation";
 
 interface CoursePageClientProps {
   slugs: string;
+  locale: string;
 }
 
-export default function CoursePageClient({ slugs }: CoursePageClientProps) {
+export default function CoursePageClient({
+  slugs,
+  locale,
+}: CoursePageClientProps) {
+  const router = useRouter();
   const { data } = useQuery({
     queryKey: ["course", slugs],
     queryFn: () => getCourseWithPreviewLesson(slugs),
@@ -20,6 +26,10 @@ export default function CoursePageClient({ slugs }: CoursePageClientProps) {
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   });
+
+  if (!data?.course?.isPublished) {
+    router.push(`/${locale}/courses?error=course-not-available`);
+  }
 
   if (!data?.course) return <div>Course not found</div>;
 
