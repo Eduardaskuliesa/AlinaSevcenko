@@ -4,6 +4,7 @@ import { useCartStore } from "@/app/store/useCartStore";
 import { useSession } from "next-auth/react";
 import { motion } from "motion/react";
 import { Book } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function PlatformLoader({
   children,
@@ -13,11 +14,20 @@ export default function PlatformLoader({
   const { hydrated: preferencesHydrated } = useUserPreferencesStore();
   const { hydrated: cartHydrated } = useCartStore();
   const { status } = useSession();
+  const [minLoadingTime, setMinLoadingTime] = useState(true);
 
   const isLoading =
     status === "loading" || !preferencesHydrated || !cartHydrated;
 
-  if (isLoading) {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setMinLoadingTime(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading || minLoadingTime) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-50">
         <div className="text-center">
