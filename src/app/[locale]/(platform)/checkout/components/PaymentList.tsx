@@ -10,7 +10,7 @@ const PaymentList = () => {
   const showLoading = !elements || !isElementReady;
 
   return (
-    <div className="w-full bg-white p-6 rounded-lg border-2 border-primary-light/60 mt-2">
+    <div className="w-full bg-white p-3 lg:p-6 rounded-lg border-2 border-primary-light/60 mt-2">
       <h2 className="text-xl font-semibold mb-6 text-gray-800">
         Payment Details
       </h2>

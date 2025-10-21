@@ -25,8 +25,6 @@ const CheckoutPage = () => {
   const params = useParams();
   const locale = params.locale as string;
 
-  console.log(locale)
-
   useEffect(() => {
     if (clientSecret) {
       setElementsKey((prev) => prev + 1);
@@ -49,7 +47,7 @@ const CheckoutPage = () => {
         router.push("/courses");
         toast.error("Please add items to your cart before checkout.");
       }
-      if(!clientSecret && cartItems.length > 0) {
+      if (!clientSecret && cartItems.length > 0) {
         router.push("/cart");
         toast.error("Please proceed to checkout from the cart page.");
       }
@@ -77,7 +75,7 @@ const CheckoutPage = () => {
     );
   }
 
-  const options: StripeElementsOptions  = {
+  const options: StripeElementsOptions = {
     clientSecret,
     locale: locale as StripeElementsOptions["locale"],
     appearance: {
@@ -120,7 +118,7 @@ const CheckoutPage = () => {
           </h1>
         </div>
       </header>
-      <section className="flex flex-col lg:flex-row gap-8 mx-auto max-w-7xl">
+      <section className="flex flex-col lg:flex-row gap-2 lg:gap-8 mx-auto max-w-7xl">
         <div className="lg:w-[70%] h-auto px-4 py-4 mt-2">
           <BackToCartButton />
           <PaymentList />

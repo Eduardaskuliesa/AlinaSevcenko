@@ -237,7 +237,7 @@ const CartPage = () => {
           </h1>
         </div>
       </header>
-      <section className="flex flex-col lg:flex-row gap-4 lg:gap-8 mx-auto max-w-7xl px-4 lg:px-0">
+      <section className="flex flex-col lg:flex-row gap-2 lg:gap-8 mx-auto max-w-7xl px-4 lg:px-0">
         <div className="w-full lg:w-[70%] py-4">
           {cartItems.length === 0 ? (
             <div className="text-center text-gray-500 mt-10">
