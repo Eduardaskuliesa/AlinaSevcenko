@@ -67,7 +67,7 @@ const CheckoutSuccessPage = async ({
             </span>
           </div>
 
-          <div className="p-6">
+          <div className="p-3 lg:p-6">
             <h2 className="text-xl font-semibold mb-6 text-gray-900">
               Your Courses
             </h2>
@@ -75,7 +75,7 @@ const CheckoutSuccessPage = async ({
               {courses.map((course) => (
                 <div
                   key={course.courseId}
-                  className="flex items-center p-4 border border-primary-light rounded-lg"
+                  className="flex items-center p-2 lg:p-4 border border-primary-light rounded-lg"
                 >
                   <div className="w-20 h-14 bg-gray-100 rounded-md overflow-hidden mr-4">
                     <Image
@@ -90,7 +90,7 @@ const CheckoutSuccessPage = async ({
                     <h3 className="font-semibold text-gray-900 mb-1">
                       {course.title}
                     </h3>
-                    <div className="flex items-center gap-4 text-sm text-gray-500">
+                    <div className="hidden sm:flex items-center gap-4 text-sm text-gray-500">
                       <span className="flex items-center gap-1">
                         <BookOpen className="w-3 h-3" />
                         {course.lessonCount} lessons
