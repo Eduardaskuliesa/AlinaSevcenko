@@ -10,10 +10,10 @@ export default function Footer() {
           {/* Brand */}
           <div className="col-span-1">
             <h3 className="text-white text-xl lg:text-2xl font-bold mb-3">
-              YourBrand
+              Alina Savcenko
             </h3>
             <p className="text-sm lg:text-base leading-relaxed">
-              Learn new skills and advance your career with our online courses.
+              Laern and grow with me - your journey to knowledge starts here.
             </p>
           </div>
 
@@ -54,14 +54,6 @@ export default function Footer() {
                   className="hover:text-white transition-colors"
                 >
                   Contact Us
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/faq"
-                  className="hover:text-white transition-colors"
-                >
-                  FAQ
                 </Link>
               </li>
             </ul>
