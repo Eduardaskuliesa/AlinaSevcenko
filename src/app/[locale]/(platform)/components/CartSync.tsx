@@ -15,7 +15,8 @@ export default function CartSync() {
   const shouldSkipSync = pathname?.includes("/checkout-success");
 
   useEffect(() => {
-    if (userId && !shouldSkipSync && status === "authenticated") {
+    if (userId && !shouldSkipSync) {
+      console.log("Syncing cart for user:", userId);
       syncWithBackend(userId);
     }
   }, [userId, syncWithBackend, shouldSkipSync, status]);

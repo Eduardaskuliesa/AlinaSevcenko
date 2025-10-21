@@ -8,6 +8,7 @@ import { getCourseWithPreviewLesson } from "@/app/actions/coursers/course/getCou
 import StickyCartOptions from "./components/StickyCartOptions";
 import MobileCartDrawer from "./components/MobileCartDrawer";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 interface CoursePageClientProps {
   slugs: string;
@@ -26,6 +27,11 @@ export default function CoursePageClient({
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   });
+
+  useEffect(() => {
+    console.log("COURSE DATA:", JSON.stringify(data, null, 2));
+    console.log("IS PUBLISHED:", data?.course?.isPublished);
+  }, [data]);
 
   if (!data?.course?.isPublished) {
     router.push(`/${locale}/courses?error=course-not-available`);
