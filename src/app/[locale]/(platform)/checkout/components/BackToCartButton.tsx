@@ -2,8 +2,11 @@
 import { motion } from "framer-motion";
 import { ArrowLeftCircleIcon } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export function BackToCartButton() {
+  const t = useTranslations("CheckoutPage");
+  
   return (
     <Link href="/cart">
       <motion.div
@@ -28,7 +31,7 @@ export function BackToCartButton() {
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.3, delay: 0.1 }}
           >
-            Back to Cart
+            {t("backToCart")}
           </motion.span>
         </motion.div>
       </motion.div>

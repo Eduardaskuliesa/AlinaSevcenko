@@ -9,6 +9,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 import SearchBar from "./components/SearchBar";
 import Filter from "./components/Filter";
+import { useTranslations } from "next-intl";
 
 export type FilterState = {
   durations: string[];
@@ -18,6 +19,7 @@ export type FilterState = {
 };
 
 const CoursePageContent = () => {
+  const t = useTranslations("CoursesPage");
   const [filters, setFilters] = useState<FilterState>({
     durations: [],
     languages: [],
@@ -128,10 +130,10 @@ const CoursePageContent = () => {
 
   useEffect(() => {
     if (searchParams.get("error") === "course-not-available") {
-      toast.error("This course is not currently available");
+      toast.error(t("courseNotAvailable"));
       router.replace("/lt/courses");
     }
-  }, [searchParams, router]);
+  }, [searchParams, router, t]);
 
   return (
     <>

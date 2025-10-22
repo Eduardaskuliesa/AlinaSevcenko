@@ -3,8 +3,11 @@ import { Play } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import { motion } from "motion/react";
+import { useTranslations } from "next-intl";
 
 const StartLearningButton = () => {
+  const t = useTranslations("CheckoutSuccessPage");
+  
   return (
     <Link href={"/my-courses/courses"} className="">
       <motion.button
@@ -12,7 +15,7 @@ const StartLearningButton = () => {
         whileTap={{ scale: 0.96 }}
       >
         <Play className="w-4 h-4" />
-        Start Learning
+        {t("startLearning")}
       </motion.button>
     </Link>
   );

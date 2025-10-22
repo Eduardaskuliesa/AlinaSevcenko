@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Loader, Search } from "lucide-react";
 import React from "react";
 import { FilterState } from "../CoursePage";
+import { useTranslations } from "next-intl";
 
 interface SearchBarProps {
   clearFitlers: () => void;
@@ -19,6 +20,8 @@ const SearchBar = ({
   filters,
   handleSearchChange,
 }: SearchBarProps) => {
+  const t = useTranslations("CoursesPage");
+
   return (
     <div className="flex flex-col-reverse lg:flex-row">
       <div className="w-[30%] hidden lg:block px-4">
@@ -27,7 +30,7 @@ const SearchBar = ({
           onClick={clearFitlers}
           variant={"outline"}
         >
-          Clear filters
+          {t("clearFilters")}
         </Button>
       </div>
       <div className="w-full lg:w-[70%] flex flex-col lg:flex-row lg:justify-between px-2">
@@ -35,7 +38,7 @@ const SearchBar = ({
           <Search className="absolute left-3 text-gray-400" />
           <Input
             className="border-2 h-10 border-primary-light/60 pl-10"
-            placeholder="Search courses by title or category..."
+            placeholder={t("searchPlaceholder")}
             value={filters.searchTerm}
             onChange={handleSearchChange}
           />
@@ -44,7 +47,7 @@ const SearchBar = ({
           {isCourseLoading ? (
             <Loader className="h-5 w-5 animate-spin"></Loader>
           ) : (
-            <span>{`Filtered Courses: ${filteredCourselength || 0}`}</span>
+            <span>{`${t("filteredCourses")}: ${filteredCourselength || 0}`}</span>
           )}
         </div>
       </div>

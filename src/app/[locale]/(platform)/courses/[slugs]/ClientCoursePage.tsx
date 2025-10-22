@@ -9,6 +9,7 @@ import StickyCartOptions from "./components/StickyCartOptions";
 import MobileCartDrawer from "./components/MobileCartDrawer";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useTranslations } from "next-intl";
 
 interface CoursePageClientProps {
   slugs: string;
@@ -19,6 +20,7 @@ export default function CoursePageClient({
   slugs,
   locale,
 }: CoursePageClientProps) {
+  const t = useTranslations("CourseDetailsPage");
   const router = useRouter();
   const { data } = useQuery({
     queryKey: ["course", slugs],
@@ -35,7 +37,7 @@ export default function CoursePageClient({
     return null;
   }
 
-  if (!data?.course) return <div>Course not found</div>;
+  if (!data?.course) return <div>{t("courseNotFound")}</div>;
 
   const { course, previewLesson, courseLessons } = data;
 

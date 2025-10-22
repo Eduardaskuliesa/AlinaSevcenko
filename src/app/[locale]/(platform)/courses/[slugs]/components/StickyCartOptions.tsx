@@ -9,6 +9,7 @@ import { useCartStore } from "@/app/store/useCartStore";
 import { motion, AnimatePresence } from "motion/react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 interface AccessPlan {
   name: string;
@@ -19,6 +20,7 @@ interface AccessPlan {
 }
 
 const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
+  const t = useTranslations("CourseDetailsPage");
   const [hearts, setHearts] = useState<{ id: number; x: number; y: number }[]>(
     []
   );
@@ -156,16 +158,16 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
   );
 
   const formatDuration = (days: number) => {
-    if (days === 0) return "Lifetime Access";
-    if (days >= 365)
-      return `${Math.floor(days / 365)} Year${
-        Math.floor(days / 365) > 1 ? "s" : ""
-      }`;
-    if (days >= 30)
-      return `${Math.floor(days / 30)} Month${
-        Math.floor(days / 30) > 1 ? "s" : ""
-      }`;
-    return `${days} Days`;
+    if (days === 0) return t("lifetimeAccess");
+    if (days >= 365) {
+      const years = Math.floor(days / 365);
+      return `${years} ${years > 1 ? t("years") : t("year")}`;
+    }
+    if (days >= 30) {
+      const months = Math.floor(days / 30);
+      return `${months} ${months > 1 ? t("months") : t("month")}`;
+    }
+    return `${days} ${t("days")}`;
   };
 
   const getDynamicHeight = (plansCount: number) => {
@@ -251,7 +253,7 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
     return (
       <div className="hidden lg:block w-[30%] bg-white max-h-[540px] p-4 rounded-lg">
         <div className="text-gray-800 text-center">
-          No access plans available
+          {t("noAccessPlansAvailable")}
         </div>
       </div>
     );
@@ -265,7 +267,7 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
       <div className="p-4 h-full overflow-y-auto overflow-hidden">
         <div className="space-y-3">
           <h3 className="font-semibold text-lg text-gray-800">
-            Choose Your Access Plan
+            {t("chooseAccessPlan")}
           </h3>
           <div className="space-y-2">
             {activeAccessPlans.map((plan) => (
@@ -290,7 +292,7 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
                         </h4>
                         {plan.duration === 0 && (
                           <Badge variant="secondary" className="text-xs">
-                            Best Value
+                            {t("bestValue")}
                           </Badge>
                         )}
                       </div>
@@ -328,7 +330,7 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
               onClick={handleCartClick}
               className="flex-1 font-medium rounded-md text-sm py-2 px-4 transition-colors bg-primary-light hover:bg-primary-light/80 text-gray-800"
             >
-              {isInCart ? "Remove from cart" : "Add to cart"}
+              {isInCart ? t("removeFromCart") : t("addToCart")}
             </motion.button>
 
             <motion.button
@@ -374,7 +376,7 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
               whileTap={{ scale: 0.98, translateY: 2 }}
               className="w-full bg-primary hover:bg-primary/80 mt-3 text-gray-100 font-medium rounded-md text-sm py-2 px-4"
             >
-              Proceed with Purchase
+              {t("proceedWithPurchase")}
             </motion.button>
           </Link>
 
@@ -384,7 +386,7 @@ const StickyCartOptions = ({ courseData }: { courseData: Course }) => {
               onClick={() => console.log("Opening support chat")}
               className="text-sm text-gray-500 hover:text-gray-700 transition-colors underline"
             >
-              Have questions? Message us
+              {t("haveQuestions")}
             </motion.button>
           </div>
         </div>

@@ -1,6 +1,8 @@
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export default function Footer() {
+  const t = useTranslations("Footer");
   const currentYear = new Date().getFullYear();
 
   return (
@@ -13,14 +15,14 @@ export default function Footer() {
               Alina Savcenko
             </h3>
             <p className="text-sm lg:text-base leading-relaxed">
-              Laern and grow with me - your journey to knowledge starts here.
+              {t("brandDescription")}
             </p>
           </div>
 
           {/* Courses */}
           <div>
             <h4 className="text-white font-semibold mb-3 text-base lg:text-lg">
-              Courses
+              {t("coursesTitle")}
             </h4>
             <ul className="space-y-1.5 text-sm lg:text-base">
               <li>
@@ -28,15 +30,15 @@ export default function Footer() {
                   href="/courses"
                   className="hover:text-white transition-colors"
                 >
-                  All Courses
+                  {t("allCourses")}
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/my-courses"
+                  href="/my-courses/courses"
                   className="hover:text-white transition-colors"
                 >
-                  My Learning
+                  {t("myLearning")}
                 </Link>
               </li>
             </ul>
@@ -45,7 +47,7 @@ export default function Footer() {
           {/* Support */}
           <div>
             <h4 className="text-white font-semibold mb-3 text-base lg:text-lg">
-              Support
+              {t("supportTitle")}
             </h4>
             <ul className="space-y-1.5 text-sm lg:text-base">
               <li>
@@ -53,7 +55,7 @@ export default function Footer() {
                   href="/contact"
                   className="hover:text-white transition-colors"
                 >
-                  Contact Us
+                  {t("contactUs")}
                 </Link>
               </li>
             </ul>
@@ -62,7 +64,7 @@ export default function Footer() {
           {/* Legal */}
           <div>
             <h4 className="text-white font-semibold mb-3 text-base lg:text-lg">
-              Legal
+              {t("legalTitle")}
             </h4>
             <ul className="space-y-1.5 text-sm lg:text-base">
               <li>
@@ -70,7 +72,7 @@ export default function Footer() {
                   href="/privacy"
                   className="hover:text-white transition-colors"
                 >
-                  Privacy Policy
+                  {t("privacyPolicy")}
                 </Link>
               </li>
               <li>
@@ -78,7 +80,7 @@ export default function Footer() {
                   href="/terms"
                   className="hover:text-white transition-colors"
                 >
-                  Terms of Service
+                  {t("termsOfService")}
                 </Link>
               </li>
             </ul>
@@ -86,7 +88,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-secondary-light/60 mt-8 pt-6 text-sm lg:text-base text-center">
-          <p>&copy; {currentYear} Alina Savcenko. All rights reserved.</p>
+          <p>{t("copyright", { year: currentYear })}</p>
         </div>
       </div>
     </footer>

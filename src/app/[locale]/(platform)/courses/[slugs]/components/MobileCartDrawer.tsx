@@ -15,6 +15,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { useTranslations } from "next-intl";
 
 interface AccessPlan {
   name: string;
@@ -29,6 +30,7 @@ interface MobileCartDrawerProps {
 }
 
 const MobileCartDrawer = ({ courseData }: MobileCartDrawerProps) => {
+  const t = useTranslations("CourseDetailsPage");
   const [isOpen, setIsOpen] = useState(false);
   const [hearts, setHearts] = useState<{ id: number; x: number; y: number }[]>([]);
   const [isHydrated, setIsHydrated] = useState(false);
@@ -199,16 +201,16 @@ const MobileCartDrawer = ({ courseData }: MobileCartDrawerProps) => {
   );
 
   const formatDuration = (days: number) => {
-    if (days === 0) return "Lifetime Access";
-    if (days >= 365)
-      return `${Math.floor(days / 365)} Year${
-        Math.floor(days / 365) > 1 ? "s" : ""
-      }`;
-    if (days >= 30)
-      return `${Math.floor(days / 30)} Month${
-        Math.floor(days / 30) > 1 ? "s" : ""
-      }`;
-    return `${days} Days`;
+    if (days === 0) return t("lifetimeAccess");
+    if (days >= 365) {
+      const years = Math.floor(days / 365);
+      return `${years} ${years > 1 ? t("years") : t("year")}`;
+    }
+    if (days >= 30) {
+      const months = Math.floor(days / 30);
+      return `${months} ${months > 1 ? t("months") : t("month")}`;
+    }
+    return `${days} ${t("days")}`;
   };
 
   if (!isHydrated || !selectedPlan || !activeAccessPlans.length) {
@@ -263,7 +265,7 @@ const MobileCartDrawer = ({ courseData }: MobileCartDrawerProps) => {
                 onClick={handleCartClick}
                 className="font-medium rounded-md text-base px-3 py-2.5 transition-colors bg-primary-light hover:bg-primary-light/80 text-gray-800 flex-shrink-0"
               >
-                {isInCart ? "Remove" : "Add to cart"}
+                {isInCart ? t("remove") : t("addToCart")}
               </motion.button>
 
               <motion.button
@@ -305,7 +307,7 @@ const MobileCartDrawer = ({ courseData }: MobileCartDrawerProps) => {
           <div ref={contentRef} className="overflow-hidden h-[calc(100%-40px)]">
             <SheetHeader className="px-4 sm:px-6 pt-2 pb-3 sm:pb-4">
               <SheetTitle className="text-xl font-semibold text-gray-800">
-                Choose Your Access Plan
+                {t("chooseAccessPlan")}
               </SheetTitle>
             </SheetHeader>
 
@@ -331,11 +333,11 @@ const MobileCartDrawer = ({ courseData }: MobileCartDrawerProps) => {
                             <h4 className="font-semibold text-gray-800">
                               {plan.name}
                             </h4>
-                            {plan.duration === 0 && (
+                        {plan.duration === 0 && (
                               <Badge variant="secondary" className="text-xs">
-                                Best Value
+                                {t("bestValue")}
                               </Badge>
-                            )}
+                        )}
                           </div>
                           <p className="text-sm text-gray-600 mt-1">
                             {formatDuration(plan.duration)}
@@ -354,7 +356,7 @@ const MobileCartDrawer = ({ courseData }: MobileCartDrawerProps) => {
 
               <div className="bg-gradient-to-r from-primary-light/50 to-primary-light/30 rounded-xl py-2 mb-4 border border-primary-light">
                 <p className="text-sm text-gray-600 text-center mb-1">
-                  Selected Plan
+                  {t("selectedPlan")}
                 </p>
                 <div className="text-center">
                   <p className="text-3xl font-bold text-gray-800">
@@ -373,7 +375,7 @@ const MobileCartDrawer = ({ courseData }: MobileCartDrawerProps) => {
                     onClick={handleCartClick}
                     className="flex-1 font-semibold rounded-lg py-2 px-4 bg-primary-light hover:bg-primary-light/80 text-gray-800 border border-primary-light"
                   >
-                    {isInCart ? "Remove from cart" : "Add to cart"}
+                    {isInCart ? t("removeFromCart") : t("addToCart")}
                   </motion.button>
 
                   <motion.button
@@ -421,7 +423,7 @@ const MobileCartDrawer = ({ courseData }: MobileCartDrawerProps) => {
                     whileTap={{ scale: 0.98 }}
                     className="w-full bg-primary mt-4 hover:bg-primary/90 text-white font-semibold rounded-lg py-2 px-4 text-base"
                   >
-                    Proceed with Purchase
+                    {t("proceedWithPurchase")}
                   </motion.button>
                 </Link>
 
@@ -431,7 +433,7 @@ const MobileCartDrawer = ({ courseData }: MobileCartDrawerProps) => {
                     onClick={() => console.log("Opening support chat")}
                     className="text-sm text-gray-500 hover:text-gray-700 transition-colors underline"
                   >
-                    Have questions? Message us
+                    {t("haveQuestions")}
                   </motion.button>
                 </div>
               </div>

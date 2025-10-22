@@ -5,9 +5,11 @@ import React from "react";
 import CourseLayout from "./CourseLayout";
 import { Loader } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 
 const MyLearningPage = () => {
   const userId = useSession().data?.user.id;
+  const t = useTranslations("MyCourses.CoursesPage");
 
   const { data, isLoading } = useQuery({
     queryKey: ["user-client-courses"],
@@ -27,7 +29,7 @@ const MyLearningPage = () => {
         <>
           {data?.cousre?.length === 0 ? (
             <div className="text-center text-gray-500 mt-10">
-              You have not enrolled in any courses yet.
+              {t("noCourses")}
             </div>
           ) : (
             <CourseLayout courseData={data?.cousre || []} />

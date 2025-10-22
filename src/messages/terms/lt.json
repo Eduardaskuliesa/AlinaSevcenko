@@ -1,0 +1,109 @@
+{
+  "TermsPage": {
+    "metadata": {
+      "title": "Naudojimosi Sąlygos | Jūsų Platformos Pavadinimas",
+      "description": "Perskaitykite mūsų naudojimosi sąlygas, kad suprastumėte taisykles ir gaires naudojantis mūsų kursų platforma, įskaitant prieigos laikotarpius, mokėjimo sąlygas ir mūsų grąžinimo draudimo politiką."
+    },
+    "header": {
+      "title": "Naudojimosi Sąlygos"
+    },
+    "mainTitle": "Naudojimosi Sąlygos",
+    "lastUpdated": "Paskutinį kartą atnaujinta: 2025 m. spalio 22 d.",
+    "sections": {
+      "agreementToTerms": {
+        "title": "Sutikimas su Sąlygomis",
+        "content": "Naudodamiesi mūsų kursų platforma, jūs sutinkate laikytis šių Naudojimosi Sąlygų. Jei nesutinkate su šiomis sąlygomis, prašome nenaudoti mūsų paslaugų."
+      },
+      "courseAccess": {
+        "title": "Prieiga prie Kursų ir Prenumeratos",
+        "intro": "Siūlome kursus su skirtingais prieigos laikotarpiais. Perkant kursą, turite pasirinkti norimą prieigos laikotarpį:",
+        "options": {
+          "oneMonth": "1 mėnesio prieiga: Prieiga prie kurso baigiasi po 30 dienų nuo pirkimo",
+          "threeMonths": "3 mėnesių prieiga: Prieiga prie kurso baigiasi po 90 dienų nuo pirkimo",
+          "lifetime": "Neribota prieiga: Nuolatinė prieiga prie kurso be galiojimo pabaigos"
+        },
+        "expiration": "Pasibaigus jūsų prieigos laikotarpiui (1 mėnesio ar 3 mėnesių pasirinkimams), negalėsite pasiekti kurso turinio, nebent įsigysite naują prieigos laikotarpį arba atnaujinsite iki neriboto prieigos."
+      },
+      "paymentTerms": {
+        "title": "Mokėjimo Sąlygos",
+        "stripe": "Visi mokėjimai saugiai tvarkomi per Stripe. Atlikdami pirkimą, sutinkate pateikti tikslią mokėjimo informaciją ir suteikiate mums įgaliojimą nurašyti mokestį iš jūsų mokėjimo būdo.",
+        "currency": "Kainos rodomos valiuta, nurodyta atsiskaitant, ir gali būti taikomi atitinkami mokesčiai."
+      },
+      "noRefund": {
+        "title": "Grąžinimo Draudimo Politika",
+        "policy": "Visi pardavimai yra galutiniai. Negrąžiname pinigų už jokius kursų pirkimus, nepriklausomai nuo pasirinkto prieigos trukmės. Prašome atidžiai peržiūrėti kurso informaciją ir pasirinkti prieigos laikotarpį prieš užbaigiant pirkimą.",
+        "acknowledgment": "Užbaigdami pirkimą, pripažįstate ir priimate šią grąžinimo draudimo politiką."
+      },
+      "userAccount": {
+        "title": "Vartotojo Paskyra",
+        "intro": "Norėdami pasiekti kursus, turite sukurti paskyrą. Jūs esate atsakingi už:",
+        "responsibilities": {
+          "credentials": "Jūsų paskyros kredencialų konfidencialumo palaikymą",
+          "activities": "Visą veiklą, kuri vyksta jūsų paskyroje",
+          "unauthorized": "Nedelsiant pranešti mums apie bet kokią neteisėtą prieigą",
+          "accurate": "Tikslios ir išsamios informacijos pateikimą"
+        },
+        "sharing": "Negalite dalytis savo paskyros kredencialais ar leisti kitiems pasiekti kursų naudojantis jūsų paskyra."
+      },
+      "intellectualProperty": {
+        "title": "Intelektinė Nuosavybė",
+        "intro": "Visas kurso turinys, įskaitant, bet neapsiribojant, vaizdo įrašus, tekstą, vaizdus, garsą ir medžiagas, priklauso kurso kūrėjui ir yra saugomas autorių teisių įstatymų.",
+        "prohibited": "Jums draudžiama:",
+        "actions": {
+          "download": "Atsisiųsti, kopijuoti, atkurti ar platinti kurso turinį",
+          "share": "Dalytis savo prisijungimo kredencialais su kitais",
+          "record": "Įrašyti, fotografuoti ekraną ar fiksuoti kurso medžiagas",
+          "commercial": "Naudoti kurso turinį komerciniais tikslais",
+          "resell": "Perparduoti ar perleisti savo prieigą kitiems"
+        }
+      },
+      "prohibited": {
+        "title": "Draudžiama Veikla",
+        "intro": "Sutinkate ne:",
+        "activities": {
+          "laws": "Pažeisti jokių taikomų įstatymų ar nuostatų",
+          "infringe": "Pažeisti intelektinės nuosavybės teises",
+          "viruses": "Perduoti virusų ar kenkėjiško kodo",
+          "unauthorized": "Bandyti gauti neteisėtą prieigą prie mūsų sistemų",
+          "automated": "Naudoti automatines priemones platformos prieigai",
+          "harass": "Priekabiauti ar žaloti kitus vartotojus",
+          "spam": "Skelbti šlamštą ar netinkamą turinį"
+        }
+      },
+      "contentUpdates": {
+        "title": "Turinio Atnaujinimai ir Prieinamumas",
+        "content": "Pasiliekame teisę keisti, atnaujinti ar pašalinti kurso turinį bet kuriuo metu be išankstinio įspėjimo. Nors stengiamės palaikyti nuolatinę prieigą, negarantuojame nepertraukiamo platformos ar kursų prieinamumo."
+      },
+      "accountTermination": {
+        "title": "Paskyros Nutraukimas",
+        "content": "Pasiliekame teisę sustabdyti ar nutraukti jūsų paskyrą bet kuriuo metu, jei pažeidžiate šias sąlygas ar dalyvaujate draudžiamoje veikloje. Už nutrauktas paskyras pinigai negrąžinami."
+      },
+      "limitationOfLiability": {
+        "title": "Atsakomybės Apribojimas",
+        "content": "Maksimaliu įstatymų leidžiamu mastu, mes neatsako už jokias netiesiogines, atsitiktines, specialias, pavyzdines ar baudžiamąsias žalas, kylančias dėl jūsų platformos ar kursų naudojimo. Mūsų bendra atsakomybė neviršys sumos, kurią sumokėjote už konkretų kursą."
+      },
+      "disclaimerOfWarranties": {
+        "title": "Garantijų Atsisakymas",
+        "content": "Mūsų platforma ir kursai teikiami \"kaip yra\" be jokių garantijų, aiškiai išreikštų ar numanomų. Negarantuojame konkrečių rezultatų iš mūsų kursų ir nepateikiame pareiškimų apie turinio tikslumą ar išsamumą."
+      },
+      "indemnification": {
+        "title": "Kompensacija",
+        "content": "Sutinkate kompensuoti ir apsaugoti mus nuo bet kokių pretenzijų, nuostolių, žalos ar išlaidų, kylančių dėl jūsų šių sąlygų pažeidimo ar platformos naudojimo."
+      },
+      "governingLaw": {
+        "title": "Taikoma Teisė",
+        "content": "Šios sąlygos reglamentuojamos ir aiškinamos pagal [Jūsų Jurisdikcijos] įstatymus, neatsižvelgiant į jos įstatymų konfliktų nuostatas."
+      },
+      "changesToTerms": {
+        "title": "Sąlygų Keitimai",
+        "content": "Pasiliekame teisę bet kuriuo metu keisti šias sąlygas. Apie reikšmingus pakeitimus pranešime vartotojams el. paštu arba platformos pranešimu. Tęsiantis mūsų paslaugų naudojimas po pakeitimų reiškia atnaujintų sąlygų priėmimą."
+      },
+      "contactInformation": {
+        "title": "Kontaktinė Informacija",
+        "intro": "Jei turite klausimų apie šias Naudojimosi Sąlygas, susisiekite su mumis:",
+        "email": "El. paštas:",
+        "address": "Adresas:"
+      }
+    }
+  }
+}

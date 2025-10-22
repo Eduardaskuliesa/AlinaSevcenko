@@ -1,20 +1,22 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 type NavItem = {
   label: string;
   href: string;
 };
 
-const navItems: NavItem[] = [
-  { label: "Courses", href: "/my-courses/courses" },
-  { label: "Profile", href: "/user/profile" },
-  { label: "Wishlist", href: "/my-courses/wishlist" }
-];
-
 const Navigation = () => {
   const pathname = usePathname();
+  const t = useTranslations("UserNavigation");
+
+  const navItems: NavItem[] = [
+    { label: t("courses"), href: "/my-courses/courses" },
+    { label: t("profile"), href: "/user/profile" },
+    { label: t("wishlist"), href: "/my-courses/wishlist" },
+  ];
 
   return (
     <nav className="flex gap-5 text-xl font-medium text-gray-200">

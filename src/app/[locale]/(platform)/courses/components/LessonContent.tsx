@@ -3,8 +3,10 @@ import { Lesson } from "@/app/types/course";
 import { convertTime } from "@/app/utils/converToMinutes";
 import { ChevronDown } from "lucide-react";
 import React, { useState } from "react";
+import { useTranslations } from "next-intl";
 
 const LessonContent = ({ courseLessons }: { courseLessons: Lesson[] }) => {
+  const t = useTranslations("CourseDetailsPage");
   const filteredLessons = courseLessons.filter(
     (lesson) => lesson.status === "ready"
   );
@@ -41,17 +43,17 @@ const LessonContent = ({ courseLessons }: { courseLessons: Lesson[] }) => {
 
   return (
     <div className="mt-4 bg-white border-primary-light border rounded-lg p-2">
-      <h2 className="text-2xl text-gray-800 font-bold mb-2">Course content</h2>
+      <h2 className="text-2xl text-gray-800 font-bold mb-2">{t("courseContent")}</h2>
 
       <div className="flex justify-between items-center mb-3 text-sm px-2">
         <div className="text-gray-700">
-          {totalLessons} lectures • {convertTime(totalDuration)} total length
+          {totalLessons} {t("lectures")} • {convertTime(totalDuration)} {t("totalLength")}
         </div>
         <button
           onClick={toggleAllLessons}
           className="text-gray-700 font-medium hover:text-gray-800"
         >
-          {expandAll ? "Collapse all lessons" : "Expand all lessons"}
+          {expandAll ? t("collapseAllLessons") : t("expandAllLessons")}
         </button>
       </div>
 
@@ -92,7 +94,7 @@ const LessonContent = ({ courseLessons }: { courseLessons: Lesson[] }) => {
                     <p className="text-gray-700">{lesson.shortDesc}</p>
                   ) : (
                     <p className="italic text-gray-500">
-                      No description available for this lesson.
+                      {t("noDescriptionAvailable")}
                     </p>
                   )}
                 </div>

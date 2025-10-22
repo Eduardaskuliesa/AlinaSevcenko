@@ -3,6 +3,7 @@ import { ArrowDown } from "lucide-react";
 import React, { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 interface DurationFilterProps {
   selectedDurations: string[];
@@ -13,8 +14,24 @@ const DurationFilter = ({
   selectedDurations,
   setSelectedDurations,
 }: DurationFilterProps) => {
+  const t = useTranslations("CoursesPage");
   const [isOpen, setIsOpen] = useState(true);
   const durations = ["0-1 hour", "1-3 hours", "3-6 hours", "5-10 hours"];
+
+  const getDurationLabel = (duration: string) => {
+    switch (duration) {
+      case "0-1 hour":
+        return t("durationOptions.0-1");
+      case "1-3 hours":
+        return t("durationOptions.1-3");
+      case "3-6 hours":
+        return t("durationOptions.3-6");
+      case "5-10 hours":
+        return t("durationOptions.5-10");
+      default:
+        return duration;
+    }
+  };
 
   const toggleDuration = (duration: string) => {
     if (selectedDurations.includes(duration)) {
@@ -30,7 +47,7 @@ const DurationFilter = ({
         className="flex flex-row justify-between w-full items-center cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <p className="text-xl font-semibold text-gray-800">Duration</p>
+        <p className="text-xl font-semibold text-gray-800">{t("duration")}</p>
         <div
           className={`p-1 bg-primary-light rounded-md transition-transform duration-200 ${
             isOpen ? "" : "rotate-180"
@@ -66,7 +83,7 @@ const DurationFilter = ({
                     htmlFor={`duration-${duration}`}
                     className="text-gray-800 cursor-pointer w-full"
                   >
-                    {duration}
+                    {getDurationLabel(duration)}
                   </label>
                 </div>
               ))}

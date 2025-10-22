@@ -14,9 +14,11 @@ import { useSession } from "next-auth/react";
 import { userActions } from "@/app/actions/user";
 import { Eye, EyeOff } from "lucide-react";
 import toast from "react-hot-toast";
+import { useTranslations } from "next-intl";
 
 const PasswordChange = () => {
   const { data: session } = useSession();
+  const t = useTranslations("UserProfilePage");
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -36,14 +38,14 @@ const PasswordChange = () => {
     setError("");
 
     if (formData.newPassword !== formData.confirmPassword) {
-      const errorMsg = "Passwords do not match";
+      const errorMsg = t("passwordsDoNotMatch");
       setError(errorMsg);
       toast.error(errorMsg);
       return;
     }
 
     if (!session?.user?.id) {
-      const errorMsg = "User not found";
+      const errorMsg = t("userNotFound");
       setError(errorMsg);
       toast.error(errorMsg);
       return;
@@ -60,7 +62,7 @@ const PasswordChange = () => {
     setLoading(false);
 
     if (result.success) {
-      toast.success("Password changed successfully");
+      toast.success(t("passwordChangedSuccess"));
       setIsOpen(false);
       setFormData({
         currentPassword: "",
@@ -69,7 +71,7 @@ const PasswordChange = () => {
       });
       setError("");
     } else {
-      const errorMsg = result.error || "Failed to change password";
+      const errorMsg = result.error || t("passwordChangedError");
       setError(errorMsg);
       toast.error(errorMsg);
     }
@@ -77,16 +79,16 @@ const PasswordChange = () => {
 
   return (
     <div className="space-y-2">
-      <Label>Password</Label>
+      <Label>{t("password")}</Label>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
           <Button variant="outline" className="w-full">
-            Change Password
+            {t("changePassword")}
           </Button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Change Password</DialogTitle>
+            <DialogTitle>{t("changePassword")}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
@@ -95,7 +97,7 @@ const PasswordChange = () => {
               </div>
             )}
             <div className="space-y-2">
-              <Label htmlFor="current">Current Password</Label>
+              <Label htmlFor="current">{t("currentPassword")}</Label>
               <div className="relative">
                 <Input
                   id="current"
@@ -130,7 +132,7 @@ const PasswordChange = () => {
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="new">New Password</Label>
+              <Label htmlFor="new">{t("newPassword")}</Label>
               <div className="relative">
                 <Input
                   id="new"
@@ -161,11 +163,11 @@ const PasswordChange = () => {
                 </Button>
               </div>
               <p className="text-xs text-gray-500">
-                At least 8 characters with 1 uppercase letter
+                {t("passwordRequirements")}
               </p>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="confirm">Confirm New Password</Label>
+              <Label htmlFor="confirm">{t("confirmNewPassword")}</Label>
               <div className="relative">
                 <Input
                   id="confirm"
@@ -200,7 +202,7 @@ const PasswordChange = () => {
               </div>
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Updating..." : "Update Password"}
+              {loading ? t("updating") : t("updatePassword")}
             </Button>
           </form>
         </DialogContent>

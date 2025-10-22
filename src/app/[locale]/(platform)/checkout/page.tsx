@@ -11,12 +11,14 @@ import { useCartStore } from "@/app/store/useCartStore";
 import { useParams, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 );
 
 const CheckoutPage = () => {
+  const t = useTranslations("CheckoutPage");
   const [clientSecret, setClientSecret] = useState<string>("");
   const [elementsKey, setElementsKey] = useState(0);
   const { cartItems, hydrated } = useCartStore();
@@ -52,21 +54,21 @@ const CheckoutPage = () => {
         setElementsKey((prev) => prev + 1);
       } catch (error) {
         console.error("Failed to create payment intent:", error);
-        toast.error("Failed to initialize checkout");
+        toast.error(t("failedToInitialize"));
       }
     };
 
     createPaymentIntent();
-  }, [isHydrated, hydrated, userId, cartItems]);
+  }, [isHydrated, hydrated, userId, cartItems, t]);
 
   useEffect(() => {
     if (isHydrated && hydrated) {
       if (cartItems.length === 0) {
         router.push(`/${locale}/courses`);
-        toast.error("Please add items to your cart before checkout.");
+        toast.error(t("addItemsBeforeCheckout"));
       }
     }
-  }, [cartItems.length, router, isHydrated, hydrated, locale]);
+  }, [cartItems.length, router, isHydrated, hydrated, locale, t]);
 
   if (!isHydrated || !hydrated || !clientSecret) {
     return (
@@ -74,7 +76,7 @@ const CheckoutPage = () => {
         <header className="h-[5rem] bg-primary w-full flex">
           <div className="max-w-6xl w-full mx-auto">
             <h1 className="text-4xl px-4 lg:px-2 sm:text-5xl font-times mt-4 font-semibold text-gray-100">
-              Checkout
+              {t("checkout")}
             </h1>
           </div>
         </header>
@@ -128,7 +130,7 @@ const CheckoutPage = () => {
       <header className="h-[5rem] bg-primary w-full flex">
         <div className="max-w-6xl w-full mx-auto">
           <h1 className="text-4xl px-4 lg:px-2 sm:text-5xl font-times mt-4 font-semibold text-gray-100">
-            Checkout
+            {t("checkout")}
           </h1>
         </div>
       </header>

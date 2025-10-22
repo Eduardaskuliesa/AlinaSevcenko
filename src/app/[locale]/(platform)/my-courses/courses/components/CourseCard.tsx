@@ -11,12 +11,16 @@ import Link from "next/link";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 interface CourseCardProps {
   course: EnrolledCourse;
 }
 
 const CourseCard = ({ course }: CourseCardProps) => {
+  const t = useTranslations("MyCourses.CoursesPage");
+
+  console.log(t("lifetimeAccess"));
   const totalLessons = Object.keys(course.lessonProgress).length;
   const completedLessons = Object.values(course.lessonProgress).filter(
     (lesson) => lesson.progress === 100
@@ -30,7 +34,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
   const getExpirationInfo = (expiresAt: string) => {
     if (expiresAt === "lifetime") {
       return {
-        text: "Lifetime Access",
+        text: t("lifetimeAccess"),
         color: "bg-green-100 text-green-800",
         isExpired: false,
       };
@@ -44,19 +48,19 @@ const CourseCard = ({ course }: CourseCardProps) => {
 
     if (daysLeft <= 0) {
       return {
-        text: "Expired",
+        text: t("expired"),
         color: "bg-red-100 text-red-800",
         isExpired: true,
       };
     } else if (daysLeft <= 7) {
       return {
-        text: `${daysLeft} days left`,
+        text: `${daysLeft} ${t("daysLeft")}`,
         color: "bg-orange-100 text-orange-800",
         isExpired: false,
       };
     } else {
       return {
-        text: `Expires ${format(expirationDate, "MMM dd")}`,
+        text: `${t("expires")} ${format(expirationDate, "MMM dd")}`,
         color: "bg-blue-100 text-blue-800",
         isExpired: false,
       };
@@ -68,13 +72,10 @@ const CourseCard = ({ course }: CourseCardProps) => {
   const handleClick = (e: React.MouseEvent) => {
     if (expiration.isExpired) {
       e.preventDefault();
-      toast.error(
-        "Course access expired. Please purchase again to renew access.",
-        {
-          duration: 4000,
-          position: "top-center",
-        }
-      );
+      toast.error(t("courseExpiredMessage"), {
+        duration: 4000,
+        position: "top-center",
+      });
     }
   };
 
@@ -121,7 +122,9 @@ const CourseCard = ({ course }: CourseCardProps) => {
               <div className="flex items-center gap-3 md:gap-4 text-sm text-gray-500 mb-2 md:mb-3">
                 <div className="flex items-center gap-1">
                   <BookOpen className="h-3.5 w-3.5 md:h-4 md:w-4 text-primary" />
-                  <span>{totalLessons} lessons</span>
+                  <span>
+                    {totalLessons} {t("lessons")}
+                  </span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Clock className="h-3.5 w-3.5 md:h-4 md:w-4 text-primary" />
@@ -132,7 +135,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
               <div className="space-y-1">
                 <div className="flex justify-between text-sm text-gray-500">
                   <span>
-                    {completedLessons}/{totalLessons} lessons completed
+                    {completedLessons}/{totalLessons} {t("lessonsCompleted")}
                   </span>
                   <span>{overallProgress}%</span>
                 </div>
@@ -153,7 +156,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full mt-3 md:mt-4 gap-2 sm:gap-0">
             <div className="flex items-center gap-2 text-sm text-gray-500">
               <span>
-                Last accessed:{" "}
+                {t("lastAccessed")}{" "}
                 {format(
                   new Date(course.lastWatchedAt || Date.now()),
                   "MMM dd, yyyy"
@@ -170,7 +173,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
                   router.push(`/courses/${course.slug}`);
                 }}
               >
-                Renew Access
+                {t("renewAccess")}
                 <RefreshCw className="w-3.5 h-3.5 md:w-4 md:h-4 ml-1.5 md:ml-2 group-hover/button:rotate-180 transition-transform duration-300" />
               </Button>
             ) : (
@@ -182,7 +185,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
                   router.push(`/learn/${course.courseId}`);
                 }}
               >
-                {overallProgress > 0 ? "Continue" : "Start"}
+                {overallProgress > 0 ? t("continue") : t("start")}
                 <Play className="w-3.5 h-3.5 md:w-4 md:h-4 ml-1 group-hover/button:translate-x-1 transition-transform" />
               </Button>
             )}

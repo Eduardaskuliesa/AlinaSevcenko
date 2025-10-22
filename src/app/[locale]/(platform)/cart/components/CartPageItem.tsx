@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "motion/react";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 
 export function CartPageItem({
   item,
@@ -13,6 +14,7 @@ export function CartPageItem({
   item: Course;
   accessPlanId: string;
 }) {
+  const t = useTranslations("CartPage");
   const { updateCartItem, removeFromCart, addToWishlist } = useCartStore();
   const userId = useSession().data?.user.id;
   const [selectedPlan, setSelectedPlan] = useState<AccessPlan | undefined>();
@@ -30,10 +32,10 @@ export function CartPageItem({
   }, [item.accessPlans, accessPlanId]);
 
   const formatDuration = (days: number) => {
-    if (days === 0) return "Lifetime";
-    if (days < 30) return `${days} days`;
-    if (days < 365) return `${Math.floor(days / 30)} months`;
-    return `${Math.floor(days / 365)} years`;
+    if (days === 0) return t("lifetime");
+    if (days < 30) return `${days} ${t("days")}`;
+    if (days < 365) return `${Math.floor(days / 30)} ${t("months")}`;
+    return `${Math.floor(days / 365)} ${t("years")}`;
   };
 
   const activeAccessPlans = item.accessPlans
@@ -83,7 +85,7 @@ export function CartPageItem({
     <div className="mb-4 shadow-md border rounded-lg bg-white border-gray-200 relative">
       {selectedPlan?.duration === 0 && (
         <div className="absolute -top-2 -right-2 bg-secondary text-gray-800 font-medium rotate-12 text-xs px-2 py-1 rounded-full">
-          Lifetime
+          {t("lifetime")}
         </div>
       )}
 
@@ -102,23 +104,23 @@ export function CartPageItem({
             <h4 className="text-lg font-semibold">{item.title}</h4>
             <div className="flex items-center">
               <p className="text-gray-600 text-sm">
-                Total lessons:{item.lessonCount}
+                {t("totalLessons")}:{item.lessonCount}
               </p>
               <div className="h-1 w-1 rounded-full mx-1 mb-0.5 bg-gray-700"></div>
               <p className="text-gray-600 text-sm">
-                Duration: {convertTime(item.duration)}
+                {t("duration")}: {convertTime(item.duration)}
               </p>
             </div>
           </div>
         </div>
         <div className="hidden md:block flex-1 max-w-xs items-center">
-          <h4 className="text-lg font-semibold">AccessPlan</h4>
+          <h4 className="text-lg font-semibold">{t("accessPlan")}</h4>
           <div className="flex items-center">
             <div className="h-1 w-1 rounded-full mx-1 mb-0.5 bg-gray-700"></div>
             <p className="text-gray-600 text-sm">{selectedPlan?.name}</p>
             <div className="h-1 w-1 rounded-full mx-1 mb-0.5 bg-gray-700"></div>
             <p className="text-gray-600 text-sm">
-              Plan duration: {formatDuration(selectedPlan?.duration || 0)}
+              {t("planDuration")}: {formatDuration(selectedPlan?.duration || 0)}
             </p>
           </div>
         </div>
@@ -131,7 +133,7 @@ export function CartPageItem({
 
       {/* Access plans selector */}
       <div className="px-4 py-3 border-t border-gray-100">
-        <h5 className="font-medium text-gray-800 mb-2">Select Access Plan:</h5>
+        <h5 className="font-medium text-gray-800 mb-2">{t("selectAccessPlan")}</h5>
         <div className="flex gap-2 flex-wrap">
           {activeAccessPlans.map((plan) => (
             <button
@@ -159,14 +161,14 @@ export function CartPageItem({
           onClick={handleRemove}
           className="text-sm text-pink-900 hover:text-pink-950 transition-colors"
         >
-          Remove
+          {t("remove")}
         </motion.button>
         <motion.button
           whileTap={{ scale: 0.9, translateY: 2 }}
           onClick={handleMoveToWishlist}
           className="text-sm text-pink-900 hover:text-pink-950 transition-colors"
         >
-          Move to Wishlist
+          {t("moveToWishlist")}
         </motion.button>
       </div>
     </div>

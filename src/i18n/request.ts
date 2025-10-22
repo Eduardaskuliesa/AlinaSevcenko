@@ -8,8 +8,19 @@ export default getRequestConfig(async ({ requestLocale }) => {
     ? requested
     : routing.defaultLocale;
 
+  // Load main translations and nested translations
+  const mainMessages = (await import(`../messages/${locale}.json`)).default;
+  const termsMessages = (await import(`../messages/terms/${locale}.json`))
+    .default;
+  const privacyMessages = (await import(`../messages/privacy/${locale}.json`))
+    .default;
+
   return {
     locale,
-    messages: (await import(`../messages/${locale}.json`)).default,
+    messages: {
+      ...mainMessages,
+      ...termsMessages,
+      ...privacyMessages,
+    },
   };
 });

@@ -11,22 +11,24 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import AccountSettingsCard from "./components/AccountSettingsCard";
+import { getTranslations } from "next-intl/server";
 
 const ProfilePage = async () => {
   const user = await getServerSession(authOptions).then(
     (session) => session?.user
   );
+  const t = await getTranslations("UserProfilePage");
 
   return (
     <PageWrapper>
       <div className="px-2 flex-col flex md:flex-row h-auto gap-4">
         <Card className="w-full gap-4 h-full bg-white border-primary-light/60 border-2">
           <CardHeader className="px-4">
-            <CardTitle className="text-xl">Personal Information</CardTitle>
+            <CardTitle className="text-xl">{t("personalInformation")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 px-4">
             <div className="space-y-2 text-base">
-              <Label htmlFor="name">Display Name</Label>
+              <Label htmlFor="name">{t("displayName")}</Label>
               <Input
                 className="border-primary-light/60 border-2 bg-slate-50"
                 id="name"
@@ -36,7 +38,7 @@ const ProfilePage = async () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t("email")}</Label>
               <Input
                 className="border-primary-light/60 border-2 bg-slate-50"
                 id="email"

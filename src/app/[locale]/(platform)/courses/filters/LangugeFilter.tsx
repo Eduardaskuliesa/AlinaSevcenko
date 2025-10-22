@@ -3,22 +3,24 @@ import { ArrowDown } from "lucide-react";
 import React, { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 interface LanguageFilterProps {
   selectedLanguages: string[];
   setSelectedLanguages: (languages: string[]) => void;
 }
 
-const languageOptions = [
-  { display: "Lithuanian", code: "lt" },
-  { display: "Russian", code: "ru" },
-];
-
 const LanguageFilter = ({
   selectedLanguages,
   setSelectedLanguages,
 }: LanguageFilterProps) => {
+  const t = useTranslations("CoursesPage");
   const [isOpen, setIsOpen] = useState(true);
+
+  const languageOptions = [
+    { display: t("languageOptions.lithuanian"), code: "lt" },
+    { display: t("languageOptions.russian"), code: "ru" },
+  ];
 
   const toggleLanguage = (code: string) => {
     if (selectedLanguages.includes(code)) {
@@ -34,7 +36,7 @@ const LanguageFilter = ({
         className="flex flex-row justify-between w-full items-center cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <p className="text-xl font-semibold text-gray-800">Language</p>
+        <p className="text-xl font-semibold text-gray-800">{t("language")}</p>
         <div
           className={`p-1 bg-primary-light rounded-md transition-transform duration-200 ${
             isOpen ? "" : "rotate-180"

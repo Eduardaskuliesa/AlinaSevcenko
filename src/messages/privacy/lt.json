@@ -1,0 +1,93 @@
+{
+  "PrivacyPage": {
+    "metadata": {
+      "title": "Privatumo Politika | Jūsų Platformos Pavadinimas",
+      "description": "Sužinokite, kaip renkame, naudojame ir saugome jūsų asmeninę informaciją mūsų kursų platformoje. Perskaitykite mūsų privatumo politiką, kad gautumėte išsamios informacijos apie duomenų saugumą ir jūsų teises."
+    },
+    "header": {
+      "title": "Privatumo Politika"
+    },
+    "mainTitle": "Privatumo Politika",
+    "lastUpdated": "Paskutinį kartą atnaujinta: 2025 m. spalio 22 d.",
+    "sections": {
+      "introduction": {
+        "title": "Įvadas",
+        "content": "Gerbiame jūsų privatumą ir įsipareigoję saugoti jūsų asmeninius duomenis. Ši privatumo politika paaiškina, kaip renkame, naudojame ir saugome jūsų informaciją, kai naudojatės mūsų kursų platforma."
+      },
+      "informationWeCollect": {
+        "title": "Informacija, kurią renkame",
+        "personalInfo": {
+          "title": "Asmeninė Informacija",
+          "items": {
+            "name": "Vardas ir el. pašto adresas",
+            "credentials": "Paskyros kredencialai",
+            "payment": "Mokėjimo informacija (saugiai tvarkoma per Stripe)",
+            "progress": "Kurso pažangos ir užbaigimo duomenys"
+          }
+        },
+        "automaticInfo": {
+          "title": "Automatiškai Renkama Informacija",
+          "items": {
+            "ip": "IP adresas ir įrenginio informacija",
+            "browser": "Naršyklės tipas ir versija",
+            "usage": "Naudojimo duomenys ir analitika",
+            "cookies": "Slapukai ir panašios technologijos"
+          }
+        }
+      },
+      "howWeUseInfo": {
+        "title": "Kaip Naudojame Jūsų Informaciją",
+        "purposes": {
+          "access": "Teikti prieigą prie įsigytų kursų",
+          "payments": "Saugiai tvarkyti mokėjimus per Stripe",
+          "emails": "Siųsti transakcijų el. laiškus (kvitus, slaptažodžių atkūrimą, pranešimus)",
+          "progress": "Sekti kurso pažangą ir užbaigimą",
+          "improve": "Tobulinti mūsų platformą ir vartotojo patirtį",
+          "comply": "Laikytis teisinių įsipareigojimų"
+        }
+      },
+      "thirdPartyServices": {
+        "title": "Trečiųjų Šalių Paslaugos",
+        "stripe": {
+          "title": "Stripe:",
+          "content": "Naudojame Stripe mokėjimams tvarkyti. Stripe renka ir tvarko jūsų mokėjimo informaciją pagal savo privatumo politiką. Mes nesaugome jūsų pilnos kredito kortelės informacijos mūsų serveriuose."
+        },
+        "others": "Kitos trečiųjų šalių paslaugos, kurias galime naudoti, apima analitikos teikėjus ir el. pašto paslaugų teikėjus. Šios paslaugos turi savo privatumo politikas."
+      },
+      "dataSecurity": {
+        "title": "Duomenų Saugumas",
+        "content": "Įgyvendiname tinkamas technines ir organizacines priemones, kad apsaugotume jūsų asmeninius duomenis nuo neteisėtos prieigos, pakeitimo, atskleidimo ar sunaikinimo. Tai apima šifravimą, saugius serverius ir reguliarius saugumo auditus."
+      },
+      "yourRights": {
+        "title": "Jūsų Teisės",
+        "intro": "Turite teisę:",
+        "rights": {
+          "access": "Pasiekti savo asmeninius duomenis",
+          "correct": "Ištaisyti netikslią informaciją",
+          "delete": "Prašyti ištrinti savo duomenis",
+          "object": "Nesutikti su duomenų tvarkymu",
+          "portability": "Duomenų perkeliamumas",
+          "withdraw": "Bet kada atšaukti sutikimą"
+        }
+      },
+      "cookies": {
+        "title": "Slapukai",
+        "content": "Naudojame slapukus ir panašias sekimo technologijas, kad pagerintume jūsų patirtį mūsų platformoje. Galite kontroliuoti slapukų nustatymus per savo naršyklės nuostatas. Būtini slapukai yra reikalingi, kad platforma veiktų tinkamai."
+      },
+      "dataRetention": {
+        "title": "Duomenų Saugojimas",
+        "content": "Saugome jūsų asmeninius duomenis tiek, kiek reikia mūsų paslaugoms teikti ir laikytis teisinių įsipareigojimų. Kurso pažangos duomenys saugomi, kol jūsų paskyra yra aktyvi. Galite bet kada paprašyti ištrinti duomenis."
+      },
+      "changesToPolicy": {
+        "title": "Politikos Pakeitimai",
+        "content": "Galime kartais atnaujinti šią privatumo politiką. Apie reikšmingus pakeitimus pranešime jums el. paštu arba pranešimu mūsų platformoje. Tęsiantis mūsų paslaugų naudojimas po pakeitimų reiškia atnaujintos politikos priėmimą."
+      },
+      "contactUs": {
+        "title": "Susisiekite su Mumis",
+        "intro": "Jei turite klausimų apie šią privatumo politiką arba kaip tvarkome jūsų duomenis, susisiekite su mumis:",
+        "email": "El. paštas:",
+        "address": "Adresas:"
+      }
+    }
+  }
+}

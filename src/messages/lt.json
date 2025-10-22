@@ -106,6 +106,226 @@
     "requestNewLink": "Prašyti naujos nuorodos",
     "backToLogin": "Grįžti į prisijungimą",
     "resetError": "Nepavyko atnaujinti slaptažodžio. Bandykite dar kartą."
+  },
+  "UserNavigation": {
+    "courses": "Kursai",
+    "profile": "Profilis",
+    "wishlist": "Norų sąrašas"
+  },
+  "UserLayout": {
+    "title": "Mano profilis"
+  },
+  "UserProfilePage": {
+    "personalInformation": "Asmeninė informacija",
+    "displayName": "Rodomas vardas",
+    "email": "El. paštas",
+    "accountSettings": "Paskyros nustatymai",
+    "password": "Slaptažodis",
+    "changePassword": "Keisti slaptažodį",
+    "currentPassword": "Dabartinis slaptažodis",
+    "newPassword": "Naujas slaptažodis",
+    "confirmNewPassword": "Patvirtinti naują slaptažodį",
+    "passwordRequirements": "Bent 8 simboliai su 1 didžiąja raide",
+    "updatePassword": "Atnaujinti slaptažodį",
+    "updating": "Atnaujinama...",
+    "passwordsDoNotMatch": "Slaptažodžiai nesutampa",
+    "userNotFound": "Vartotojas nerastas",
+    "passwordChangedSuccess": "Slaptažodis sėkmingai pakeistas",
+    "passwordChangedError": "Nepavyko pakeisti slaptažodžio",
+    "languagePreference": "Kalbos nuostatos",
+    "lithuanian": "Lietuvių",
+    "russian": "Rusų"
+  },
+  "MyCourses": {
+    "Navigation": {
+      "courses": "Kursai",
+      "profile": "Profilis",
+      "wishlist": "Norų sąrašas"
+    },
+    "CoursesPage": {
+      "title": "Mano mokymasis",
+      "loading": "Kraunama...",
+      "noCourses": "Dar nesate užsiregistravę į jokius kursus.",
+      "lastAccessed": "Paskutinį kartą prisijungta:",
+      "lessons": "pamokos",
+      "lessonsCompleted": "pamokos užbaigtos",
+      "lifetimeAccess": "Neribota prieiga",
+      "expired": "Baigėsi",
+      "daysLeft": "dienų liko",
+      "expires": "Baigiasi",
+      "renewAccess": "Atnaujinti prieigą",
+      "continue": "Tęsti",
+      "start": "Pradėti",
+      "courseExpiredMessage": "Kurso prieiga baigėsi. Prašome įsigyti iš naujo, kad atnaujintumėte prieigą."
+    },
+    "WishlistPage": {
+      "title": "Mano norų sąrašas",
+      "empty": "Jūsų norų sąrašas tuščias",
+      "browseCourses": "Naršyti kursus",
+      "from": "Nuo",
+      "addToCart": "Pridėti į krepšelį",
+      "remove": "Pašalinti"
+    }
+  },
+  "CoursesPage": {
+    "header": "Kursai - mokykitės ir augkite kartu su manimi",
+    "searchPlaceholder": "Ieškoti kursų pagal pavadinimą arba kategoriją...",
+    "clearFilters": "Išvalyti filtrus",
+    "filteredCourses": "Filtruoti kursai",
+    "filters": "Filtrai",
+    "duration": "Trukmė",
+    "language": "Kalba",
+    "category": "Kategorija",
+    "loadingCategories": "Kraunamos kategorijos...",
+    "noCategoriesAvailable": "Nėra prieinamų kategorijų",
+    "noAccessPlansAvailable": "Nėra prieinamų prieigos planų",
+    "durationOptions": {
+      "0-1": "0-1 valanda",
+      "1-3": "1-3 valandos",
+      "3-6": "3-6 valandos",
+      "5-10": "5-10 valandų"
+    },
+    "languageOptions": {
+      "lithuanian": "Lietuvių",
+      "russian": "Rusų"
+    },
+    "courseCard": {
+      "lessons": "pamokos",
+      "from": "Nuo"
+    },
+    "courseNotAvailable": "Šis kursas šiuo metu neprieinamas"
+  },
+  "CourseDetailsPage": {
+    "backButton": "Grįžti",
+    "courseNotFound": "Kursas nerastas",
+    "chooseAccessPlan": "Pasirinkite prieigos planą",
+    "bestValue": "Geriausia vertė",
+    "lifetimeAccess": "Neribota prieiga",
+    "year": "metai",
+    "years": "metų",
+    "month": "mėnuo",
+    "months": "mėnesių",
+    "days": "dienos",
+    "addToCart": "Pridėti į krepšelį",
+    "removeFromCart": "Pašalinti iš krepšelio",
+    "proceedWithPurchase": "Tęsti su pirkimu",
+    "haveQuestions": "Turite klausimų? Parašykite mums",
+    "courseContent": "Kurso turinys",
+    "lectures": "paskaitos",
+    "totalLength": "bendra trukmė",
+    "expandAllLessons": "Išskleisti visas pamokas",
+    "collapseAllLessons": "Suskleisti visas pamokas",
+    "noDescriptionAvailable": "Šiai pamokai nėra aprašymo.",
+    "selectedPlan": "Pasirinktas planas",
+    "remove": "Pašalinti"
+  },
+  "CartPage": {
+    "shoppingCart": "Pirkinių krepšelis",
+    "loading": "Kraunama...",
+    "yourCartIsEmpty": "Jūsų krepšelis tuščias",
+    "browseCourses": "Naršyti kursus",
+    "courseRemovedUnavailable": "Kursas \"{title}\" buvo pašalintas iš jūsų krepšelio, nes jis daugiau nėra prieinamas.",
+    "wantThisCourseBack": "Norite šį kursą atgal?",
+    "emailUs": "Parašykite mums",
+    "accessPlanUpdated": "Prieigos planas kursui \"{title}\" buvo atnaujintas į šiuo metu prieinamą parinktį.",
+    "needHelpWithAccessPlans": "Reikia pagalbos su prieigos planais?",
+    "noAccessPlansAvailable": "Šiuo metu kursui \"{title}\" nėra prieinamų prieigos planų. Prašome susisiekti su palaikymo komanda.",
+    "totalLessons": "Iš viso pamokų",
+    "duration": "Trukmė",
+    "accessPlan": "Prieigos planas",
+    "planDuration": "Plano trukmė",
+    "lifetime": "Visam laikui",
+    "days": "dienos",
+    "months": "mėnesių",
+    "years": "metų",
+    "selectAccessPlan": "Pasirinkite prieigos planą:",
+    "remove": "Pašalinti",
+    "moveToWishlist": "Perkelti į norų sąrašą"
+  },
+  "CartSummary": {
+    "cartSummary": "Krepšelio santrauka",
+    "item": "prekė",
+    "items": "prekės",
+    "yourCartIsEmpty": "Jūsų krepšelis tuščias",
+    "total": "Iš viso:",
+    "proceedToCheckout": "Tęsti prie atsiskaitymo",
+    "processing": "Apdorojama...",
+    "continueShopping": "Tęsti apsipirkimą",
+    "lifetime": "Visam laikui",
+    "days": "dienos",
+    "months": "mėnesių",
+    "years": "metų"
+  },
+  "CheckoutPage": {
+    "checkout": "Atsiskaitymas",
+    "paymentDetails": "Mokėjimo informacija",
+    "loadingPaymentOptions": "Kraunamos mokėjimo parinktys...",
+    "backToCart": "Grįžti į krepšelį",
+    "pleaseAddItems": "Prašome pridėti prekių į savo krepšelį prieš atsiskaitymą."
+  },
+  "CheckoutSummary": {
+    "checkoutSummary": "Atsiskaitymo santrauka",
+    "item": "prekė",
+    "items": "prekės",
+    "yourCartIsEmpty": "Jūsų krepšelis tuščias",
+    "total": "Iš viso:",
+    "completePayment": "Užbaigti mokėjimą",
+    "processing": "Apdorojama...",
+    "continueShopping": "Tęsti apsipirkimą",
+    "lifetime": "Visam laikui",
+    "days": "dienos",
+    "months": "mėnesių",
+    "years": "metų"
+  },
+  "CheckoutSuccessPage": {
+    "paymentSuccessful": "Mokėjimas sėkmingas!",
+    "welcomeToNewCourses": "Sveiki atvykę į savo naujus kursus!",
+    "orderComplete": "Užsakymas baigtas",
+    "yourCourses": "Jūsų kursai",
+    "lessons": "pamokos",
+    "accessGranted": "✓ Prieiga suteikta",
+    "readyToStartLearning": "Pasirengę pradėti mokytis?",
+    "coursesAvailableInDashboard": "Jūsų kursai dabar prieinami jūsų mokymosi skydelyje.",
+    "startLearning": "Pradėti mokytis",
+    "invoiceEmailSent": "📧 Sąskaitos faktūra išsiųsta el. paštu • Prieiga bet kada iš jūsų puslapio"
+  },
+  "PlatformNav": {
+    "courses": "Kursai",
+    "myLearning": "Mano mokymasis",
+    "myProfile": "Mano profilis",
+    "myCourses": "Mano kursai",
+    "myWishlist": "Mano norų sąrašas",
+    "myCart": "Mano krepšelis",
+    "language": "Kalba",
+    "myAccount": "Mano paskyra",
+    "logout": "Atsijungti",
+    "successfullyLoggedOut": "Sėkmingai atsijungėte",
+    "logoutError": "Įvyko klaida atsijungiant. Bandykite dar kartą."
+  },
+  "CartList": {
+    "total": "Iš viso",
+    "goToCart": "Eiti į krepšelį",
+    "yourCartIsEmpty": "Jūsų krepšelis tuščias",
+    "keepShopping": "Tęsti apsipirkimą",
+    "from": "Nuo"
+  },
+  "WishList": {
+    "addToCart": "Pridėti į krepšelį",
+    "goToWishlist": "Eiti į norų sąrašą",
+    "yourWishlistIsEmpty": "Jūsų norų sąrašas tuščias",
+    "exploreCourses": "Tyrinėti kursus",
+    "from": "Nuo"
+  },
+  "Footer": {
+    "brandDescription": "Mokykis ir augi su manimi - tavo kelionė į žinias prasideda čia.",
+    "coursesTitle": "Kursai",
+    "allCourses": "Visi kursai",
+    "myLearning": "Mano mokymasis",
+    "supportTitle": "Pagalba",
+    "contactUs": "Susisiekite su mumis",
+    "legalTitle": "Teisinė informacija",
+    "privacyPolicy": "Privatumo politika",
+    "termsOfService": "Paslaugų teikimo sąlygos",
+    "copyright": "© {year} Alina Savcenko. Visos teisės saugomos."
   }
-  
 }

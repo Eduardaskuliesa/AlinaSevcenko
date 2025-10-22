@@ -9,12 +9,14 @@ import StartLearningButton from "./StartLearningButton";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/auth";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 const CheckoutSuccessPage = async ({
   searchParams,
 }: {
   searchParams: Promise<{ payment_intent: string }>;
 }) => {
+  const t = await getTranslations("CheckoutSuccessPage");
   let orderDetails = null;
   let courses = [] as Course[];
 
@@ -49,16 +51,16 @@ const CheckoutSuccessPage = async ({
       <div className="bg-primary text-gray-50">
         <div className="max-w-4xl mx-auto px-4 pt-4 pb-10 sm:px-6 sm:pt-6 sm:pb-12 text-center">
           <h1 className="text-4xl sm:text-5xl font-bold mb-2 font-times">
-            Payment Successful!
+            {t("paymentSuccessful")}
           </h1>
-          <p className="text-2xl font-times">Welcome to your new courses!</p>
+          <p className="text-2xl font-times">{t("welcomeMessage")}</p>
         </div>
       </div>
 
       <div className="max-w-4xl mx-auto px-2 sm:px-6 -mt-8">
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
           <div className="bg-primary-light text-gray-800 px-6 py-4 flex justify-between items-center">
-            <span className="font-medium">Order Complete</span>
+            <span className="font-medium">{t("orderComplete")}</span>
             <span className="text-xl font-bold">
               €
               {orderDetails?.amount
@@ -69,7 +71,7 @@ const CheckoutSuccessPage = async ({
 
           <div className="p-3 lg:p-6">
             <h2 className="text-xl font-semibold mb-6 text-gray-900">
-              Your Courses
+              {t("yourCourses")}
             </h2>
             <div className="grid gap-4">
               {courses.map((course) => (
@@ -93,7 +95,7 @@ const CheckoutSuccessPage = async ({
                     <div className="hidden sm:flex items-center gap-4 text-sm text-gray-500">
                       <span className="flex items-center gap-1">
                         <BookOpen className="w-3 h-3" />
-                        {course.lessonCount} lessons
+                        {t("lessons", { count: course.lessonCount })}
                       </span>
                       <span className="flex items-center gap-1">
                         <Clock className="w-3 h-3" />
@@ -102,7 +104,7 @@ const CheckoutSuccessPage = async ({
                     </div>
                   </div>
                   <div className="text-green-600 font-medium text-sm">
-                    ✓ Access Granted
+                    ✓ {t("accessGranted")}
                   </div>
                 </div>
               ))}
@@ -113,10 +115,10 @@ const CheckoutSuccessPage = async ({
             <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
               <div className="text-center sm:text-left">
                 <p className="font-medium text-gray-900">
-                  Ready to start learning?
+                  {t("readyToStart")}
                 </p>
                 <p className="text-sm text-gray-600">
-                  Your courses are now available in your learning dashboard.
+                  {t("coursesAvailable")}
                 </p>
               </div>
               <StartLearningButton></StartLearningButton>
@@ -126,7 +128,7 @@ const CheckoutSuccessPage = async ({
 
         <div className="text-center py-8">
           <p className="text-gray-600">
-            📧 Invoice email sent • Access anytime from your page
+            {t("invoiceMessage")}
           </p>
         </div>
       </div>

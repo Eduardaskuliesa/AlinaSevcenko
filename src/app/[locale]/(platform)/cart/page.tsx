@@ -12,8 +12,10 @@ import Link from "next/link";
 import CartSummary from "./components/CartSummary";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 
 const CartPage = () => {
+  const t = useTranslations("CartPage");
   const { cartItems, hydrated, removeFromCart, updateCartItem } =
     useCartStore();
 
@@ -31,15 +33,15 @@ const CartPage = () => {
             const course = result.course as Course;
             if (!course || !course.isPublished) {
               toast.error(
-                `Course "${cartItem.title}" has been removed from your cart because it's no longer available.`,
+                t("courseRemovedUnavailable", { title: cartItem.title }),
                 { duration: 8000 }
               );
 
               toast(
-                (t) => (
+                (toastInstance) => (
                   <div className="flex flex-col gap-2">
                     <div className="flex items-center">
-                      <span>Want this course back?</span>
+                      <span>{t("wantThisCourseBack")}</span>
                     </div>
 
                     <div className="flex gap-2 justify-end">
@@ -49,15 +51,15 @@ const CartPage = () => {
                             `mailto:alinaanancenko@gmail.com?subject=Access Plan Issue`,
                             "_blank"
                           );
-                          toast.dismiss(t.id);
+                          toast.dismiss(toastInstance.id);
                         }}
                         className="bg-primary flex items-center text-white px-2 py-1 rounded text-sm"
                       >
                         <Mail className="mr-1 h-4 w-4" />
-                        Email Us
+                        {t("emailUs")}
                       </button>
                       <button
-                        onClick={() => toast.dismiss(t.id)}
+                        onClick={() => toast.dismiss(toastInstance.id)}
                         className="bg-gray-500 flex items-center text-white px-2 py-1 rounded text-sm"
                       >
                         <X className="h-4 w-4" />
@@ -83,15 +85,15 @@ const CartPage = () => {
 
               if (firstActivePlan) {
                 toast.success(
-                  `Access plan for "${cartItem.title}" was updated to the current available option.`,
+                  t("accessPlanUpdated", { title: cartItem.title }),
                   { duration: 6000 }
                 );
 
                 toast(
-                  (t) => (
+                  (toastInstance) => (
                     <div className="flex flex-col gap-2">
                       <div className="flex items-center">
-                        <span>Need help with access plans?</span>
+                        <span>{t("needHelpWithAccessPlans")}</span>
                       </div>
 
                       <div className="flex gap-2 justify-end">
@@ -101,15 +103,15 @@ const CartPage = () => {
                               `mailto:alinaanancenko@gmail.com?subject=Access Plan Issue`,
                               "_blank"
                             );
-                            toast.dismiss(t.id);
+                            toast.dismiss(toastInstance.id);
                           }}
                           className="bg-primary flex items-center text-white px-2 py-1 rounded text-sm"
                         >
                           <Mail className="mr-1 h-4 w-4" />
-                          Email Us
+                          {t("emailUs")}
                         </button>
                         <button
-                          onClick={() => toast.dismiss(t.id)}
+                          onClick={() => toast.dismiss(toastInstance.id)}
                           className="bg-gray-500 flex items-center text-white px-2 py-1 rounded text-sm"
                         >
                           <X className="h-4 w-4" />
@@ -131,15 +133,15 @@ const CartPage = () => {
                 );
               } else {
                 toast.error(
-                  `No access plans are currently available for "${cartItem.title}". Please contact support.`,
+                  t("noAccessPlansAvailable", { title: cartItem.title }),
                   { duration: 6000 }
                 );
 
                 toast(
-                  (t) => (
+                  (toastInstance) => (
                     <div className="flex flex-col gap-2">
                       <div className="flex items-center">
-                        <span>Need help with access plans?</span>
+                        <span>{t("needHelpWithAccessPlans")}</span>
                       </div>
 
                       <div className="flex gap-2 justify-end">
@@ -149,15 +151,15 @@ const CartPage = () => {
                               `mailto:alinaanancenko@gmail.com?subject=Access Plan Issue`,
                               "_blank"
                             );
-                            toast.dismiss(t.id);
+                            toast.dismiss(toastInstance.id);
                           }}
                           className="bg-primary flex items-center text-white px-2 py-1 rounded text-sm"
                         >
                           <Mail className="mr-1 h-4 w-4" />
-                          Email Us
+                          {t("emailUs")}
                         </button>
                         <button
-                          onClick={() => toast.dismiss(t.id)}
+                          onClick={() => toast.dismiss(toastInstance.id)}
                           className="bg-gray-500 flex items-center text-white px-2 py-1 rounded text-sm"
                         >
                           <X className="h-4 w-4" />
@@ -192,7 +194,7 @@ const CartPage = () => {
         <header className="h-auto pb-4 bg-primary w-full flex">
           <div className="max-w-6xl w-full mx-auto">
             <h1 className="text-4xl px-4 lg:px-2 sm:text-5xl font-times mt-4 font-semibold flex items-center text-gray-100">
-              Shopping Cart
+              {t("shoppingCart")}
             </h1>
           </div>
         </header>
@@ -212,7 +214,7 @@ const CartPage = () => {
         <header className="h-auto pb-4 bg-primary w-full flex">
           <div className="max-w-6xl w-full mx-auto">
             <h1 className="text-4xl px-4 lg:px-2 sm:text-5xl font-times mt-4 font-semibold flex items-center text-gray-100">
-              Shopping Cart
+              {t("shoppingCart")}
             </h1>
           </div>
         </header>
@@ -233,7 +235,7 @@ const CartPage = () => {
       <header className="h-auto pb-4 bg-primary w-full flex">
         <div className="max-w-6xl w-full mx-auto">
           <h1 className="text-4xl px-4 lg:px-2 sm:text-5xl font-times mt-4 font-semibold text-gray-100">
-            Shopping Cart
+            {t("shoppingCart")}
           </h1>
         </div>
       </header>
@@ -241,9 +243,9 @@ const CartPage = () => {
         <div className="w-full lg:w-[70%] py-4">
           {cartItems.length === 0 ? (
             <div className="text-center text-gray-500 mt-10">
-              <h2 className="text-2xl font-semibold">Your cart is empty</h2>
+              <h2 className="text-2xl font-semibold">{t("yourCartIsEmpty")}</h2>
               <Link href={"/courses"} className="underline">
-                Browse courses
+                {t("browseCourses")}
               </Link>
             </div>
           ) : (

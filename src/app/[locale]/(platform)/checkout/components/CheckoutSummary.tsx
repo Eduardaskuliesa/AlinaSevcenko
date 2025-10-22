@@ -7,8 +7,10 @@ import { CreditCard, Loader2 } from "lucide-react";
 import { CheckoutSummarySkeleton } from "./CheckoutSummarySkeleton";
 import { useElements, useStripe } from "@stripe/react-stripe-js";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 const CheckoutSummary = () => {
+  const t = useTranslations("CheckoutSummary");
   const { totalPrice, totalItems, cartItems, hydrated } = useCartStore();
   const stripe = useStripe();
   const elements = useElements();
@@ -32,33 +34,33 @@ const CheckoutSummary = () => {
       });
 
       if (error) {
-        setErrorMessage(error.message || "An error occurred");
+        setErrorMessage(error.message || t("errorOccurred"));
       }
     } catch (err) {
       console.error("Payment error:", err);
-      setErrorMessage("Payment failed. Please try again.");
+      setErrorMessage(t("paymentFailed"));
     } finally {
       setIsProcessing(false);
     }
   };
 
   const formatDuration = (days: number) => {
-    if (days === 0) return "Lifetime";
-    if (days < 30) return `${days} days`;
-    if (days < 365) return `${Math.floor(days / 30)} months`;
-    return `${Math.floor(days / 365)} years`;
+    if (days === 0) return t("lifetime");
+    if (days < 30) return `${days} ${t("days")}`;
+    if (days < 365) return `${Math.floor(days / 30)} ${t("months")}`;
+    return `${Math.floor(days / 365)} ${t("years")}`;
   };
 
   if (!hydrated) return <CheckoutSummarySkeleton />;
 
   return (
     <div className="lg:w-[30%] lg:mt-6 sticky top-[2rem] h-fit bg-white border-primary-light/60 border-2 rounded-lg pt-4 mx-4 mb-4 px-4 pb-6">
-      <h3 className="font-semibold text-lg text-gray-800">Checkout summary</h3>
+      <h3 className="font-semibold text-lg text-gray-800">{t("checkoutSummary")}</h3>
       <p className="text-gray-600">
-        {totalItems} {totalItems === 1 ? "item" : "items"}
+        {totalItems} {totalItems === 1 ? t("item") : t("items")}
       </p>
       {cartItems.length === 0 ? (
-        <div className="text-center py-8 text-gray-500">Your cart is empty</div>
+        <div className="text-center py-8 text-gray-500">{t("emptyCart")}</div>
       ) : (
         <>
           {cartItems.map((item) => (
@@ -78,7 +80,7 @@ const CheckoutSummary = () => {
 
           <div className="pt-4 border-t">
             <div className="flex justify-between font-semibold text-lg">
-              <span>Total:</span>
+              <span>{t("total")}:</span>
               <span>€{totalPrice}</span>
             </div>
           </div>
@@ -92,12 +94,12 @@ const CheckoutSummary = () => {
             >
               {isProcessing ? (
                 <>
-                  Processing...
+                  {t("processing")}
                   <Loader2 className="w-5 h-5 ml-2 text-white animate-spin" />
                 </>
               ) : (
                 <>
-                  Complete Payment
+                  {t("completePayment")}
                   <CreditCard className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-all text-white" />
                 </>
               )}
@@ -114,7 +116,7 @@ const CheckoutSummary = () => {
                 whileTap={{ scale: 0.96 }}
                 className="w-full mt-4 flex items-center justify-center underline text-gray-800 font-medium"
               >
-                Continue Shopping
+                {t("continueShopping")}
               </motion.button>
             </Link>
           </div>

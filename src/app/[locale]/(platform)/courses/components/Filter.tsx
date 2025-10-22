@@ -4,6 +4,7 @@ import DurationFilter from "../filters/DurationFilter";
 import LanguageFilter from "../filters/LangugeFilter";
 import CategoryFilter from "../filters/CategoryFilter";
 import { SlidersHorizontal } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -29,6 +30,8 @@ const Filter = ({
   updateLanguageFilter,
   clearFitlers,
 }: FilterProps) => {
+  const t = useTranslations("CoursesPage");
+  
   const activeFilterCount =
     filters.durations.length +
     filters.languages.length +
@@ -41,7 +44,7 @@ const Filter = ({
           <SheetTrigger asChild>
             <Button variant="outline" className="w-[60%]">
               <SlidersHorizontal className="h-5 w-5 mr-2" />
-              Filters
+              {t("filters")}
               {activeFilterCount > 0 && (
                 <span className="ml-2 bg-primary text-white rounded-full px-2 py-0.5 text-sm">
                   {activeFilterCount}
@@ -54,7 +57,7 @@ const Filter = ({
             className="w-80 overflow-y-auto bg-white p-2"
           >
             <SheetHeader className="pt-2 px-0 pb-0 flex justify-center">
-              <SheetTitle>Filters</SheetTitle>
+              <SheetTitle>{t("filters")}</SheetTitle>
             </SheetHeader>
             <div className="mt-4">
               <DurationFilter
@@ -74,7 +77,7 @@ const Filter = ({
                 onClick={clearFitlers}
                 variant={"outline"}
               >
-                Clear filters
+                {t("clearFilters")}
               </Button>
             </div>
           </SheetContent>
@@ -84,7 +87,7 @@ const Filter = ({
           onClick={clearFitlers}
           variant={"outline"}
         >
-          Clear filters
+          {t("clearFilters")}
         </Button>
       </div>
 

@@ -5,8 +5,11 @@ import { Label } from "@/components/ui/label";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 const LanguagePreference = () => {
+  const t = useTranslations("UserProfilePage");
+
   const params = useParams();
   const session = useSession();
   const userId = session.data?.user.id;
@@ -16,13 +19,13 @@ const LanguagePreference = () => {
 
   const changeLanguage = (locale: string) => {
     if (locale === currentLocale) return;
-    updatePreferences({ languge: locale }, userId || "");
     router.push(`/${locale}/user/profile`);
+    updatePreferences({ languge: locale }, userId || "");
   };
 
   return (
     <div className="space-y-2">
-      <Label>Language Preference</Label>
+      <Label>{t("languagePreference")}</Label>
       <div className="flex gap-2">
         <Button
           onClick={() => changeLanguage("lt")}
@@ -40,7 +43,7 @@ const LanguagePreference = () => {
             alt="LT"
             className="w-5 h-4"
           />
-          <span>Lithuanian</span>
+          <span>{t("lithuanian")}</span>
         </Button>
         <Button
           onClick={() => changeLanguage("ru")}
@@ -58,7 +61,7 @@ const LanguagePreference = () => {
             alt="RU"
             className="w-5 h-4"
           />
-          <span>Russian</span>
+          <span>{t("russian")}</span>
         </Button>
       </div>
     </div>

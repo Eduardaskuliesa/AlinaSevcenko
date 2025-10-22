@@ -5,6 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { categoryActions } from "@/app/actions/category";
+import { useTranslations } from "next-intl";
 
 interface CategoryFilterProps {
   selectedCategories: string[];
@@ -15,6 +16,7 @@ const CategoryFilter = ({
   selectedCategories,
   setSelectedCategories,
 }: CategoryFilterProps) => {
+  const t = useTranslations("CoursesPage");
   const { data: categoryData, isLoading: isCategoryLoading } = useQuery({
     queryKey: ["client-categories"],
     queryFn: async () => categoryActions.getAllCategoriesUP(),
@@ -38,7 +40,7 @@ const CategoryFilter = ({
         className="flex flex-row justify-between w-full items-center cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <p className="text-xl font-semibold text-gray-800">Category</p>
+        <p className="text-xl font-semibold text-gray-800">{t("category")}</p>
         <div
           className={`p-1 bg-primary-light rounded-md transition-transform duration-200 ${
             isOpen ? "" : "rotate-180"
@@ -64,11 +66,11 @@ const CategoryFilter = ({
             <div className="flex flex-col mt-2 space-y-2 pt-2">
               {isCategoryLoading ? (
                 <div className="text-sm text-gray-500">
-                  Loading categories...
+                  {t("loadingCategories")}
                 </div>
               ) : categories.length === 0 ? (
                 <div className="text-sm text-gray-500">
-                  No categories available
+                  {t("noCategoriesAvailable")}
                 </div>
               ) : (
                 categories.map((category) => (

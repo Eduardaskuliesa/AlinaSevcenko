@@ -5,11 +5,13 @@ import Image from "next/image";
 import { motion } from "motion/react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 const WishlistWrapper = () => {
   const { wishlistItems, removeFromWishlist, addToCart } = useCartStore();
   const userId = useSession().data?.user.id || "";
   const [removingId, setRemovingId] = useState<string | null>(null);
+  const t = useTranslations("MyCourses.WishlistPage");
 
   const handleAddToCart = (item: (typeof wishlistItems)[0]) => {
     addToCart(item, item.isFromPrice);
@@ -31,9 +33,9 @@ const WishlistWrapper = () => {
   if (wishlistItems.length === 0) {
     return (
       <div className="text-center text-gray-500 mt-10">
-        <h2 className="text-2xl font-semibold mb-2">Your wishlist is empty</h2>
+        <h2 className="text-2xl font-semibold mb-2">{t("empty")}</h2>
         <Link href="/courses" className="text-pink-900 underline font-medium">
-          Browse courses
+          {t("browseCourses")}
         </Link>
       </div>
     );
@@ -70,7 +72,7 @@ const WishlistWrapper = () => {
             </div>
 
             <div className="text-lg font-bold text-gray-800">
-              {item.isFromPrice && "From "}€{item.price.toFixed(2)}
+              {item.isFromPrice && `${t("from")} `}€{item.price.toFixed(2)}
             </div>
 
             <div className="flex gap-2 pt-2">
@@ -79,14 +81,14 @@ const WishlistWrapper = () => {
                 onClick={() => handleAddToCart(item)}
                 className="flex-1 bg-primary hover:bg-primary/90 text-white font-medium py-2 rounded-md transition-colors text-sm"
               >
-                Add to Cart
+                {t("addToCart")}
               </motion.button>
               <motion.button
                 whileTap={{ scale: 0.96 }}
                 onClick={() => handleRemove(item.courseId)}
                 className="flex-1 border border-gray-300 bg-primary-light hover:bg-primary-light/80 text-gray-700 font-medium py-2 rounded-md transition-colors text-sm"
               >
-                Remove
+                {t("remove")}
               </motion.button>
             </div>
           </div>

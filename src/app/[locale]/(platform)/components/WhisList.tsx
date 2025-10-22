@@ -8,8 +8,10 @@ import { CartItem } from "@/app/types/cart";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 
 function WishListItem({ item, isLast }: { item: CartItem; isLast: boolean }) {
+  const t = useTranslations("WishList");
   const { addToCart, removeFromWishlist } = useCartStore();
   const [isRemoving, setIsRemoving] = useState(false);
 
@@ -56,7 +58,7 @@ function WishListItem({ item, isLast }: { item: CartItem; isLast: boolean }) {
             {item.title}
           </h3>
           <div className="text-sm text-gray-600 font-medium">
-            {item.isFromPrice ? "From " : ""}${item.price.toFixed(2)}
+            {item.isFromPrice ? `${t("from")} ` : ""}${item.price.toFixed(2)}
           </div>
         </div>
       </div>
@@ -65,7 +67,7 @@ function WishListItem({ item, isLast }: { item: CartItem; isLast: boolean }) {
         onClick={handleAddToCart}
         className="w-full border-primary-light border hover:bg-primary/30 text-pink-900 font-medium py-1 rounded-md transition-colors"
       >
-        Add to Cart
+        {t("addToCart")}
       </motion.button>
     </motion.div>
   );
@@ -76,6 +78,7 @@ function GoToWishListButton({
 }: {
   setOpenDropdown: Dispatch<SetStateAction<string | null>>;
 }) {
+  const t = useTranslations("WishList");
   const closeDropdown = () => {
     setOpenDropdown(null);
   };
@@ -86,7 +89,7 @@ function GoToWishListButton({
           whileTap={{ scale: 0.96, translateY: 2 }}
           className="w-full bg-primary-light border hover:bg-primary-light/80 text-gray-800 font-medium py-1 rounded-md transition-colors"
         >
-          Go to Wishlist
+          {t("goToWishlist")}
         </motion.button>
       </Link>
     </div>
@@ -100,6 +103,7 @@ const WhishList = ({
   openDropdown: string | null;
   setOpenDropdown: Dispatch<SetStateAction<string | null>>;
 }) => {
+  const t = useTranslations("WishList");
   const { wishlistItems } = useCartStore();
   const pathname = usePathname();
   const isOnWishlistPage = pathname.endsWith("/my-courses/wishlist");
@@ -131,11 +135,11 @@ const WhishList = ({
         <div className="py-4">
           <div className="text-center">
             <h3 className="text-base font-medium mb-2">
-              Your wishlist is empty
+              {t("yourWishlistIsEmpty")}
             </h3>
             <Link href={"/courses"} onClick={() => setOpenDropdown(null)}>
               <p className="text-pink-900 font-medium text-base">
-                Explore courses
+                {t("exploreCourses")}
               </p>
             </Link>
           </div>

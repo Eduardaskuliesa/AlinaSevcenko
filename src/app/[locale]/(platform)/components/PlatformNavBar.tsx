@@ -17,8 +17,10 @@ import toast from "react-hot-toast";
 import WhisList from "./WhisList";
 import CartList from "./CartList";
 import { useCartStore } from "@/app/store/useCartStore";
+import { useTranslations } from "next-intl";
 
 const PlatformNavBar = () => {
+  const t = useTranslations("PlatformNav");
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const { totalItems, clearCartOnLogout, clearWishlist } = useCartStore();
@@ -54,7 +56,7 @@ const PlatformNavBar = () => {
   const handleLogout = async () => {
     try {
       window.location.replace("/login");
-      toast.success("Successfully logged out");
+      toast.success(t("logoutSuccess"));
       await signOut({
         redirect: false,
       });
@@ -62,7 +64,7 @@ const PlatformNavBar = () => {
       clearWishlist();
     } catch (error) {
       console.error("Logout error:", error);
-      toast.error("There was an error logging out. Please try again.");
+      toast.error(t("logoutError"));
     }
   };
 
@@ -78,20 +80,20 @@ const PlatformNavBar = () => {
         <Link href="/courses">
           <div className="flex items-center  gap-1.5 p-2  hover:bg-secondary hover:text-orange-900 cursor-pointer rounded-md transition-colors duration-200">
             <BookOpen className="w-5 h-5" />
-            <span>Courses</span>
+            <span>{t("courses")}</span>
           </div>
         </Link>
         <Link href="/my-courses/courses">
           <div className="flex items-center  gap-1.5 p-2  hover:bg-secondary hover:text-orange-900 cursor-pointer rounded-md transition-colors duration-200">
             <LibraryBig className="w-5 h-5" />
-            <span>My learning</span>
+            <span>{t("myLearning")}</span>
           </div>
         </Link>
 
         <Link href="/user/profile">
           <div className="flex items-center gap-1.5 p-2 hover:bg-secondary hover:text-orange-900  cursor-pointer rounded-md transition-colors duration-200">
             <User className="w-5 h-5" />
-            <span>My profile</span>
+            <span>{t("myProfile")}</span>
           </div>
         </Link>
 
@@ -174,17 +176,17 @@ const PlatformNavBar = () => {
               <ProfileMenuItem
                 href="/my-courses/courses"
                 icon={<BookOpen className="w-4 h-4" />}
-                title="My courses"
+                title={t("myCourses")}
               />
               <ProfileMenuItem
                 href="/my-courses/wishlist"
                 icon={<Heart className="w-4 h-4" />}
-                title="My wishlist"
+                title={t("myWishlist")}
               />
               <ProfileMenuItem
                 href="/cart"
                 icon={<ShoppingCart className="w-4 h-4" />}
-                title="My cart"
+                title={t("myCart")}
               />
 
               <div className="h-px bg-gray-200 my-2 mx-3"></div>
@@ -192,7 +194,7 @@ const PlatformNavBar = () => {
               <ProfileMenuItem
                 href="/user/profile"
                 icon={<Globe className="w-4 h-4" />}
-                title="Language"
+                title={t("language")}
               />
 
               <div className="h-px bg-gray-200 my-2 mx-3"></div>
@@ -200,7 +202,7 @@ const PlatformNavBar = () => {
               <ProfileMenuItem
                 href="/user/profile"
                 icon={<User className="w-4 h-4" />}
-                title="My account"
+                title={t("myAccount")}
               />
 
               <div className="h-px bg-gray-200 my-2 mx-3"></div>
@@ -208,7 +210,7 @@ const PlatformNavBar = () => {
               <LogoutMenuItem
                 onClick={handleLogout}
                 icon={<LogOut className="w-4 h-4" />}
-                title="Logout"
+                title={t("logout")}
                 className="text-red-500 hover:text-red-700 hover:bg-red-200"
               />
             </div>

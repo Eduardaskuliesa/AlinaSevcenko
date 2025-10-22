@@ -7,6 +7,7 @@ import { FilteredCourse } from "@/app/types/course";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import ActionButtonts from "./ActionButtonts";
+import { useTranslations } from "next-intl";
 
 interface CourseCardProps {
   course: FilteredCourse;
@@ -14,6 +15,8 @@ interface CourseCardProps {
 }
 
 const CourseCard = ({ course, lowestPrice }: CourseCardProps) => {
+  const t = useTranslations("CoursesPage.courseCard");
+
   return (
     <Link href={`/courses/${course.slug}`}>
       <motion.div
@@ -60,7 +63,7 @@ const CourseCard = ({ course, lowestPrice }: CourseCardProps) => {
               <div className="flex items-center gap-4 text-sm text-gray-500">
                 <div className="flex items-center gap-1">
                   <BookOpen className="h-4 w-4 text-primary" />
-                  <span>{course.readyLessonCount} lessons</span>
+                  <span>{course.readyLessonCount} {t("lessons")}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Clock className="h-4 w-4 text-primary" />
@@ -72,7 +75,7 @@ const CourseCard = ({ course, lowestPrice }: CourseCardProps) => {
             <div className="md:ml-4 md:min-w-[120px] flex justify-start md:justify-end mt-2 md:mt-0">
               {lowestPrice !== null && (
                 <div className="bg-secondary px-3 py-1 rounded-full text-orange-900 font-semibold text-sm h-fit">
-                  From ${lowestPrice.toFixed(2)}
+                  {t("from")} ${lowestPrice.toFixed(2)}
                 </div>
               )}
             </div>

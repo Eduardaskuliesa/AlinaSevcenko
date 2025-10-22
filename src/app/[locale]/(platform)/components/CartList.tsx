@@ -5,9 +5,12 @@ import React, { Dispatch, SetStateAction } from "react";
 import Image from "next/image";
 import { motion } from "motion/react";
 import { useCartStore } from "@/app/store/useCartStore";
+import { useTranslations } from "next-intl";
 
 
 function CartListItem({ item, isLast }: { item: CartItem; isLast: boolean }) {
+  const t = useTranslations("CartList");
+  
   return (
     <div className={cn("p-3", !isLast && "border-b border-primary-light")}>
       <Link href={`/courses/${item.slug}?price=${item.price}`}>
@@ -25,7 +28,7 @@ function CartListItem({ item, isLast }: { item: CartItem; isLast: boolean }) {
               {item.title}
             </h3>
             <div className="text-sm text-gray-600 font-medium">
-              {item.isFromPrice ? "From " : ""}${item.price.toFixed(2)}
+              {item.isFromPrice ? `${t("from")} ` : ""}${item.price.toFixed(2)}
             </div>
           </div>
         </div>
@@ -39,6 +42,7 @@ function GoToCartButton({
 }: {
   setOpenDropdown: Dispatch<SetStateAction<string | null>>;
 }) {
+  const t = useTranslations("CartList");
   const { totalPrice } = useCartStore();
   const closeDropdown = () => {
     setOpenDropdown(null);
@@ -46,7 +50,7 @@ function GoToCartButton({
   return (
     <div className="p-3 bg-white shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_-2px_4px_-1px_rgba(0,0,0,0.06)]">
       <p className="text-lg font-medium text-gray-800 mb-2">
-        Total:{totalPrice}$
+        {t("total")}:{totalPrice}$
       </p>
       <Link
         onClick={() => {
@@ -58,7 +62,7 @@ function GoToCartButton({
           whileTap={{ scale: 0.96, translateY: 2 }}
           className="w-full bg-primary-light border hover:bg-primary-light/80 text-gray-800 font-medium py-1 rounded-md transition-colors"
         >
-          Go to Cart
+          {t("goToCart")}
         </motion.button>
       </Link>
     </div>
@@ -72,6 +76,7 @@ const CartList = ({
   openDropdown: string | null;
   setOpenDropdown: Dispatch<SetStateAction<string | null>>;
 }) => {
+  const t = useTranslations("CartList");
   const { cartItems } = useCartStore();
   return (
     <div
@@ -97,10 +102,10 @@ const CartList = ({
           </>
         ) : (
           <div className="text-center py-4">
-            <h3 className="text-base font-medium mb-2">Your cart is empty</h3>
+            <h3 className="text-base font-medium mb-2">{t("yourCartIsEmpty")}</h3>
             <Link href={"/courses"}>
               <p className="text-pink-900 font-medium text-base">
-                Keep shoping
+                {t("keepShopping")}
               </p>
             </Link>
           </div>
