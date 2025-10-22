@@ -1,82 +1,21 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import { useCartStore } from "@/app/store/useCartStore";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { CreditCard, Loader2 } from "lucide-react";
 import { CheckoutSummarySkeleton } from "./CheckoutSummarySkeleton";
 import { useElements, useStripe } from "@stripe/react-stripe-js";
 import { useParams } from "next/navigation";
-import { useCheckoutStore } from "@/app/store/useCheckoutStore";
-import { useSession } from "next-auth/react";
-import toast from "react-hot-toast";
 
 const CheckoutSummary = () => {
   const { totalPrice, totalItems, cartItems, hydrated } = useCartStore();
-  const { clientSecret, setCheckoutData, checkoutItems } = useCheckoutStore();
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const params = useParams();
   const locale = params.locale;
-  const session = useSession();
-  const userId = session.data?.user.id;
-
-  const isUpdatingRef = useRef(false);
-
-  useEffect(() => {
-    if (clientSecret && checkoutItems.length > 0 && !isUpdatingRef.current) {
-      const cartItemsData = cartItems
-        .map((item) => ({
-          courseId: item.courseId,
-          price: item.price,
-          accessPlanId: item.accessPlanId,
-          accessDuration: item.accessDuration,
-        }))
-        .sort((a, b) => a.courseId.localeCompare(b.courseId));
-
-      const checkoutItemsData = checkoutItems
-        .map((item) => ({
-          courseId: item.courseId,
-          price: item.price,
-          accessPlanId: item.accessPlanId,
-          accessDuration: item.accessDuration,
-        }))
-        .sort((a, b) => a.courseId.localeCompare(b.courseId));
-
-      const itemsChanged =
-        JSON.stringify(cartItemsData) !== JSON.stringify(checkoutItemsData);
-
-      if (itemsChanged) {
-        isUpdatingRef.current = true;
-
-        const recreatePaymentIntent = async () => {
-          try {
-            const response = await fetch("/api/create-payment-intent", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ cartItems, userId }),
-            });
-
-            const { clientSecret: newClientSecret } = await response.json();
-            setCheckoutData({
-              items: cartItems,
-              clientSecret: newClientSecret,
-              userId: userId || "",
-            });
-
-            toast.success("Cart updated, please proceed with payment");
-          } finally {
-            isUpdatingRef.current = false;
-          }
-        };
-
-        recreatePaymentIntent();
-      }
-    }
-  }, [cartItems, checkoutItems, clientSecret]);
 
   const handlePayment = async () => {
     if (!stripe || !elements) return;
@@ -96,7 +35,8 @@ const CheckoutSummary = () => {
         setErrorMessage(error.message || "An error occurred");
       }
     } catch (err) {
-      if (err) setErrorMessage("Payment failed. Please try again.");
+      console.error("Payment error:", err);
+      setErrorMessage("Payment failed. Please try again.");
     } finally {
       setIsProcessing(false);
     }
@@ -112,7 +52,7 @@ const CheckoutSummary = () => {
   if (!hydrated) return <CheckoutSummarySkeleton />;
 
   return (
-    <div className="lg:w-[30%]  lg:mt-6 sticky top-[2rem] h-fit bg-white border-primary-light/60 border-2 rounded-lg pt-4 mx-4 mb-4 px-4 pb-6">
+    <div className="lg:w-[30%] lg:mt-6 sticky top-[2rem] h-fit bg-white border-primary-light/60 border-2 rounded-lg pt-4 mx-4 mb-4 px-4 pb-6">
       <h3 className="font-semibold text-lg text-gray-800">Checkout summary</h3>
       <p className="text-gray-600">
         {totalItems} {totalItems === 1 ? "item" : "items"}
@@ -143,7 +83,7 @@ const CheckoutSummary = () => {
             </div>
           </div>
 
-          <div className="pt-4 space-y-3 ">
+          <div className="pt-4 space-y-3">
             <motion.button
               onClick={handlePayment}
               disabled={!stripe || isProcessing}
@@ -169,10 +109,10 @@ const CheckoutSummary = () => {
               </div>
             )}
 
-            <Link href={"/courses"}>
+            <Link href={`/${locale}/courses`}>
               <motion.button
                 whileTap={{ scale: 0.96 }}
-                className="w-full mt-4 flex  items-center justify-center underline text-gray-800  font-medium"
+                className="w-full mt-4 flex items-center justify-center underline text-gray-800 font-medium"
               >
                 Continue Shopping
               </motion.button>

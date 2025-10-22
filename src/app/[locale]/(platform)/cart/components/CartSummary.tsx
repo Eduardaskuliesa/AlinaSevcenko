@@ -5,43 +5,19 @@ import { motion } from "motion/react";
 import Link from "next/link";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { useCheckoutStore } from "@/app/store/useCheckoutStore";
 
 const CartSummary = () => {
   const { totalPrice, totalItems, cartItems } = useCartStore();
-  const { setCheckoutData } = useCheckoutStore();
   const [redirecting, setRedirecting] = useState(false);
   const router = useRouter();
 
   const params = useParams();
   const locale = params.locale;
-  const userId = useSession().data?.user.id;
 
   const handleCheckout = async () => {
     setRedirecting(true);
-    try {
-      const response = await fetch("/api/create-payment-intent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          cartItems: cartItems,
-          userId: userId,
-        }),
-      });
-      const { clientSecret } = await response.json();
-      if (clientSecret) {
-        setCheckoutData({
-          clientSecret: clientSecret,
-          items: cartItems,
-          userId: userId || "",
-        });
-        router.push(`/${locale}/checkout`);
-      }
-    } catch (error) {
-      console.error("Checkout error:", error);
-      setRedirecting(false);
-    }
+
+    router.push(`/${locale}/checkout`);
   };
 
   const formatDuration = (days: number) => {
