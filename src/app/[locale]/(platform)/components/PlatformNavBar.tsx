@@ -56,7 +56,7 @@ const PlatformNavBar = () => {
   const handleLogout = async () => {
     try {
       window.location.replace("/login");
-      toast.success(t("logoutSuccess"));
+      toast.success(t("successfullyLoggedOut"));
       await signOut({
         redirect: false,
       });

@@ -15,6 +15,7 @@ import { signOut, useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { useCartStore } from "@/app/store/useCartStore";
+import { useTranslations } from "next-intl";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -23,6 +24,7 @@ interface MobileMenuProps {
 
 const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
   const session = useSession();
+  const t = useTranslations("PlatformNav")
   const { clearCartOnLogout, clearWishlist } = useCartStore();
 
   useEffect(() => {
@@ -41,7 +43,7 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
       await signOut({ redirect: false });
       clearCartOnLogout();
       clearWishlist();
-      toast.success("Successfully logged out");
+      toast.success(t("successfullyLoggedOut"));
       window.location.replace("/login");
     } catch (error) {
       console.error("Logout error:", error);
