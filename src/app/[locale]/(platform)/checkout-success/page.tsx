@@ -46,6 +46,8 @@ const CheckoutSuccessPage = async ({
       );
     }
   }
+
+  console.log(courses);
   return (
     <div className="">
       <div className="bg-primary text-gray-50">
@@ -53,7 +55,7 @@ const CheckoutSuccessPage = async ({
           <h1 className="text-4xl sm:text-5xl font-bold mb-2 font-times">
             {t("paymentSuccessful")}
           </h1>
-          <p className="text-2xl font-times">{t("welcomeMessage")}</p>
+          <p className="text-2xl font-times">{t("welcomeToNewCourses")}</p>
         </div>
       </div>
 
@@ -92,10 +94,11 @@ const CheckoutSuccessPage = async ({
                     <h3 className="font-semibold text-gray-900 mb-1">
                       {course.title}
                     </h3>
-                    <div className="hidden sm:flex items-center gap-4 text-sm text-gray-500">
+                    <div className="flex  items-center gap-4 text-sm text-gray-500">
                       <span className="flex items-center gap-1">
                         <BookOpen className="w-3 h-3" />
-                        {t("lessons", { count: course.lessonCount })}
+                        {course.lessonOrder?.length || 0}{" "}  
+                        {t("lessons")}
                       </span>
                       <span className="flex items-center gap-1">
                         <Clock className="w-3 h-3" />
@@ -104,7 +107,7 @@ const CheckoutSuccessPage = async ({
                     </div>
                   </div>
                   <div className="text-green-600 font-medium text-sm">
-                    ✓ {t("accessGranted")}
+                    {t("accessGranted")}
                   </div>
                 </div>
               ))}
@@ -114,12 +117,8 @@ const CheckoutSuccessPage = async ({
           <div className="bg-slate-50 px-6 py-6 border-t border-gray-200">
             <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
               <div className="text-center sm:text-left">
-                <p className="font-medium text-gray-900">
-                  {t("readyToStart")}
-                </p>
-                <p className="text-sm text-gray-600">
-                  {t("coursesAvailable")}
-                </p>
+                <p className="font-medium text-gray-900">{t("readyToStartLearning")}</p>
+                <p className="text-sm text-gray-600">{t("coursesAvailableInDashboard")}</p>
               </div>
               <StartLearningButton></StartLearningButton>
             </div>
@@ -127,9 +126,7 @@ const CheckoutSuccessPage = async ({
         </div>
 
         <div className="text-center py-8">
-          <p className="text-gray-600">
-            {t("invoiceMessage")}
-          </p>
+          <p className="text-gray-600">{t("invoiceEmailSent")}</p>
         </div>
       </div>
 
