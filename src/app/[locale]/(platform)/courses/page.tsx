@@ -6,8 +6,6 @@ import { coursesAction } from "@/app/actions/coursers";
 import { categoryActions } from "@/app/actions/category";
 import { getTranslations } from "next-intl/server";
 
-export const dynamic = "force-static";
-
 export default async function CoursePage() {
   const queryClient = getQueryClient();
   const t = await getTranslations("CoursesPage");
