@@ -3,6 +3,7 @@ import { getCourseWithPreviewLesson } from "@/app/actions/coursers/course/getCou
 import CoursePageClient from "./ClientCoursePage";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/app/lib/getQueryClient";
+import { Suspense } from "react";
 
 export const dynamicParams = true;
 export const revalidate = 72000;
@@ -40,7 +41,9 @@ export default async function CourseIdPage({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <CoursePageClient slugs={slugs} locale={locale} />
+      <Suspense>
+        <CoursePageClient slugs={slugs} locale={locale} />
+      </Suspense>
     </HydrationBoundary>
   );
 }

@@ -21,8 +21,14 @@ export function generateStaticParams() {
 
 export const dynamic = "force-static";
 
-export default async function PrivacyPolicy() {
-  const t = await getTranslations("PrivacyPage");
+export default async function PrivacyPolicy({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "PrivacyPage" });
+
   return (
     <>
       <header className="h-auto pb-4 bg-primary w-full flex">

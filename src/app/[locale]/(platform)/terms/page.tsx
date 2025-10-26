@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("TermsPage.metadata");
-  
+
   return {
     title: t("title"),
     description: t("description"),
@@ -22,8 +22,13 @@ export function generateStaticParams() {
 
 export const dynamic = "force-static";
 
-export default async function TermsOfService() {
-  const t = await getTranslations("TermsPage");
+export default async function TermsOfService({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "TermsPage" });
 
   return (
     <>
@@ -63,16 +68,51 @@ export default async function TermsOfService() {
                   <div className="bg-blue-50 border-l-4 border-blue-500 p-4">
                     <ul className="list-disc list-inside text-gray-700 space-y-2">
                       <li>
-                        <strong>1 {t("sections.courseAccess.options.oneMonth").split(":")[0]}:</strong>{" "}
-                        {t("sections.courseAccess.options.oneMonth").split(":")[1]}
+                        <strong>
+                          1{" "}
+                          {
+                            t("sections.courseAccess.options.oneMonth").split(
+                              ":"
+                            )[0]
+                          }
+                          :
+                        </strong>{" "}
+                        {
+                          t("sections.courseAccess.options.oneMonth").split(
+                            ":"
+                          )[1]
+                        }
                       </li>
                       <li>
-                        <strong>3 {t("sections.courseAccess.options.threeMonths").split(":")[0]}:</strong>{" "}
-                        {t("sections.courseAccess.options.threeMonths").split(":")[1]}
+                        <strong>
+                          3{" "}
+                          {
+                            t(
+                              "sections.courseAccess.options.threeMonths"
+                            ).split(":")[0]
+                          }
+                          :
+                        </strong>{" "}
+                        {
+                          t("sections.courseAccess.options.threeMonths").split(
+                            ":"
+                          )[1]
+                        }
                       </li>
                       <li>
-                        <strong>{t("sections.courseAccess.options.lifetime").split(":")[0]}:</strong>{" "}
-                        {t("sections.courseAccess.options.lifetime").split(":")[1]}
+                        <strong>
+                          {
+                            t("sections.courseAccess.options.lifetime").split(
+                              ":"
+                            )[0]
+                          }
+                          :
+                        </strong>{" "}
+                        {
+                          t("sections.courseAccess.options.lifetime").split(
+                            ":"
+                          )[1]
+                        }
                       </li>
                     </ul>
                   </div>
@@ -118,9 +158,15 @@ export default async function TermsOfService() {
                   {t("sections.userAccount.intro")}
                 </p>
                 <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
-                  <li>{t("sections.userAccount.responsibilities.credentials")}</li>
-                  <li>{t("sections.userAccount.responsibilities.activities")}</li>
-                  <li>{t("sections.userAccount.responsibilities.unauthorized")}</li>
+                  <li>
+                    {t("sections.userAccount.responsibilities.credentials")}
+                  </li>
+                  <li>
+                    {t("sections.userAccount.responsibilities.activities")}
+                  </li>
+                  <li>
+                    {t("sections.userAccount.responsibilities.unauthorized")}
+                  </li>
                   <li>{t("sections.userAccount.responsibilities.accurate")}</li>
                 </ul>
                 <p className="text-gray-700 leading-relaxed mt-4">
@@ -136,12 +182,18 @@ export default async function TermsOfService() {
                   <p className="text-gray-700 leading-relaxed">
                     {t("sections.intellectualProperty.intro")}
                   </p>
-                  <p className="text-gray-700 leading-relaxed">{t("sections.intellectualProperty.prohibited")}</p>
+                  <p className="text-gray-700 leading-relaxed">
+                    {t("sections.intellectualProperty.prohibited")}
+                  </p>
                   <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
-                    <li>{t("sections.intellectualProperty.actions.download")}</li>
+                    <li>
+                      {t("sections.intellectualProperty.actions.download")}
+                    </li>
                     <li>{t("sections.intellectualProperty.actions.share")}</li>
                     <li>{t("sections.intellectualProperty.actions.record")}</li>
-                    <li>{t("sections.intellectualProperty.actions.commercial")}</li>
+                    <li>
+                      {t("sections.intellectualProperty.actions.commercial")}
+                    </li>
                     <li>{t("sections.intellectualProperty.actions.resell")}</li>
                   </ul>
                 </div>
@@ -237,9 +289,13 @@ export default async function TermsOfService() {
                 </p>
                 <div className="bg-gray-50 rounded-lg p-4 mt-4">
                   <p className="text-gray-700">
-                    <strong>{t("sections.contactInformation.email")}</strong> support@yourplatform.com
+                    <strong>{t("sections.contactInformation.email")}</strong>{" "}
+                    support@yourplatform.com
                     <br />
-                    <strong>{t("sections.contactInformation.address")}</strong> [Your Company Address]
+                    <strong>
+                      {t("sections.contactInformation.address")}
+                    </strong>{" "}
+                    [Your Company Address]
                   </p>
                 </div>
               </section>

@@ -1,4 +1,3 @@
-"use client";
 import MobilePlatformNavBar from "./MobilePlatfromNavBar";
 import PlatformNavBar from "./PlatformNavBar";
 const ResponsiveNavBar = () => {
