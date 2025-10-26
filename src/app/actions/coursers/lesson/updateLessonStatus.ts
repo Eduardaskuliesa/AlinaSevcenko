@@ -36,6 +36,7 @@ export async function updateLessonStatus(data: UpdateLessonStatusData) {
     revalidateTag(`course-${data.courseId}`);
     revalidateTag(`user-lesson-${data.courseId}`);
     revalidateTag(`client-lessons-${data.courseId}`);
+    revalidateTag(`learning-data-${data.courseId}`);
     revalidateTag(`lesson-${data.lessonId}`);
     revalidateTag(`courses`);
     revalidatePath(`/lt/courses/${data.courseId}`);

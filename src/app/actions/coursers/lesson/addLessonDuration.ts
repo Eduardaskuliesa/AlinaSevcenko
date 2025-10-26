@@ -96,13 +96,14 @@ export async function addLessonDuration(data: AddDurationData) {
     revalidateTag(`client-lessons-${data.courseId}`);
     revalidateTag(`admin-lesson-${data.courseId}`);
     revalidateTag(`user-lesson-${data.courseId}`);
+    revalidateTag(`learning-data-${data.courseId}`);
     revalidateTag(`courses`);
     const path = `admin/courses/${data.courseId}/lessons`;
     revalidatePath(path);
     revalidatePath(`/lt/courses/${course.slug}`);
     revalidatePath(`/ru/courses/${course.slug}`);
 
-    return {
+    return { 
       success: true,
     };
   } catch (error) {

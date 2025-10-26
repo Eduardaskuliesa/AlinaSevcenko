@@ -117,7 +117,7 @@ export async function getLearningData(
   courseId: EnrolledCourse["courseId"],
   userId: string
 ) {
-  const cacheTag = `learning-data-${courseId}-${userId}`;
+  const cacheTag = `learning-data-${courseId}}`;
   return unstable_cache(
     async () => {
       return fetchLearningData(courseId, userId);

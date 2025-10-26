@@ -3,13 +3,9 @@ import { Course } from "@/app/types/course";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { GetCommand } from "@aws-sdk/lib-dynamodb";
 import { logger } from "@/app/utils/logger";
-import { unstable_cache } from "next/cache";
 import { EnrolledCourse } from "@/app/types/enrolled-course";
 
-export async function fetchCourse(
-  courseId: Course["courseId"],
-  userId: string
-) {
+export async function getCourse(courseId: Course["courseId"], userId: string) {
   logger.info(`Fetching course ${courseId}`);
   try {
     const getCommand = new GetCommand({
@@ -21,7 +17,7 @@ export async function fetchCourse(
     });
 
     const course = await dynamoDb.send(getCommand);
-    
+
     return {
       cousre: course.Item as EnrolledCourse,
     };
@@ -31,15 +27,4 @@ export async function fetchCourse(
       error: error,
     };
   }
-}
-
-export async function getCourse(courseId: EnrolledCourse["courseId"], userId: string) {
-  const cacheTag = `enrolled-course-${userId}`;
-  return unstable_cache(
-    async () => {
-      return fetchCourse(courseId, userId);
-    },
-    [cacheTag],
-    { revalidate: 180, tags: [cacheTag] }
-  )();
 }
