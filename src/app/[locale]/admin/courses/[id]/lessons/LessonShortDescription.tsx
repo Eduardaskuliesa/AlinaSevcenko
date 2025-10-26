@@ -29,9 +29,10 @@ const LessonShortDescription: React.FC<LessonShortDescriptionProps> = ({
       </Label>
       <div className="border-2 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-secondary focus-within:border-transparent transition-all bg-white">
         <Textarea
+          
           id="lessonShortDescription"
           placeholder="A brief description of this lesson"
-          className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 min-h-20 sm:min-h-24 p-3 sm:p-4 text-sm sm:text-base resize-none bg-white"
+          className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 min-h-28 p-3 sm:p-4 text-sm sm:text-base bg-white"
           value={initialValue}
           onChange={handleChange}
         />
