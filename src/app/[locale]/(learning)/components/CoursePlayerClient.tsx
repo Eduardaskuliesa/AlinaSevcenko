@@ -18,6 +18,7 @@ const CoursePlayerPageClient = ({
   userId,
 }: CoursePlayerPageClient) => {
   const queryClient = useQueryClient();
+  const [useLessonProgress, setUseLessonProgress] = useState({});
   const { selectedLessonId, setSelectedLessonId, setAllLesonsIds } =
     useCoursePlayerStore();
   const { data: learningData, isLoading: learningDataLoading } = useQuery({
@@ -29,9 +30,7 @@ const CoursePlayerPageClient = ({
       ),
   });
 
-  const [useLessonProgress, setUseLessonProgress] = useState({});
-
-  const { data: lessonProgress } = useQuery({
+  const { data: lessonProgress, isLoading } = useQuery({
     queryKey: ["lesson-progress", userId, courseId],
     queryFn: () =>
       enrolledCourseActions.getLessonProgress(
@@ -41,10 +40,10 @@ const CoursePlayerPageClient = ({
   });
 
   useEffect(() => {
-    if (lessonProgress) {
+    if (lessonProgress && !isLoading) {
       setUseLessonProgress(lessonProgress);
     }
-  }, [learningData?.course.lessonProgress]);
+  }, [learningData?.course.lessonProgress, isLoading]);
 
   useEffect(() => {
     if (learningData?.needsSync) {
@@ -74,7 +73,10 @@ const CoursePlayerPageClient = ({
         setSelectedLessonId(learningData.lessons[0].lessonId);
       }
       if (learningData?.course?.lastLessonId) {
-        console.log("Setting last watched lesson:", learningData.course.lastLessonId);
+        console.log(
+          "Setting last watched lesson:",
+          learningData.course.lastLessonId
+        );
         setSelectedLessonId(learningData.course.lastLessonId);
         console.log("Last lessonId:", learningData.course.lastLessonId);
       }
