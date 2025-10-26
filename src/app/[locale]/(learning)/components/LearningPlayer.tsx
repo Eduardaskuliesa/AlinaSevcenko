@@ -1,11 +1,12 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import MuxPlayer from "@mux/mux-player-react";
 import { Lesson } from "@/app/types/course";
 import { getOrGenerateTokens } from "@/app/utils/media-tokens";
 import { useCoursePlayerStore } from "@/app/store/useCoursePlayerStore";
 import CustomControls from "./CustomControls";
 import { enrolledCourseActions } from "@/app/actions/enrolled-course";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface LearningPlayerProps {
   currentLesson: Lesson | undefined;
@@ -43,7 +44,7 @@ const LearningPlayer = ({
     playbackToken: string;
     storyboardToken: string;
   }>(null);
-
+  const queryClient = useQueryClient();
   const [autoplay, setAutoplay] = useState(false);
   const [showCustomControls, setShowCustomControls] = useState(false);
 
@@ -96,7 +97,7 @@ const LearningPlayer = ({
     }
   };
 
-  const handleTimeUpdate = () => {
+  const handleTimeUpdate = useCallback(() => {
     const player = playerRef.current;
     if (!player || !currentLesson) return;
 
@@ -104,6 +105,7 @@ const LearningPlayer = ({
     const duration = currentLesson.duration;
 
     if (duration > 0) {
+      console.log(localLessonProgress)
       const percentWatched = (currentTime / duration) * 100;
       const milestone = Math.floor(percentWatched / 10) * 10;
       const currentPlayingLesson = localLessonProgress[currentLesson.lessonId];
@@ -138,6 +140,7 @@ const LearningPlayer = ({
             completedAt: new Date().toISOString(),
           },
         }));
+
         enrolledCourseActions.updateLessonProgress({
           userId,
           courseId,
@@ -145,9 +148,19 @@ const LearningPlayer = ({
           progress: 100,
           completed: true,
         });
+        queryClient.invalidateQueries({
+          queryKey: ["lesson-progress", userId, courseId],
+        });
       }
     }
-  };
+  }, [
+    currentLesson,
+    localLessonProgress,
+    setUseLessonProgress,
+    userId,
+    courseId,
+    queryClient,
+  ]);
 
   return (
     <div className="h-[80vh] xl:h-[calc(100vh-73px)] w-full">

@@ -20,7 +20,6 @@ interface CourseCardProps {
 const CourseCard = ({ course }: CourseCardProps) => {
   const t = useTranslations("MyCourses.CoursesPage");
 
-  console.log(t("lifetimeAccess"));
   const totalLessons = Object.keys(course.lessonProgress).length;
   const completedLessons = Object.values(course.lessonProgress).filter(
     (lesson) => lesson.progress === 100
