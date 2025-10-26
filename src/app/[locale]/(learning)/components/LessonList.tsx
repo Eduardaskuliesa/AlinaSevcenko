@@ -1,4 +1,6 @@
 import { useCoursePlayerStore } from "@/app/store/useCoursePlayerStore";
+import { EnrolledCourse } from "@/app/types/enrolled-course";
+
 import { CheckCircle2 } from "lucide-react";
 
 interface LessonListProps {
@@ -10,17 +12,21 @@ interface LessonListProps {
   }>;
   courseId: string;
   userId: string;
+  lessonProgress: EnrolledCourse["lessonProgress"];
 }
 
-const LessonList = ({ lessons, courseId, userId }: LessonListProps) => {
+const LessonList = ({
+  lessons,
+  courseId,
+  userId,
+  lessonProgress,
+}: LessonListProps) => {
   const {
     setIsLessonChanging,
     selectedLessonId,
     setSelectedLessonId,
     updateSelectedLessonId,
-    lessonProgressMap,
   } = useCoursePlayerStore();
-
   const formatDuration = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     return `${minutes}min`;
@@ -33,7 +39,7 @@ const LessonList = ({ lessons, courseId, userId }: LessonListProps) => {
           <h2 className="font-semibold text-gray-900">Course content</h2>
         </div>
         {lessons.map((lesson, index) => {
-          const isCompleted = lessonProgressMap[lesson.lessonId]?.completed;
+          const isCompleted = lessonProgress[lesson.lessonId]?.progress === 100;
 
           return (
             <div

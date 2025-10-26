@@ -46,8 +46,6 @@ const CheckoutSuccessPage = async ({
       );
     }
   }
-
-  console.log(courses);
   return (
     <div className="">
       <div className="bg-primary text-gray-50">

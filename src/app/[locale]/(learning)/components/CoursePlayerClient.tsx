@@ -3,7 +3,7 @@
 import { coursesAction } from "@/app/actions/coursers";
 import { enrolledCourseActions } from "@/app/actions/enrolled-course";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import LessonList from "./LessonList";
 import { useCoursePlayerStore } from "@/app/store/useCoursePlayerStore";
 import LearningPlayer from "./LearningPlayer";
@@ -18,12 +18,8 @@ const CoursePlayerPageClient = ({
   userId,
 }: CoursePlayerPageClient) => {
   const queryClient = useQueryClient();
-  const {
-    selectedLessonId,
-    setSelectedLessonId,
-    setAllLesonsIds,
-    updateLessonProgress,
-  } = useCoursePlayerStore();
+  const { selectedLessonId, setSelectedLessonId, setAllLesonsIds } =
+    useCoursePlayerStore();
   const { data: learningData, isLoading: learningDataLoading } = useQuery({
     queryKey: ["learning-course-data", userId, courseId],
     queryFn: () =>
@@ -32,6 +28,8 @@ const CoursePlayerPageClient = ({
         userId as string
       ),
   });
+
+  const [useLessonProgress, setUseLessonProgress] = useState({});
 
   const { data: lessonProgress } = useQuery({
     queryKey: ["lesson-progress", userId, courseId],
@@ -44,15 +42,9 @@ const CoursePlayerPageClient = ({
 
   useEffect(() => {
     if (lessonProgress) {
-      Object.entries(lessonProgress).forEach(([lessonId, progress]) => {
-        updateLessonProgress(
-          lessonId,
-          progress.progress,
-          progress.progress === 100
-        );
-      });
+      setUseLessonProgress(lessonProgress);
     }
-  }, [learningData?.course?.lessonProgress, updateLessonProgress]);
+  }, [learningData?.course.lessonProgress]);
 
   useEffect(() => {
     if (learningData?.needsSync) {
@@ -126,6 +118,9 @@ const CoursePlayerPageClient = ({
             </div>
           ) : (
             <LearningPlayer
+              setUseLessonProgress={setUseLessonProgress || {}}
+              localLessonProgress={useLessonProgress}
+              lessonProgress={lessonProgress || {}}
               userId={userId as string}
               courseId={courseId as string}
               currentLesson={currentLesson}
@@ -133,6 +128,7 @@ const CoursePlayerPageClient = ({
           )}
         </div>
         <LessonList
+          lessonProgress={useLessonProgress}
           userId={userId as string}
           courseId={courseId as string}
           lessons={learningData?.lessons || []}

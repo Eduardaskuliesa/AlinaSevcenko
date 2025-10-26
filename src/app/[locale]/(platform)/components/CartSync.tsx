@@ -16,7 +16,6 @@ export default function CartSync() {
 
   useEffect(() => {
     if (userId && !shouldSkipSync) {
-      console.log("Syncing cart for user:", userId);
       syncWithBackend(userId);
     }
   }, [userId, syncWithBackend, shouldSkipSync, status]);

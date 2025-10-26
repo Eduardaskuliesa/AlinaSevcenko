@@ -3,16 +3,10 @@ import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { coursesAction } from "../actions/coursers";
 
-interface LessonProgress {
-  progress: number;
-  completed: boolean;
-}
-
 interface CoursePlayerState {
   selectedLessonId: string | null;
   allLessonsIds: string[];
   isLessonChanging?: boolean;
-  lessonProgressMap: Record<string, LessonProgress>;
 
   setAllLesonsIds: (lessonIds: string[]) => void;
   setSelectedLessonId: (lessonId: string) => void;
@@ -23,11 +17,7 @@ interface CoursePlayerState {
     lessonId: string,
     lastWatchTime: number
   ) => Promise<void>;
-  updateLessonProgress: (
-    lessonId: string,
-    progress: number,
-    completed: boolean
-  ) => void;
+
   nextLesson: (courseId: string, userId: string) => void;
   previousLesson: (courseId: string, userId: string) => void;
 }
@@ -53,19 +43,6 @@ export const useCoursePlayerStore = create<CoursePlayerState>()(
       setIsLessonChanging: (changing) =>
         set((state) => {
           state.isLessonChanging = changing;
-        }),
-
-      updateLessonProgress: (lessonId, progress, completed) =>
-        set((state) => {
-          const currentProgress =
-            state.lessonProgressMap[lessonId]?.progress || 0;
-
-          if (progress > currentProgress) {
-            state.lessonProgressMap[lessonId] = {
-              progress,
-              completed,
-            };
-          }
         }),
 
       updateSelectedLessonId: async (
@@ -124,7 +101,6 @@ export const useCoursePlayerStore = create<CoursePlayerState>()(
       name: "course-player-storage",
       partialize: (state) => ({
         selectedLessonId: state.selectedLessonId,
-        lessonProgressMap: state.lessonProgressMap,
       }),
     }
   )

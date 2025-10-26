@@ -11,10 +11,28 @@ interface LearningPlayerProps {
   currentLesson: Lesson | undefined;
   courseId: string;
   userId: string;
+  setUseLessonProgress: React.Dispatch<
+    React.SetStateAction<
+      Record<
+        string,
+        { progress: number; wasReworked: boolean; completedAt: string | null }
+      >
+    >
+  >;
+  localLessonProgress: Record<
+    string,
+    { progress: number; wasReworked: boolean; completedAt: string | null }
+  >;
+  lessonProgress: Record<
+    string,
+    { progress: number; wasReworked: boolean; completedAt: string | null }
+  >;
 }
 
 const LearningPlayer = ({
   currentLesson,
+  setUseLessonProgress,
+  localLessonProgress,
   courseId,
   userId,
 }: LearningPlayerProps) => {
@@ -34,8 +52,6 @@ const LearningPlayer = ({
     isLessonChanging,
     setIsLessonChanging,
     nextLesson,
-    updateLessonProgress,
-    lessonProgressMap,
   } = useCoursePlayerStore();
 
   useEffect(() => {
@@ -90,11 +106,19 @@ const LearningPlayer = ({
     if (duration > 0) {
       const percentWatched = (currentTime / duration) * 100;
       const milestone = Math.floor(percentWatched / 10) * 10;
+      const currentPlayingLesson = localLessonProgress[currentLesson.lessonId];
 
-      const lessonProgress = lessonProgressMap[currentLesson.lessonId];
+      if (milestone > 0 && milestone > (currentPlayingLesson?.progress || 0)) {
+        setUseLessonProgress((prev) => ({
+          ...prev,
+          [currentLesson.lessonId]: {
+            progress: milestone,
+            completed: false,
+            wasReworked: currentPlayingLesson.wasReworked,
+            completedAt: currentPlayingLesson.completedAt,
+          },
+        }));
 
-      if (milestone > 0 && milestone > (lessonProgress?.progress || 0)) {
-        updateLessonProgress(currentLesson.lessonId, milestone, false);
         enrolledCourseActions.updateLessonProgress({
           userId,
           courseId,
@@ -104,8 +128,16 @@ const LearningPlayer = ({
         });
       }
 
-      if (percentWatched >= 95 && !lessonProgress?.completed) {
-        updateLessonProgress(currentLesson.lessonId, 100, true);
+      if (percentWatched >= 95 && !currentPlayingLesson.completedAt) {
+        setUseLessonProgress((prev) => ({
+          ...prev,
+          [currentLesson.lessonId]: {
+            progress: 100,
+            completed: true,
+            wasReworked: currentPlayingLesson.wasReworked,
+            completedAt: new Date().toISOString(),
+          },
+        }));
         enrolledCourseActions.updateLessonProgress({
           userId,
           courseId,
