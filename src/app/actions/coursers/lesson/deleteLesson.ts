@@ -107,6 +107,7 @@ export async function deleteLesson(
     revalidateTag(`course-${courseId}`);
     revalidateTag(`user-lesson-${courseId}`);
     revalidateTag(`client-lessons-${courseId}`);
+    revalidateTag(`course-client-${courseId}`);
     revalidateTag(`courses`);
     revalidateTag(`learning-data-${courseId}`);
     revalidatePath(`/lt/courses/${course.slug}`);

@@ -37,7 +37,7 @@ export async function updateLastPlayedLesson(
       );
     }
 
-    revalidateTag(`learning-data-${courseId}-${userId}`);
+    revalidateTag(`learning-data-${courseId}}`);
 
     return {
       success: true,

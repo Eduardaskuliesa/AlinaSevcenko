@@ -96,6 +96,7 @@ export async function createLesson(courseId: Course["courseId"]) {
     revalidateTag(`course-${courseId}`);
     revalidateTag(`user-lesson-${courseId}`);
     revalidateTag(`client-lessons-${courseId}`);
+    revalidateTag(`course-client-${courseId}`);
     revalidateTag(`courses`);
     revalidatePath(`/lt/courses/${course.slug}`);
     revalidatePath(`/ru/courses/${course.slug}`);

@@ -59,6 +59,7 @@ const CoursePlayerPageClient = ({
   }, [learningData?.needsSync, courseId, userId, queryClient]);
 
   useEffect(() => {
+    console.log(selectedLessonId);
     const loadLastWatchedLesson = async () => {
       if (!learningData?.lessons?.[0]?.lessonId || !courseId || !userId) {
         return;
@@ -73,7 +74,9 @@ const CoursePlayerPageClient = ({
         setSelectedLessonId(learningData.lessons[0].lessonId);
       }
       if (learningData?.course?.lastLessonId) {
+        console.log("Setting last watched lesson:", learningData.course.lastLessonId);
         setSelectedLessonId(learningData.course.lastLessonId);
+        console.log("Last lessonId:", learningData.course.lastLessonId);
       }
     };
 

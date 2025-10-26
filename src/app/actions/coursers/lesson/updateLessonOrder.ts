@@ -55,6 +55,7 @@ export async function updateLessonOrder(
     revalidateTag(`client-lessons-${courseId}`);
     revalidateTag(`learning-data-${courseId}`);
     revalidateTag(`course-${courseId}`);
+    revalidateTag(`course-client-${courseId}`);
     revalidateTag(`courses`);
     revalidateTag("client-courses");
     revalidateTag(`user-lesson-${courseId}`);
