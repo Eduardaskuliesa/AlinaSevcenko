@@ -36,7 +36,7 @@ const CartSummary = () => {
         {totalItems} {totalItems === 1 ? t("item") : t("items")}
       </p>
       {cartItems.length === 0 ? (
-        <div className="text-center py-8 text-gray-500">{t("emptyCart")}</div>
+        <div className="text-center py-8 text-gray-500">{t("yourCartIsEmpty")}</div>
       ) : (
         <>
           {cartItems.map((item) => (
