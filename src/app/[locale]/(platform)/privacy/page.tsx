@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("PrivacyPage.metadata");
-  
+
   return {
     title: t("title"),
     description: t("description"),
@@ -14,6 +14,9 @@ export async function generateMetadata(): Promise<Metadata> {
       type: "website",
     },
   };
+}
+export function generateStaticParams() {
+  return [{ locale: "lt" }, { locale: "ru" }];
 }
 
 export const dynamic = "force-static";
@@ -57,10 +60,26 @@ export default async function PrivacyPolicy() {
                       {t("sections.informationWeCollect.personalInfo.title")}
                     </h3>
                     <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
-                      <li>{t("sections.informationWeCollect.personalInfo.items.name")}</li>
-                      <li>{t("sections.informationWeCollect.personalInfo.items.credentials")}</li>
-                      <li>{t("sections.informationWeCollect.personalInfo.items.payment")}</li>
-                      <li>{t("sections.informationWeCollect.personalInfo.items.progress")}</li>
+                      <li>
+                        {t(
+                          "sections.informationWeCollect.personalInfo.items.name"
+                        )}
+                      </li>
+                      <li>
+                        {t(
+                          "sections.informationWeCollect.personalInfo.items.credentials"
+                        )}
+                      </li>
+                      <li>
+                        {t(
+                          "sections.informationWeCollect.personalInfo.items.payment"
+                        )}
+                      </li>
+                      <li>
+                        {t(
+                          "sections.informationWeCollect.personalInfo.items.progress"
+                        )}
+                      </li>
                     </ul>
                   </div>
                   <div>
@@ -68,10 +87,26 @@ export default async function PrivacyPolicy() {
                       {t("sections.informationWeCollect.automaticInfo.title")}
                     </h3>
                     <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
-                      <li>{t("sections.informationWeCollect.automaticInfo.items.ip")}</li>
-                      <li>{t("sections.informationWeCollect.automaticInfo.items.browser")}</li>
-                      <li>{t("sections.informationWeCollect.automaticInfo.items.usage")}</li>
-                      <li>{t("sections.informationWeCollect.automaticInfo.items.cookies")}</li>
+                      <li>
+                        {t(
+                          "sections.informationWeCollect.automaticInfo.items.ip"
+                        )}
+                      </li>
+                      <li>
+                        {t(
+                          "sections.informationWeCollect.automaticInfo.items.browser"
+                        )}
+                      </li>
+                      <li>
+                        {t(
+                          "sections.informationWeCollect.automaticInfo.items.usage"
+                        )}
+                      </li>
+                      <li>
+                        {t(
+                          "sections.informationWeCollect.automaticInfo.items.cookies"
+                        )}
+                      </li>
                     </ul>
                   </div>
                 </div>
@@ -97,7 +132,9 @@ export default async function PrivacyPolicy() {
                 </h2>
                 <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4">
                   <p className="text-gray-700">
-                    <strong>{t("sections.thirdPartyServices.stripe.title")}</strong>{" "}
+                    <strong>
+                      {t("sections.thirdPartyServices.stripe.title")}
+                    </strong>{" "}
                     {t("sections.thirdPartyServices.stripe.content")}
                   </p>
                 </div>
@@ -119,7 +156,9 @@ export default async function PrivacyPolicy() {
                 <h2 className="text-2xl font-semibold text-gray-900 mb-4">
                   {t("sections.yourRights.title")}
                 </h2>
-                <p className="text-gray-700 mb-4">{t("sections.yourRights.intro")}</p>
+                <p className="text-gray-700 mb-4">
+                  {t("sections.yourRights.intro")}
+                </p>
                 <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
                   <li>{t("sections.yourRights.rights.access")}</li>
                   <li>{t("sections.yourRights.rights.correct")}</li>
@@ -166,9 +205,11 @@ export default async function PrivacyPolicy() {
                 </p>
                 <div className="bg-gray-50 rounded-lg p-4 mt-4">
                   <p className="text-gray-700">
-                    <strong>{t("sections.contactUs.email")}</strong> privacy@yourplatform.com
+                    <strong>{t("sections.contactUs.email")}</strong>{" "}
+                    privacy@yourplatform.com
                     <br />
-                    <strong>{t("sections.contactUs.address")}</strong> [Your Company Address]
+                    <strong>{t("sections.contactUs.address")}</strong> [Your
+                    Company Address]
                   </p>
                 </div>
               </section>

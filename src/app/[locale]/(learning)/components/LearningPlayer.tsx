@@ -105,7 +105,6 @@ const LearningPlayer = ({
     const duration = currentLesson.duration;
 
     if (duration > 0) {
-      console.log(localLessonProgress)
       const percentWatched = (currentTime / duration) * 100;
       const milestone = Math.floor(percentWatched / 10) * 10;
       const currentPlayingLesson = localLessonProgress[currentLesson.lessonId];
