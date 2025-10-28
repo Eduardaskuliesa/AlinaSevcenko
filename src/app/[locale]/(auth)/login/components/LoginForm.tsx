@@ -123,7 +123,7 @@ const LoginForm = () => {
             className={emailInputClasses}
             placeholder={t("emailPlaceholder")}
             value={email}
-            autoComplete="email"
+            autoComplete="off"
             onChange={(e) => setEmail(e.target.value)}
             aria-invalid={!!emailError || !!formError}
             aria-describedby={emailError ? "email-error" : undefined}
@@ -157,7 +157,7 @@ const LoginForm = () => {
             type={showPassword ? "text" : "password"}
             className={passwordInputClasses}
             placeholder={t("passwordPlaceholder")}
-            autoComplete="current-password"
+            autoComplete="off"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             aria-invalid={!!passwordError || !!formError}
