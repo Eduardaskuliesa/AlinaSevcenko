@@ -116,6 +116,7 @@ const ForgotPasswordPage = () => {
                     className={emailInputClasses}
                     placeholder={t("emailPlaceholder")}
                     value={email}
+                    autoComplete="email"
                     onChange={(e) => setEmail(e.target.value)}
                     aria-invalid={!!emailError}
                     aria-describedby={emailError ? "email-error" : undefined}

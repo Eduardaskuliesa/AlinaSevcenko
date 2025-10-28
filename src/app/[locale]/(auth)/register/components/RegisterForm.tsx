@@ -204,6 +204,7 @@ const RegisterForm = () => {
         <div className="relative">
           <Input
             id="fullname"
+            autoComplete="off"
             className={fullnameInputClasses}
             placeholder={t("fullNamePlaceholder")}
             value={fullname}
@@ -239,6 +240,7 @@ const RegisterForm = () => {
             id="email"
             className={emailInputClasses}
             placeholder={t("emailPlaceholder")}
+            autoComplete="off"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             aria-invalid={!!emailError}
@@ -273,6 +275,7 @@ const RegisterForm = () => {
             type={showPassword ? "text" : "password"}
             className={passwordInputClasses}
             placeholder={t("passwordPlaceholder")}
+            autoComplete="off"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             aria-invalid={!!passwordError}

@@ -4,9 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff, AlertCircle, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
-
 import { Link } from "@/i18n/navigation";
-
 import { getSession, signIn } from "next-auth/react";
 
 const LoginForm = () => {
@@ -125,6 +123,7 @@ const LoginForm = () => {
             className={emailInputClasses}
             placeholder={t("emailPlaceholder")}
             value={email}
+            autoComplete="email"
             onChange={(e) => setEmail(e.target.value)}
             aria-invalid={!!emailError || !!formError}
             aria-describedby={emailError ? "email-error" : undefined}
@@ -158,6 +157,7 @@ const LoginForm = () => {
             type={showPassword ? "text" : "password"}
             className={passwordInputClasses}
             placeholder={t("passwordPlaceholder")}
+            autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             aria-invalid={!!passwordError || !!formError}
