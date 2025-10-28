@@ -28,7 +28,7 @@ function CartListItem({ item, isLast }: { item: CartItem; isLast: boolean }) {
               {item.title}
             </h3>
             <div className="text-sm text-gray-600 font-medium">
-              {item.isFromPrice ? `${t("from")} ` : ""}${item.price.toFixed(2)}
+              {item.isFromPrice ? `${t("from")} ` : ""}€{item.price.toFixed(2)}
             </div>
           </div>
         </div>
@@ -50,7 +50,7 @@ function GoToCartButton({
   return (
     <div className="p-3 bg-white shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_-2px_4px_-1px_rgba(0,0,0,0.06)]">
       <p className="text-lg font-medium text-gray-800 mb-2">
-        {t("total")}:{totalPrice}$
+        {t("total")}:€{totalPrice}
       </p>
       <Link
         onClick={() => {

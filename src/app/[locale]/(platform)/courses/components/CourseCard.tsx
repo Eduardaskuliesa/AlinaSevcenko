@@ -75,7 +75,7 @@ const CourseCard = ({ course, lowestPrice }: CourseCardProps) => {
             <div className="md:ml-4 md:min-w-[120px] flex justify-start md:justify-end mt-2 md:mt-0">
               {lowestPrice !== null && (
                 <div className="bg-secondary px-3 py-1 rounded-full text-orange-900 font-semibold text-sm h-fit">
-                  {t("from")} ${lowestPrice.toFixed(2)}
+                  {t("from")} €{lowestPrice.toFixed(2)}
                 </div>
               )}
             </div>

@@ -58,7 +58,7 @@ function WishListItem({ item, isLast }: { item: CartItem; isLast: boolean }) {
             {item.title}
           </h3>
           <div className="text-sm text-gray-600 font-medium">
-            {item.isFromPrice ? `${t("from")} ` : ""}${item.price.toFixed(2)}
+            {item.isFromPrice ? `${t("from")} ` : ""}€{item.price.toFixed(2)}
           </div>
         </div>
       </div>
