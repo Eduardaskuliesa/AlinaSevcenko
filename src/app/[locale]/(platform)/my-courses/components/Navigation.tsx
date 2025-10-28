@@ -19,7 +19,7 @@ const Navigation = () => {
   ];
 
   return (
-    <nav className="flex gap-5 text-xl font-medium text-gray-200">
+    <nav className="flex gap-3 text-xl font-medium text-gray-200">
       {navItems.map((item) => {
         const pathParts = pathname.split("/");
         const isLanguagePrefix =

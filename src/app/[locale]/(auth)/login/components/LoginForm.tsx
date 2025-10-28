@@ -88,6 +88,10 @@ const LoginForm = () => {
           setIsLoading(false);
           setPasswordError(t("invalidCredentials"));
         }
+        if (result?.error === "OAUTH_USER") {
+          setIsLoading(false);
+          setPasswordError(t("oauthUserError"));
+        }
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -185,7 +189,7 @@ const LoginForm = () => {
       <div className="flex justify-between items-center mt-2">
         <Link
           href="/forgot-password"
-          className="text-sm text-violet-800 font-medium hover:underline"
+          className="text-base text-violet-800 font-medium hover:underline"
         >
           {t("forgotPassword")}
         </Link>

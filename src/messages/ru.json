@@ -20,12 +20,13 @@
     "capitalLetter": "1+ большая буква",
     "agreePrefix": "Я согласен с",
     "termsLink": "условиями",
+    "termsRequired": "Примите условия обслуживания",
     "and": "и",
     "privacyLink": "политикой конфиденциальности",
     "createAccount": "Создайте аккаунт",
     "or": "или",
     "googleSignUp": "Через Google",
-    "facebookSignUp": "Через Facebook",
+    "continueWithGoogle": "Продолжить с Google",
     "alreadyHaveAccount": "Уже есть аккаунт? Войдите",
     "checkEmail": "Проверьте свою почту",
     "emailSentMessage": "Мы только что отправили вам уникальную ссылку для входа на вашу почту:",
@@ -52,6 +53,7 @@
     "login": "Войти",
     "loading": "Загрузка...",
     "invalidCredentials": "Неверная эл. почта или пароль",
+    "oauthUserError": "Пожалуйста, войдите через Google",
     "loginError": "Произошла ошибка при входе в систему"
   },
   "VerifyEmailPage": {
@@ -77,6 +79,7 @@
     "emailPlaceholder": "Введите свой адрес электронной почты",
     "emailRequired": "Эл. почта обязательна",
     "invalidEmailFormat": "Пожалуйста, введите действительный адрес электронной почты",
+    "oauthUserError": "Этот эл. адрес связан с учетной записью Google. Пожалуйста, войдите через Google.",
     "sendResetLink": "Отправить ссылку",
     "loading": "Загрузка...",
     "resetLinkSent": "Ссылка отправлена на вашу электронную почту. Пожалуйста, проверьте свой почтовый ящик.",
@@ -329,5 +332,4 @@
     "termsOfService": "Условия обслуживания",
     "copyright": "© {year} Алина Савченко. Все права защищены."
   }
-  
 }

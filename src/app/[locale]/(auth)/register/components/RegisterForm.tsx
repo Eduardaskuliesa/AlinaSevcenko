@@ -19,9 +19,11 @@ const RegisterForm = () => {
   const [email, setEmail] = useState("");
   const [fullname, setFullname] = useState("");
   const [password, setPassword] = useState("");
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [emailError, setEmailError] = useState("");
   const [fullnameError, setFullnameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [termsError, setTermsError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [shouldShakeInvalid, setShouldShakeInvalid] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState<boolean | null>(null);
@@ -77,6 +79,7 @@ const RegisterForm = () => {
     setEmailError("");
     setFullnameError("");
     setPasswordError("");
+    setTermsError("");
 
     let hasError = false;
 
@@ -92,6 +95,11 @@ const RegisterForm = () => {
 
     if (!password.trim()) {
       setPasswordError(t("passwordRequired"));
+      hasError = true;
+    }
+
+    if (!agreedToTerms) {
+      setTermsError(t("termsRequired"));
       hasError = true;
     }
 
@@ -295,7 +303,36 @@ const RegisterForm = () => {
         hasCapital={hasCapital}
         shouldShakeInvalid={shouldShakeInvalid}
       />
-
+      <div className="mb-2">
+        <label className="flex items-start gap-2 cursor-pointer group">
+          <input
+            type="checkbox"
+            checked={agreedToTerms}
+            onChange={(e) => {
+              setAgreedToTerms(e.target.checked);
+              if (termsError) setTermsError("");
+            }}
+            className={`mt-1 w-4 h-4 rounded border ${
+              termsError ? "border-red-500" : "border-gray-300"
+            } text-violet-800 focus:ring-violet-800`}
+          />
+          <span className="text-gray-600">
+            {t("agreePrefix")}{" "}
+            <a href="#" className="font-medium text-violet-800 hover:underline">
+              {t("termsLink")}
+            </a>{" "}
+            {t("and") || "and"}{" "}
+            <a href="#" className="font-medium text-violet-800 hover:underline">
+              {t("privacyLink")}
+            </a>
+          </span>
+        </label>
+        {termsError && (
+          <p className="mt-1 text-base font-semibold text-red-500">
+            {termsError}
+          </p>
+        )}
+      </div>
       <button
         type="submit"
         className="w-full h-12 cursor-pointer bg-secondary rounded-lg text-lg text-gray-800 font-medium py-2 px-4 mt-2 hover:bg-secondary-light transition flex items-center justify-center"
@@ -313,17 +350,6 @@ const RegisterForm = () => {
 
       <Divider />
       <SocialLoginButtons />
-
-      <div className="mt-4 text-sm text-gray-600 text-center">
-        {t("agreePrefix") || "By registering, you agree to our"}{" "}
-        <a href="#" className="font-medium text-violet-800   hover:underline">
-          {t("termsLink") || "Terms of Service"}
-        </a>{" "}
-        {t("and") || "and"}{" "}
-        <a href="#" className="font-medium text-violet-800  hover:underline">
-          {t("privacyLink") || "Privacy Policy"}
-        </a>
-      </div>
     </form>
   );
 };

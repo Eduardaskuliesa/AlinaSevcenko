@@ -50,8 +50,13 @@ const ForgotPasswordPage = () => {
       const token = await userActions.authentication.generateMagicLinkToken(
         email
       );
-      if(token.error === "USER_NOT_FOUND") {
+      if (token.error === "USER_NOT_FOUND") {
         setEmailError(t("userNotFound"));
+        setIsLoading(false);
+        return;
+      }
+      if (token.error === "OAUTH_USER") {
+        setEmailError(t("oauthUserError"));
         setIsLoading(false);
         return;
       }

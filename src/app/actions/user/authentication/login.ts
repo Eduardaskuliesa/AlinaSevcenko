@@ -33,6 +33,14 @@ export async function login(formData: LoginFormData) {
 
     const user = userResult.Items[0];
 
+    if (!user.password) {
+      return {
+        success: false,
+        error: "OAUTH_USER",
+        message: "Please log in using google OAuth",
+      };
+    }
+
     const isPasswordValid = await bcrypt.compare(
       formData.password,
       user.password

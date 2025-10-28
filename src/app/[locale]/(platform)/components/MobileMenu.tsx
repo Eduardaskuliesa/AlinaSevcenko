@@ -47,7 +47,7 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
       window.location.replace("/login");
     } catch (error) {
       console.error("Logout error:", error);
-      toast.error("There was an error logging out. Please try again.");
+      toast.error(t("logoutError"));
     }
   };
 
@@ -100,19 +100,19 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
             <MobileMenuItem
               href="/courses"
               icon={<BookOpen className="w-5 h-5" />}
-              title="Courses"
+              title={t("courses")}
               onClick={onClose}
             />
             <MobileMenuItem
               href="/my-courses/courses"
               icon={<LibraryBig className="w-5 h-5" />}
-              title="My learning"
+              title={t("myLearning")}
               onClick={onClose}
             />
             <MobileMenuItem
               href="/user/profile"
               icon={<User className="w-5 h-5" />}
-              title="My profile"
+              title={t("myProfile")}
               onClick={onClose}
             />
 
@@ -121,13 +121,13 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
             <MobileMenuItem
               href="/my-courses/wishlist"
               icon={<Heart className="w-5 h-5" />}
-              title="My wishlist"
+              title={t("myWishlist")}
               onClick={onClose}
             />
             <MobileMenuItem
               href="/cart"
               icon={<ShoppingCart className="w-5 h-5" />}
-              title="My cart"
+              title={t("myCart")}
               onClick={onClose}
             />
 
@@ -136,7 +136,7 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
             <MobileMenuItem
               href="/user/profile"
               icon={<Globe className="w-5 h-5" />}
-              title="Language"
+              title={t("language")}
               onClick={onClose}
             />
           </nav>
@@ -148,7 +148,7 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
               className="flex items-center gap-3 w-full px-4 py-3 text-red-500 hover:bg-red-50 rounded-md transition-colors"
             >
               <LogOut className="w-5 h-5" />
-              <span className="font-medium">Logout</span>
+              <span className="font-medium">{t("logout")}</span>
             </button>
           </div>
         </div>

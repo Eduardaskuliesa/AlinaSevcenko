@@ -25,6 +25,17 @@ export async function generateMagicLinkToken(email: string) {
       };
     }
 
+    if (
+      userResult.Items[0].password === null ||
+      userResult.Items[0].registrationMethod !== "EMAIL"
+    ) {
+      return {
+        success: false,
+        error: "OAUTH_USER",
+        message: "Please log in using google OAuth",
+      };
+    }
+
     const user = userResult.Items[0];
     const userId = user.userId;
 
