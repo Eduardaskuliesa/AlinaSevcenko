@@ -1,4 +1,7 @@
 {
+  "PlatformLoader": {
+    "loading": "Kuriame jūsų aplinką"
+  },
   "RegisterPage": {
     "title": "Registracija",
     "description": "Susikurkite paskyrą, kad galėtumėte prisijungti prie platformos",

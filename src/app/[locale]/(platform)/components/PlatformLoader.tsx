@@ -5,8 +5,7 @@ import { useSession } from "next-auth/react";
 import { motion } from "motion/react";
 import { Book } from "lucide-react";
 import { useEffect, useState } from "react";
-
-let hasShownInitialLoader = false;
+import { useTranslations } from "next-intl";
 
 export default function PlatformLoader({
   children,
@@ -15,23 +14,25 @@ export default function PlatformLoader({
 }) {
   const { hydrated: preferencesHydrated } = useUserPreferencesStore();
   const { hydrated: cartHydrated } = useCartStore();
+  const t = useTranslations("PlatformLoader");
   const { status } = useSession();
-  const [minLoadingTime, setMinLoadingTime] = useState(!hasShownInitialLoader);
+  const [hasLoaded, setHasLoaded] = useState(false);
+  // const [minLoadingTime, setMinLoadingTime] = useState(!hasShownInitialLoader);
 
   const isLoading =
     status === "loading" || !preferencesHydrated || !cartHydrated;
 
   useEffect(() => {
-    if (!hasShownInitialLoader) {
+    if (!isLoading && !hasLoaded) {
       const timer = setTimeout(() => {
-        setMinLoadingTime(false);
-        hasShownInitialLoader = true;
+        setHasLoaded(true);
       }, 1000);
 
       return () => clearTimeout(timer);
     }
-  }, []);
-  if ((isLoading || minLoadingTime) && !hasShownInitialLoader) {
+  }, [isLoading,hasLoaded]);
+
+  if (isLoading || !hasLoaded) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-50">
         <div className="text-center">
@@ -70,7 +71,7 @@ export default function PlatformLoader({
           </div>
 
           <h2 className="text-2xl font-bold text-gray-800 mb-2">
-            Loading Your Experience
+            {t("loading")}
           </h2>
 
           <div className="flex items-center justify-center gap-1.5">
