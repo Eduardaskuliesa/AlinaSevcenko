@@ -165,7 +165,7 @@ const PlatformNavBar = () => {
 
           <div
             className={cn(
-              "absolute right-0 mt-2 rounded-md shadow-lg bg-white z-10 border border-primary-light w-64",
+              "absolute  right-0 mt-2 rounded-md shadow-lg bg-white z-30 border border-primary-light w-64",
               "transition-all duration-200",
               openDropdown === "profile"
                 ? "opacity-100 translate-y-0"
