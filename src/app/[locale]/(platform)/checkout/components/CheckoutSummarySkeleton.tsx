@@ -1,13 +1,17 @@
+"use client";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Loader } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export function CheckoutSummarySkeleton() {
+  const t = useTranslations("CheckoutSummary");
+  
   return (
     <div className="w-[30%] mt-6 sticky top-[2rem] h-fit bg-white border-primary-light/60 border-2 rounded-lg pt-4 px-4 pb-6">
       <div className="flex items-center gap-2 mb-2">
         <Loader className="animate-spin h-4 w-4 text-primary" />
         <h3 className="font-semibold text-lg text-gray-800">
-          Loading Summary...
+          {t("loadingSummary")}
         </h3>
       </div>
 

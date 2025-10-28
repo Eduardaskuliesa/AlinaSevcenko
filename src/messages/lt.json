@@ -251,6 +251,7 @@
   },
   "CartSummary": {
     "cartSummary": "Krepšelio santrauka",
+    "loadingSummary": "Kraunama santrauka...",
     "item": "prekė",
     "items": "prekės",
     "yourCartIsEmpty": "Jūsų krepšelis tuščias",
@@ -272,6 +273,7 @@
   },
   "CheckoutSummary": {
     "checkoutSummary": "Atsiskaitymo santrauka",
+    "loadingSummary": "Kraunama santrauka...",
     "item": "prekė",
     "items": "prekės",
     "yourCartIsEmpty": "Jūsų krepšelis tuščias",
@@ -282,7 +284,9 @@
     "lifetime": "Visam laikui",
     "days": "dienos",
     "months": "mėnesių",
-    "years": "metų"
+    "years": "metų",
+    "errorOccurred": "Įvyko klaida",
+    "paymentFailed": "Mokėjimas nepavyko"
   },
   "CheckoutSuccessPage": {
     "paymentSuccessful": "Mokėjimas sėkmingas!",

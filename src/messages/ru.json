@@ -251,6 +251,7 @@
   },
   "CartSummary": {
     "cartSummary": "Сводка корзины",
+    "loadingSummary": "Загрузка сводки...",
     "item": "товар",
     "items": "товаров",
     "yourCartIsEmpty": "Ваша корзина пуста",
@@ -272,6 +273,7 @@
   },
   "CheckoutSummary": {
     "checkoutSummary": "Сводка заказа",
+    "loadingSummary": "Загрузка сводки...",
     "item": "товар",
     "items": "товаров",
     "yourCartIsEmpty": "Ваша корзина пуста",
@@ -282,7 +284,9 @@
     "lifetime": "Навсегда",
     "days": "дней",
     "months": "месяцев",
-    "years": "лет"
+    "years": "лет",
+    "errorOccurred": "Произошла ошибка",
+    "paymentFailed": "Платеж не удался"
   },
   "CheckoutSuccessPage": {
     "paymentSuccessful": "Оплата прошла успешно!",
