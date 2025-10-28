@@ -1,16 +1,10 @@
-"use server";
-import { authOptions } from "@/app/api/auth/[...nextauth]/auth";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
-import { UserPreferences } from "@/app/types/user";
 import { logger } from "@/app/utils/logger";
 import { GetCommand } from "@aws-sdk/lib-dynamodb";
-import { getServerSession } from "next-auth";
-import { unstable_cache } from "next/cache";
 
-async function fetchUserPreferences(userId: string) {
-  logger.info("Fetching user preferences for userId:", userId);
+export async function getPreferences(userId: string) {
   try {
-    const getCommand = new GetCommand({
+    const command = new GetCommand({
       TableName: dynamoTableName,
       Key: {
         PK: `PREFERENCE#${userId}`,
@@ -19,47 +13,16 @@ async function fetchUserPreferences(userId: string) {
       ProjectionExpression: "languge, courseAcess",
     });
 
-    const preferences = await dynamoDb.send(getCommand);
-
+    const preferences = await dynamoDb.send(command);
     if (!preferences.Item) {
       logger.error("No preferences found for user:", userId);
-      return {
-        success: false,
-        error: "No preferences found for user",
-      };
+      return null;
     }
-
     return {
-      sucess: true,
-      preferences: preferences.Item as UserPreferences,
+      preferences: preferences.Item,
     };
   } catch (error) {
-    logger.error("Error fetching user preferences:", error);
-    return {
-      success: false,
-      error: "Failed to fetch user preferences",
-    };
+    console.error("Error getting preferences in session:", error);
+    return null;
   }
-}
-
-export async function getPreferences() {
-  const session = await getServerSession(authOptions);
-
-  const userId = session?.user.id;
-
-  if (!userId) {
-    logger.error("No userId found in session");
-    return;
-  }
-  const cacheTag = `user-preferences-${userId}`;
-
-  const result = await unstable_cache(
-    async () => {
-      return await fetchUserPreferences(userId);
-    },
-    [cacheTag],
-    { revalidate: 72000, tags: [cacheTag] }
-  )();
-
-  return result;
 }

@@ -1,3 +1,5 @@
+import { userActions } from "@/app/actions/user";
+import { withWorkerAuth } from "@/app/lib/withWorkerAuth";
 import { logger } from "@/app/utils/logger";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -8,31 +10,9 @@ type ExpiryReminderRequestBody = {
   reminderType: "expiry-reminder-1-day" | "expiry-reminder-7-days";
 };
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": `${process.env.WORKER_URL}`,
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization",
-};
-
-export async function POST(req: NextRequest) {
+async function handler(req: NextRequest): Promise<NextResponse> {
   try {
-    logger.info("Expiry reminder webhook triggered successfully");
-    const allowedOrigin = req.headers.get("x-worker-origin");
-
-    if (allowedOrigin !== process.env.WORKER_URL) {
-      return NextResponse.json(
-        { error: "Unauthorized origin" },
-        { status: 403, headers: corsHeaders }
-      );
-    }
-
-    const token = req.headers.get("Authorization")?.split(" ")[1];
-    if (token !== process.env.NEXTJS_APP_API_SECRET) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401, headers: corsHeaders }
-      );
-    }
+    logger.success("Expiry reminder webhook invoked");
 
     const { courseId, userId, daysUntilExpiry, reminderType } =
       (await req.json()) as ExpiryReminderRequestBody;
@@ -40,9 +20,11 @@ export async function POST(req: NextRequest) {
     if (!courseId || !userId || !daysUntilExpiry || !reminderType) {
       return NextResponse.json(
         { error: "Missing required fields" },
-        { status: 400, headers: corsHeaders }
+        { status: 400 }
       );
     }
+    const preferences = await userActions.preferences.getPreferences(userId);
+    console.log("User preferences fetched:", preferences);
 
     logger.info("Expiry reminder webhook triggered", {
       courseId,
@@ -51,19 +33,14 @@ export async function POST(req: NextRequest) {
       reminderType,
     });
 
-    return NextResponse.json({ success: true }, { headers: corsHeaders });
+    return NextResponse.json({ success: true });
   } catch (error) {
     logger.error("Error in expiry reminder webhook:", error);
     return NextResponse.json(
       { error: "Failed to process expiry reminder webhook" },
-      { status: 500, headers: corsHeaders }
+      { status: 500 }
     );
   }
 }
 
-export async function OPTIONS() {
-  return new NextResponse(null, {
-    status: 200,
-    headers: corsHeaders,
-  });
-}
+export const POST = withWorkerAuth(handler);
