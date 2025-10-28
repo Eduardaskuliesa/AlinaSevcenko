@@ -1,10 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import { useUserPreferencesStore } from "@/app/store/useUserPreferences";
 import { useCartStore } from "@/app/store/useCartStore";
 import { useSession } from "next-auth/react";
 import { motion } from "motion/react";
 import { Book } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useTranslations } from "next-intl";
 
 export default function PlatformLoader({
@@ -17,19 +18,24 @@ export default function PlatformLoader({
   const t = useTranslations("PlatformLoader");
   const { status } = useSession();
   const [hasLoaded, setHasLoaded] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const isLoading =
     status === "loading" || !preferencesHydrated || !cartHydrated;
 
   useEffect(() => {
     if (!isLoading && !hasLoaded) {
-      const timer = setTimeout(() => {
+      timerRef.current = setTimeout(() => {
         setHasLoaded(true);
       }, 500);
-
-      return () => clearTimeout(timer);
     }
-  }, [isLoading, hasLoaded]);
+
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, [isLoading]);
 
   if (isLoading || !hasLoaded) {
     return (

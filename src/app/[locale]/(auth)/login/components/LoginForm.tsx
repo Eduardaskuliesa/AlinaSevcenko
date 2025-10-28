@@ -37,8 +37,13 @@ const LoginForm = () => {
     }
   }, [password]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // Get actual form values (handles autofill)
+    const formData = new FormData(e.currentTarget);
+    const emailValue = (formData.get("email") as string) || "";
+    const passwordValue = (formData.get("password") as string) || "";
 
     setEmailError("");
     setPasswordError("");
@@ -46,15 +51,15 @@ const LoginForm = () => {
 
     let hasError = false;
 
-    if (!email.trim()) {
+    if (!emailValue.trim()) {
       setEmailError(t("emailRequired"));
       hasError = true;
-    } else if (!emailRegex.test(email)) {
+    } else if (!emailRegex.test(emailValue)) {
       setEmailError(t("invalidEmailFormat"));
       hasError = true;
     }
 
-    if (!password.trim()) {
+    if (!passwordValue.trim()) {
       setPasswordError(t("passwordRequired"));
       hasError = true;
     }
@@ -67,8 +72,8 @@ const LoginForm = () => {
 
     try {
       const result = await signIn("credentials", {
-        email,
-        password,
+        email: emailValue,
+        password: passwordValue,
         redirect: false,
       });
 
@@ -93,6 +98,7 @@ const LoginForm = () => {
       }
     } catch (error) {
       console.error("Login error:", error);
+      setIsLoading(false);
     }
   };
 
@@ -120,10 +126,11 @@ const LoginForm = () => {
         <div className="relative">
           <Input
             id="email"
+            name="email"
             className={emailInputClasses}
             placeholder={t("emailPlaceholder")}
             value={email}
-            autoComplete="off"
+            autoComplete="email"
             onChange={(e) => setEmail(e.target.value)}
             aria-invalid={!!emailError || !!formError}
             aria-describedby={emailError ? "email-error" : undefined}
@@ -154,10 +161,11 @@ const LoginForm = () => {
         <div className="relative">
           <Input
             id="password"
+            name="password"
             type={showPassword ? "text" : "password"}
             className={passwordInputClasses}
             placeholder={t("passwordPlaceholder")}
-            autoComplete="off"
+            autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             aria-invalid={!!passwordError || !!formError}
