@@ -40,10 +40,11 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
 
   const handleLogout = async () => {
     try {
+      toast.success(t("successfullyLoggedOut"));
       await signOut({ redirect: true, callbackUrl: "/login" });
       clearCartOnLogout();
       clearWishlist();
-      toast.success(t("successfullyLoggedOut"));
+
       window.location.replace("/login");
     } catch (error) {
       console.error("Logout error:", error);

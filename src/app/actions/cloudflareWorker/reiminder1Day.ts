@@ -6,6 +6,11 @@ export async function reminder1Days(
   expiresAt: string
 ) {
   try {
+    if (expiresAt === "lifetime") {
+      logger.info("Course has lifetime access, no reminder needed");
+      return;
+    }
+
     const response = await fetch(
       `${process.env.WORKER_URL}/schedule-expiry-1day?userId=${userId}`,
       {

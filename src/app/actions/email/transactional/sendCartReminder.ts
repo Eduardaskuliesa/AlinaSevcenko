@@ -1,3 +1,4 @@
+"use server";
 import transporter from "@/app/services/nodemailer";
 
 interface SendCartReminderParams {

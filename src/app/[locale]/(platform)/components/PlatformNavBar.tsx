@@ -55,13 +55,13 @@ const PlatformNavBar = () => {
 
   const handleLogout = async () => {
     try {
-      window.location.replace("/login");
       toast.success(t("successfullyLoggedOut"));
       await signOut({
         redirect: false,
       });
       clearCartOnLogout();
       clearWishlist();
+      window.location.replace("/login");
     } catch (error) {
       console.error("Logout error:", error);
       toast.error(t("logoutError"));

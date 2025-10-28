@@ -11,7 +11,10 @@ export async function reminder7Days(
       courseId,
       expiresAt,
     };
-
+    if (expiresAt === "lifetime") {
+      logger.info("Course has lifetime access, no reminder needed");
+      return;
+    }
     const response = await fetch(
       `${process.env.WORKER_URL}/schedule-expiry-7days?userId=${userId}`,
       {

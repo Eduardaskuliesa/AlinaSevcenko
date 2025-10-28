@@ -1,3 +1,4 @@
+"use server";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { logger } from "@/app/utils/logger";
 import { GetCommand } from "@aws-sdk/lib-dynamodb";

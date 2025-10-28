@@ -38,7 +38,7 @@ export const useUserPreferencesStore = create<UserPreferencesState>()(
         });
 
         const preferencesResponse =
-          await userActions.preferences.getPreferences();
+          await userActions.preferences.getPreferencesInSession();
 
         set(() => ({
           preferences: preferencesResponse?.preferences,
