@@ -44,6 +44,7 @@
     "email": "Эл. почта",
     "emailPlaceholder": "Введите вашу эл. почту",
     "emailRequired": "Необходимо указать эл. почту",
+    "invalidEmailFormat": "Пожалуйста, введите действительный адрес электронной почты",
     "password": "Пароль",
     "passwordPlaceholder": "Введите ваш пароль",
     "passwordRequired": "Необходимо указать пароль",
@@ -145,7 +146,7 @@
     "CoursesPage": {
       "title": "Мое обучение",
       "loading": "Загрузка...",
-      "noCourses": "Вы еще не записались ни на один курс.",
+      "noCourses": "У вас еще нет приобретенных курсов",
       "lastAccessed": "Последний доступ:",
       "lessons": "уроков",
       "lessonsCompleted": "уроков завершено",

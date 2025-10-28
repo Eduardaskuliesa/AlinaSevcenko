@@ -44,6 +44,7 @@
     "email": "El. paštas",
     "emailPlaceholder": "Įveskite savo el. paštą",
     "emailRequired": "El. paštas yra privalomas",
+    "invalidEmailFormat": "Įveskite teisingą el. pašto adresą",
     "password": "Slaptažodis",
     "passwordPlaceholder": "Įveskite savo slaptažodį",
     "passwordRequired": "Slaptažodis yra privalomas",
@@ -145,7 +146,7 @@
     "CoursesPage": {
       "title": "Mano mokymasis",
       "loading": "Kraunama...",
-      "noCourses": "Dar nesate užsiregistravę į jokius kursus.",
+      "noCourses": "Dar neturite nusipirktų kursų",
       "lastAccessed": "Paskutinį kartą prisijungta:",
       "lessons": "pamokos",
       "lessonsCompleted": "pamokos užbaigtos",

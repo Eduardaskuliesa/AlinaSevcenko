@@ -1,11 +1,21 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProivder from "next-auth/providers/google";
 import type { NextAuthOptions } from "next-auth";
 import { LoginFormData } from "@/app/actions/user/authentication/login";
 import { userActions } from "@/app/actions/user";
 
 export const authOptions: NextAuthOptions = {
   providers: [
+    GoogleProivder({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      authorization: {
+        params: {
+          prompt: "select_account",
+        },
+      },
+    }),
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -38,8 +48,49 @@ export const authOptions: NextAuthOptions = {
   ],
 
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
+    async signIn({ user, account, profile }) {
+      if (account?.provider === "google") {
+        console.log("Google account sign in:", account);
+        console.log("User info:", user);
+        console.log("Profile info:", profile);
+        try {
+          console.log("Checking if user exists for email:", user.email);
+          const existingUsr = await userActions.authentication.checkEmail(
+            user.email
+          );
+          console.log(existingUsr);
+          if (existingUsr.error !== "EMAIL_ALREADY_EXISTS") {
+            console.log("Registering new OAuth user:", user.email);
+            await userActions.authentication.registerOAuth({
+              email: user.email!,
+              fullName: user.name!,
+              provider: "google",
+              providerId: account.providerAccountId,
+            });
+          }
+          return true;
+        } catch (error) {
+          console.error("Error during Google sign-in:", error);
+          return false;
+        }
+      }
+      return true;
+    },
+    async jwt({ token, user, account }) {
+      if (account?.provider === "google") {
+        console.log("Login via Google account:", account);
+        const user = await userActions.authentication.getUserByEmail(
+          token.email
+        );
+        if (user.success && user.user) {
+          token.id = user.user.userId;
+          token.role = user.user.roles;
+          token.fullName = user.user.fullName;
+        }
+      }
+
+      if (account?.provider === "credentials") {
+        console.log("Login via Credentials account:", account);
         token.id = user.id;
         token.email = user.email;
         token.role = user.role;
@@ -51,7 +102,7 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
-        session.user.fullName = token.fullName as string
+        session.user.fullName = token.fullName as string;
       }
       return session;
     },

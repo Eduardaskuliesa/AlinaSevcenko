@@ -24,7 +24,7 @@ interface MobileMenuProps {
 
 const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
   const session = useSession();
-  const t = useTranslations("PlatformNav")
+  const t = useTranslations("PlatformNav");
   const { clearCartOnLogout, clearWishlist } = useCartStore();
 
   useEffect(() => {
@@ -40,7 +40,7 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
 
   const handleLogout = async () => {
     try {
-      await signOut({ redirect: false });
+      await signOut({ redirect: true, callbackUrl: "/login" });
       clearCartOnLogout();
       clearWishlist();
       toast.success(t("successfullyLoggedOut"));

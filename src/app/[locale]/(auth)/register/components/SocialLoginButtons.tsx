@@ -1,13 +1,30 @@
 "use client";
 import React from "react";
+import { getSession, signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
 
 const SocialLoginButtons = () => {
   const t = useTranslations("RegisterPage");
-
+  const handleGoogleSignIn = async () => {
+    const result = await signIn("google", {
+      redirect: false,
+      callbackUrl: "/user/profile",
+    });
+    console.log(result);
+    if (result?.ok) {
+      console.log("Google sign-in successful:", result);
+      const session = await getSession();
+      if (session?.user.role === "STUDENT") {
+        window.location.href = "/user/profile";
+      } else if (session?.user.role === "ADMIN") {
+        window.location.href = "/admin/courses";
+      }
+    }
+  };
   return (
     <div className="flex justify-center space-x-6">
       <button
+        onClick={handleGoogleSignIn}
         type="button"
         aria-label={t("googleSignUp")}
         title={t("googleSignUp")}

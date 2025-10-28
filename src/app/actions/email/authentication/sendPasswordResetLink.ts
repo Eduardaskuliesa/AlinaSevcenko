@@ -1,6 +1,6 @@
 "use server";
-import sesClient from "@/app/services/simpleEmailService";
-import { SendEmailCommand } from "@aws-sdk/client-ses";
+
+import transporter from "@/app/services/nodemailer";
 
 type Lang = "lt" | "ru";
 
@@ -15,35 +15,17 @@ export async function sendPasswordResetEmail(
   const content = getEmailContent(lang, resetPasswordLink);
 
   try {
-    const params = {
-      Source: `Alina Savcenko <no-reply@alinasavcenko.lt>`,
-      Destination: {
-        ToAddresses: [email],
-      },
-      Message: {
-        Subject: {
-          Data: content.subject,
-          Charset: "UTF-8",
-        },
-        Body: {
-          Html: {
-            Data: content.htmlBody,
-            Charset: "UTF-8",
-          },
-          Text: {
-            Data: content.textBody,
-            Charset: "UTF-8",
-          },
-        },
-      },
-    };
-
-    const command = new SendEmailCommand(params);
-    const response = await sesClient.send(command);
+    const info = await transporter.sendMail({
+      from: `Alina Savcenko <no-reply@alinasavcenko.com>`,
+      to: email,
+      subject: content.subject,
+      text: content.textBody,
+      html: content.htmlBody,
+    });
 
     return {
       success: true,
-      messageId: response.MessageId,
+      messageId: info.messageId,
     };
   } catch (error) {
     console.error("Error sending password reset email:", error);
