@@ -1,11 +1,16 @@
 "use client";
 import React from "react";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 
 const SocialLoginButtons = () => {
   const t = useTranslations("RegisterPage");
+  const session = useSession();
   const handleGoogleSignIn = async () => {
+    if (session.status === "authenticated") {
+      window.location.href = "/user/profile";
+      return;
+    }
     await signIn("google", {
       redirect: false,
       callbackUrl: "/user/profile",
