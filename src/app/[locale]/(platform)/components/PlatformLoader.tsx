@@ -17,15 +17,6 @@ export default function PlatformLoader({
   const t = useTranslations("PlatformLoader");
   const { status } = useSession();
   const [hasLoaded, setHasLoaded] = useState(false);
-  const [hasShownBefore, setHasShownBefore] = useState(false);
-
-  useEffect(() => {
-    const shown = sessionStorage.getItem("loaderShown");
-    if (shown) {
-      setHasShownBefore(true);
-      setHasLoaded(true);
-    }
-  }, []);
 
   const isLoading =
     status === "loading" || !preferencesHydrated || !cartHydrated;
@@ -34,14 +25,13 @@ export default function PlatformLoader({
     if (!isLoading && !hasLoaded) {
       const timer = setTimeout(() => {
         setHasLoaded(true);
-        sessionStorage.setItem("loaderShown", "true");
-      }, 1000);
+      }, 500);
 
       return () => clearTimeout(timer);
     }
   }, [isLoading, hasLoaded]);
 
-  if (isLoading || !hasLoaded || !hasShownBefore) {
+  if (isLoading || !hasLoaded) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-50">
         <div className="text-center">
