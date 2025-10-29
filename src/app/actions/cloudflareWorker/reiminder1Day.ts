@@ -29,9 +29,7 @@ export async function reminder1Days(
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.log("Error scheduling reminder:", errorData);
       console.error("Error scheduling reminder:", errorData);
-      logger.error("Error scheduling reminder for 1day");
     }
 
     if (response.ok) {

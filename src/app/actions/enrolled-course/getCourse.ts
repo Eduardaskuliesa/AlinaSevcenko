@@ -1,11 +1,10 @@
 "use server";
-import { Course } from "@/app/types/course";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { GetCommand } from "@aws-sdk/lib-dynamodb";
 import { logger } from "@/app/utils/logger";
 import { EnrolledCourse } from "@/app/types/enrolled-course";
 
-export async function getCourse(courseId: Course["courseId"], userId: string) {
+export async function getCourse(userId: string, courseId: string) {
   logger.info(`Fetching course ${courseId}`);
   try {
     const getCommand = new GetCommand({

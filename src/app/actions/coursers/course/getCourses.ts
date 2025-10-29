@@ -24,7 +24,7 @@ async function fetchCourses() {
       courses: (courses.Items as Course[]) || [],
     };
   } catch (error) {
-    console.log("Error in getCourses", error);
+    console.error("Error in getCourses", error);
     return {
       success: false,
       courses: [],

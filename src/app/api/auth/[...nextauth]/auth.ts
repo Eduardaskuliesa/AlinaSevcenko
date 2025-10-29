@@ -48,19 +48,14 @@ export const authOptions: NextAuthOptions = {
   ],
 
   callbacks: {
-    async signIn({ user, account, profile }) {
+    async signIn({ user, account }) {
       if (account?.provider === "google") {
-        console.log("Google account sign in:", account);
-        console.log("User info:", user);
-        console.log("Profile info:", profile);
         try {
-          console.log("Checking if user exists for email:", user.email);
           const existingUsr = await userActions.authentication.checkEmail(
             user.email
           );
-          console.log(existingUsr);
+
           if (existingUsr.error !== "EMAIL_ALREADY_EXISTS") {
-            console.log("Registering new OAuth user:", user.email);
             await userActions.authentication.registerOAuth({
               email: user.email!,
               fullName: user.name!,
@@ -78,7 +73,6 @@ export const authOptions: NextAuthOptions = {
     },
     async jwt({ token, user, account }) {
       if (account?.provider === "google") {
-        console.log("Login via Google account:", account);
         const user = await userActions.authentication.getUserByEmail(
           token.email
         );
@@ -90,7 +84,6 @@ export const authOptions: NextAuthOptions = {
       }
 
       if (account?.provider === "credentials") {
-        console.log("Login via Credentials account:", account);
         token.id = user.id;
         token.email = user.email;
         token.role = user.role;

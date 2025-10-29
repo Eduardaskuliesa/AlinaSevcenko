@@ -32,11 +32,6 @@ export const useUserPreferencesStore = create<UserPreferencesState>()(
         })),
 
       setPreferences: async () => {
-        set((state) => {
-          if (state.preferences || state.loading) return state;
-          return { loading: true };
-        });
-
         const preferencesResponse =
           await userActions.preferences.getPreferencesInSession();
 

@@ -5,9 +5,10 @@ import { passthroughData } from "@/app/actions/mux/upload";
 import { mux } from "@/app/services/mux";
 import { headers } from "next/headers";
 import { revalidateTag } from "next/cache";
+import { logger } from "@/app/utils/logger";
 
 export async function POST(req: Request) {
-  console.log("Received webhook request from Mux");
+  logger.success("Received webhook request from Mux");
   const headerPayload = await headers();
   const payload = await req.json();
   const body = JSON.stringify(payload);

@@ -23,7 +23,7 @@ export async function fetchCategoires() {
       categories: (categories.Items as Category[]) || [],
     };
   } catch (error) {
-    console.log("Error in getCategories", error);
+    console.error("Error in getCategories", error);
     return {
       success: false,
       categories: [],

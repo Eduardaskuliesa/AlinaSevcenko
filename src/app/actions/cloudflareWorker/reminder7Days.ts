@@ -15,6 +15,14 @@ export async function reminder7Days(
       logger.info("Course has lifetime access, no reminder needed");
       return;
     }
+    const expiryTime = new Date(expiresAt).getTime();
+    const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
+    const timeUntilExpiry = expiryTime - Date.now();
+
+    if (timeUntilExpiry <= sevenDaysInMs) {
+      logger.info("Expires date is less than 7 days, no reminder needed");
+      return;
+    }
     const response = await fetch(
       `${process.env.WORKER_URL}/schedule-expiry-7days?userId=${userId}`,
       {
@@ -29,9 +37,8 @@ export async function reminder7Days(
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.log("Error scheduling reminder:", errorData);
+
       console.error("Error scheduling reminder:", errorData);
-      logger.error("Error scheduling reminder for 7days");
     }
 
     if (response.ok) {

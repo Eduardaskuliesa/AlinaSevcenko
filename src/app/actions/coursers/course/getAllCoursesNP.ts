@@ -45,7 +45,7 @@ async function fetchCourses() {
       courses: coursesWithLessonCount as FilteredCourse[],
     };
   } catch (error) {
-    console.log("Error in getCourses", error);
+    console.error("Error in getCourses", error);
     return {
       success: false,
       courses: [],

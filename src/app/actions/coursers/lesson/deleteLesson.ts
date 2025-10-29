@@ -27,8 +27,6 @@ export async function deleteLesson(
 
     const courseResult = await dynamoDb.send(getCourseCommand);
 
-    console.log("courseResult", courseResult.Item as Course);
-
     if (!courseResult.Item) {
       return {
         success: false,

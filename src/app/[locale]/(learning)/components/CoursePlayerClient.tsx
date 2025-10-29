@@ -58,7 +58,6 @@ const CoursePlayerPageClient = ({
   }, [learningData?.needsSync, courseId, userId, queryClient]);
 
   useEffect(() => {
-    console.log(selectedLessonId);
     const loadLastWatchedLesson = async () => {
       if (!learningData?.lessons?.[0]?.lessonId || !courseId || !userId) {
         return;

@@ -9,8 +9,6 @@ export async function updateLanguagePreferences(
   userId: string
 ) {
   try {
-    console.log(language, userId);
-    console.log("Updating language preferences for user:", userId, language);
     const command = new UpdateCommand({
       TableName: dynamoTableName,
       Key: {

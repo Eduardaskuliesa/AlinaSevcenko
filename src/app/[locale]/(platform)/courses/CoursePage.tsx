@@ -131,7 +131,6 @@ const CoursePageContent = () => {
 
   useEffect(() => {
     if (searchParams.get("error") === "course-not-available") {
-      console.log("Use effect fires");
       router.replace(`/${locale}/courses`);
       toast.error(t("courseNotAvailable"));
     }

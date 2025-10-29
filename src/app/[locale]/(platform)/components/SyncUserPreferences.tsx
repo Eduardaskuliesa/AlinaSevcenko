@@ -9,7 +9,7 @@ export default function SyncUserPreferences() {
   const hasSynced = useRef(false);
 
   useEffect(() => {
-    if (status === "authenticated" && !loading && !hasSynced.current) {
+    if (status === "authenticated" && loading && !hasSynced.current) {
       hasSynced.current = true;
       setPreferences();
     }

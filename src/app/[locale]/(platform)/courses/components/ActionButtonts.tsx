@@ -25,7 +25,11 @@ const ActionButtons = ({
     []
   );
   const userId = useSession().data?.user.id;
-  const accessPlan = course.accessPlans.find((plan) => plan.isActive);
+  const sortAccessPlansByPrice = course.accessPlans.sort(
+    (a, b) => a.price - b.price
+  );
+
+  const accessPlan = sortAccessPlansByPrice[0];
 
   const handleHeartClick = (e: React.MouseEvent) => {
     e.stopPropagation();

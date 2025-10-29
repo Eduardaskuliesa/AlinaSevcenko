@@ -2,7 +2,6 @@
 import { logger } from "@/app/utils/logger";
 
 export async function getUploadUrl() {
-  console.log("Fires");
   const token = process.env.CLOUDFLARE_STREAM_TOKEN;
   const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
 
@@ -31,7 +30,7 @@ export async function getUploadUrl() {
     );
 
     const data = await response.json();
-    console.log("Data", data);
+
     if (!data.success) {
       logger.error(`Error fetching upload URL: ${data.errors[0].message}`);
       return {

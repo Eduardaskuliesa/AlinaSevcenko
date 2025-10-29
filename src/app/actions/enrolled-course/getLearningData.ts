@@ -54,8 +54,8 @@ async function fetchLearningData(courseId: string, userId: string) {
   logger.info(`Fetching fresh learning data`);
   try {
     const enrolledCourseData = await enrolledCourseActions.getCourse(
-      courseId,
-      userId
+      userId,
+      courseId
     );
     if (enrolledCourseData.error) {
       logger.error(

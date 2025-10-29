@@ -63,7 +63,6 @@ export async function POST(req: Request) {
 
         const lifeTime = accessPlan.duration === 0;
 
-        // Check if course already exists
         const existingCourse = await enrolledCourseActions.getCourse(
           userId,
           courseId
@@ -71,14 +70,23 @@ export async function POST(req: Request) {
 
         let enrolledCourseData: PurschaseCourseData;
 
-        if (existingCourse) {
-          const newExpiresAt =
-            lifeTime || existingCourse.cousre?.expiresAt === "lifetime"
-              ? "lifetime"
-              : new Date(
-                  new Date(existingCourse.cousre?.expiresAt!).getTime() +
-                    accessPlan.duration * 24 * 60 * 60 * 1000
-                ).toISOString();
+        if (existingCourse.cousre) {
+          let newExpiresAt: string;
+
+          if (lifeTime) {
+            newExpiresAt = "lifetime";
+          }
+          if (existingCourse.cousre?.expiresAt === "lifetime") {
+            newExpiresAt = "lifetime";
+          } else {
+            const currentExpiry = new Date(
+              existingCourse.cousre?.expiresAt!
+            ).getTime();
+            const additionalTime = accessPlan.duration * 24 * 60 * 60 * 1000;
+            newExpiresAt = new Date(
+              currentExpiry + additionalTime
+            ).toISOString();
+          }
 
           enrolledCourseData = {
             ...existingCourse.cousre!,
@@ -148,7 +156,7 @@ export async function POST(req: Request) {
           expiresAt: enrolledCourseData.expiresAt,
         });
 
-        const createResponse = existingCourse
+        const createResponse = existingCourse.cousre
           ? await enrolledCourseActions.updateEnrolledCourse(enrolledCourseData)
           : await enrolledCourseActions.createPurchasedCourse(
               enrolledCourseData
@@ -193,6 +201,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ recieved: true });
   } catch (error) {
     logger.error("Error processing Stripe webhook:", error);
-    return NextResponse.json({ error: "Webhook Error" }, { status: 400 });
+    return NextResponse.json(
+      {
+        received: true,
+        error: "Processing failed but acknowledged",
+      },
+      { status: 200 }
+    );
   }
 }
