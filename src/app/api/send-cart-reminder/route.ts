@@ -12,7 +12,7 @@ type SendCartReminderRequestBody = {
   reminderType: "cart-abandonment";
 };
 
-export async function handler(req: NextRequest): Promise<NextResponse> {
+async function handler(req: NextRequest): Promise<NextResponse> {
   try {
     logger.success("Send cart reminder webhook invoked");
     const { userId, cartItems, reminderType } =
