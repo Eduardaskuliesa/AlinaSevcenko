@@ -9,7 +9,7 @@ export async function sendVerificationEmail(
   lang: Lang
 ) {
   const baseUrl = process.env.NEXTAUTH_URL;
-  const verificationLink = `${baseUrl}/verify-email?token=${token}`;
+  const verificationLink = `${baseUrl}/${lang}/verify-email?token=${token}`;
 
   const content = getEmailContent(lang, verificationLink);
 

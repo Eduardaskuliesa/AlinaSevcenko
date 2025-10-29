@@ -10,7 +10,7 @@ export async function sendPasswordResetEmail(
   lang: Lang
 ) {
   const baseUrl = process.env.NEXTAUTH_URL;
-  const resetPasswordLink = `${baseUrl}/reset-password?token=${token}`;
+  const resetPasswordLink = `${baseUrl}/${lang}/reset-password?token=${token}`;
 
   const content = getEmailContent(lang, resetPasswordLink);
 
