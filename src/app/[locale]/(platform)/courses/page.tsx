@@ -10,15 +10,16 @@ export default async function CoursePage() {
   const queryClient = getQueryClient();
   const t = await getTranslations("CoursesPage");
 
-  queryClient.prefetchQuery({
-    queryKey: ["client-courses"],
-    queryFn: coursesAction.courses.getAllCoursesUP,
-  });
-
-  queryClient.prefetchQuery({
-    queryKey: ["client-categories"],
-    queryFn: categoryActions.getAllCategoriesUP,
-  });
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: ["client-courses"],
+      queryFn: coursesAction.courses.getAllCoursesUP,
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ["client-categories"],
+      queryFn: categoryActions.getAllCategoriesUP,
+    }),
+  ]);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
