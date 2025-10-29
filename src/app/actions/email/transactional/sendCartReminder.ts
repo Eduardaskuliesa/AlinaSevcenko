@@ -12,7 +12,7 @@ export async function sendCartReminder({
   language,
 }: SendCartReminderParams) {
   const baseUrl = process.env.NEXTAUTH_URL;
-  const cartLink = `${baseUrl}/cart`;
+  const cartLink = `${baseUrl}${language}/cart`;
   const content = getEmailContent(language, cartLink);
   try {
     const info = await transporter.sendMail({

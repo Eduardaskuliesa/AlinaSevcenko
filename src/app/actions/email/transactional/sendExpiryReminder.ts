@@ -20,8 +20,8 @@ export async function sendExpiryReminder({
   daysUntilExpiry,
 }: ExpiryReminderEmailParams) {
   const baseUrl = process.env.NEXTAUTH_URL;
-  const courseLink = `${baseUrl}/my-courses/courses`;
-  const extendLink = `${baseUrl}/courses/${courseSlug}`;
+  const courseLink = `${baseUrl}/${lang}/my-courses/courses`;
+  const extendLink = `${baseUrl}/${lang}/courses/${courseSlug}`;
 
   const content = getEmailContent(
     lang,
@@ -151,13 +151,12 @@ function get7DayRuHtmlBody(
             </p>
             
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${courseLink}" style="background-color: #F7D09E; color: #333; text-decoration: none; padding: 12px 30px; border-radius: 6px; font-weight: bold; display: inline-block; margin-bottom: 10px;">Продолжить обучение</a>
-              <br>
-              <a href="${extendLink}" style="background-color: transparent; color: #333; text-decoration: none; padding: 12px 30px; border-radius: 6px; font-weight: bold; display: inline-block; border: 2px solid #333;">Продлить доступ</a>
+              <a href="${courseLink}" style="background-color: #F7D09E; color: #333; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; display: inline-block; margin: 0 5px;">Продолжить обучение</a>
+              <a href="${extendLink}" style="background-color: #E8C5A5; color: #333; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; display: inline-block; margin: 0 5px;">Продлить доступ</a>
             </div>
             
-            <p style="color: #333; font-size: 14px; margin-top: 30px; text-align: right;">
-              — Alina
+            <p style="color: #333; font-size: 14px; margin-top: 30px;">
+              Alina
             </p>
           </td>
         </tr>
@@ -203,13 +202,12 @@ function get1DayRuHtmlBody(
             </p>
             
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${courseLink}" style="background-color: #F7D09E; color: #333; text-decoration: none; padding: 12px 30px; border-radius: 6px; font-weight: bold; display: inline-block; margin-bottom: 10px;">Перейти к курсу</a>
-              <br>
-              <a href="${extendLink}" style="background-color: transparent; color: #333; text-decoration: none; padding: 12px 30px; border-radius: 6px; font-weight: bold; display: inline-block; border: 2px solid #333;">Продлить доступ</a>
+              <a href="${courseLink}" style="background-color: #F7D09E; color: #333; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; display: inline-block; margin: 0 5px;">Перейти к курсу</a>
+              <a href="${extendLink}" style="background-color: #E8C5A5; color: #333; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; display: inline-block; margin: 0 5px;">Продлить доступ</a>
             </div>
             
-            <p style="color: #333; font-size: 14px; margin-top: 30px; text-align: right;">
-              — Alina
+            <p style="color: #333; font-size: 14px; margin-top: 30px;">
+              Alina
             </p>
           </td>
         </tr>
@@ -255,13 +253,12 @@ function get7DayLtHtmlBody(
             </p>
             
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${courseLink}" style="background-color: #F7D09E; color: #333; text-decoration: none; padding: 12px 30px; border-radius: 6px; font-weight: bold; display: inline-block; margin-bottom: 10px;">Tęsti mokymąsi</a>
-              <br>
-              <a href="${extendLink}" style="background-color: transparent; color: #333; text-decoration: none; padding: 12px 30px; border-radius: 6px; font-weight: bold; display: inline-block; border: 2px solid #333;">Pratęsti prieigą</a>
+              <a href="${courseLink}" style="background-color: #F7D09E; color: #333; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; display: inline-block; margin: 0 5px;">Tęsti mokymąsi</a>
+              <a href="${extendLink}" style="background-color: #E8C5A5; color: #333; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; display: inline-block; margin: 0 5px;">Pratęsti prieigą</a>
             </div>
             
-            <p style="color: #333; font-size: 14px; margin-top: 30px; text-align: right;">
-              — Alina
+            <p style="color: #333; font-size: 14px; margin-top: 30px;">
+              Alina
             </p>
           </td>
         </tr>
@@ -307,13 +304,12 @@ function get1DayLtHtmlBody(
             </p>
             
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${courseLink}" style="background-color: #F7D09E; color: #333; text-decoration: none; padding: 12px 30px; border-radius: 6px; font-weight: bold; display: inline-block; margin-bottom: 10px;">Eiti į kursą</a>
-              <br>
-              <a href="${extendLink}" style="background-color: transparent; color: #333; text-decoration: none; padding: 12px 30px; border-radius: 6px; font-weight: bold; display: inline-block; border: 2px solid #333;">Pratęsti prieigą</a>
+              <a href="${courseLink}" style="background-color: #F7D09E; color: #333; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; display: inline-block; margin: 0 5px;">Eiti į kursą</a>
+              <a href="${extendLink}" style="background-color: #E8C5A5; color: #333; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; display: inline-block; margin: 0 5px;">Pratęsti prieigą</a>
             </div>
             
-            <p style="color: #333; font-size: 14px; margin-top: 30px; text-align: right;">
-              — Alina
+            <p style="color: #333; font-size: 14px; margin-top: 30px;">
+              Alina
             </p>
           </td>
         </tr>

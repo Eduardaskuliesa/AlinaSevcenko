@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 import { logger } from "@/app/utils/logger";
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
@@ -36,6 +37,7 @@ export async function POST(req: Request) {
 
       const courseIdArray = courseIds.split(",");
       const accessIdArray = accessIds.split(",");
+
       for (let i = 0; i < courseIdArray.length; i++) {
         const courseId = courseIdArray[i];
         const accessPlanId = accessIdArray[i];
@@ -44,7 +46,8 @@ export async function POST(req: Request) {
           `Processing course ID: ${courseId}, Access Plan: ${accessPlanId}`
         );
 
-        const course = (await coursesAction.courses.getCourseClient(courseId)).course;
+        const course = (await coursesAction.courses.getCourseClient(courseId))
+          .course;
         const lessons = await coursesAction.lessons.getClientLessons(courseId);
 
         const accessPlan = course?.accessPlans?.find(
@@ -58,66 +61,107 @@ export async function POST(req: Request) {
           continue;
         }
 
-        const lessonProgress: {
-          [lessonId: string]: {
-            progress: number;
-            completedAt?: string;
-            wasReworked?: boolean;
-          };
-        } = {};
-
-        lessons?.forEach((lesson) => {
-          lessonProgress[lesson.lessonId] = {
-            progress: 0,
-            completedAt: "",
-            wasReworked: false,
-          };
-        });
-
         const lifeTime = accessPlan.duration === 0;
 
-        const expiresAt = lifeTime
-          ? "lifetime"
-          : new Date(
-              Date.now() + accessPlan.duration * 24 * 60 * 60 * 1000
-            ).toISOString();
+        // Check if course already exists
+        const existingCourse = await enrolledCourseActions.getCourse(
+          userId,
+          courseId
+        );
+
+        let enrolledCourseData: PurschaseCourseData;
+
+        if (existingCourse) {
+          const newExpiresAt =
+            lifeTime || existingCourse.cousre?.expiresAt === "lifetime"
+              ? "lifetime"
+              : new Date(
+                  new Date(existingCourse.cousre?.expiresAt!).getTime() +
+                    accessPlan.duration * 24 * 60 * 60 * 1000
+                ).toISOString();
+
+          enrolledCourseData = {
+            ...existingCourse.cousre!,
+            purchaseId: event.data.object.id,
+            paymentId: event.data.object.id as string,
+            expiresAt: newExpiresAt,
+            accessPlanName: accessPlan.name,
+            accessPlanDuration: accessPlan.duration,
+            pricePaid: accessPlan.price,
+            purchaseDate: new Date().toISOString(),
+            status: "ACTIVE",
+          };
+
+          logger.info(
+            `Extending course ${courseId} - Old expiry: ${existingCourse.cousre?.expiresAt}, New expiry: ${newExpiresAt}`
+          );
+        } else {
+          const lessonProgress: {
+            [lessonId: string]: {
+              progress: number;
+              completedAt?: string;
+              wasReworked?: boolean;
+            };
+          } = {};
+
+          lessons?.forEach((lesson) => {
+            lessonProgress[lesson.lessonId] = {
+              progress: 0,
+              completedAt: "",
+              wasReworked: false,
+            };
+          });
+
+          const expiresAt = lifeTime
+            ? "lifetime"
+            : new Date(
+                Date.now() + accessPlan.duration * 24 * 60 * 60 * 1000
+              ).toISOString();
+
+          enrolledCourseData = {
+            purchaseId: event.data.object.id,
+            paymentId: event.data.object.id as string,
+            userId: userId,
+            courseId: courseId,
+            slug: course?.slug || "",
+            duration: course?.duration || 0,
+            shortDescription: course?.shortDescription || "",
+            longDescription: course?.description || "",
+            lessonCount: course?.lessonCount || 0,
+            title: course?.title || "",
+            languge: course?.language || "lt",
+            accessPlanName: accessPlan.name,
+            accessPlanDuration: accessPlan.duration,
+            pricePaid: accessPlan.price,
+            thumbnailImage: course?.thumbnailImage || "",
+            purchaseDate: new Date().toISOString(),
+            expiresAt: expiresAt,
+            status: "ACTIVE",
+            lessonProgress: lessonProgress,
+          };
+
+          logger.info(`Creating new enrolled course ${courseId}`);
+        }
 
         coursePreferences.push({
           courseId: courseId,
-          expiresAt: lifeTime ? "lifetime" : expiresAt,
+          expiresAt: enrolledCourseData.expiresAt,
         });
 
-        const enrolledCourseData: PurschaseCourseData = {
-          purchaseId: event.data.object.id,
-          paymentId: event.data.object.id as string,
-          userId: userId,
-          courseId: courseId,
-          slug: course?.slug || "",
-          duration: course?.duration || 0,
-          shortDescription: course?.shortDescription || "",
-          longDescription: course?.description || "",
-          lessonCount: course?.lessonCount || 0,
-          title: course?.title || "",
-          languge: course?.language || "lt",
-          accessPlanName: accessPlan.name,
-          accessPlanDuration: accessPlan.duration,
-          pricePaid: accessPlan.price,
-          thumbnailImage: course?.thumbnailImage || "",
-          purchaseDate: new Date().toISOString(),
-          expiresAt: expiresAt,
-          status: "ACTIVE",
-          lessonProgress: lessonProgress,
-        };
-
-        const createResponse =
-          await enrolledCourseActions.createPurchasedCourse(enrolledCourseData);
+        const createResponse = existingCourse
+          ? await enrolledCourseActions.updateEnrolledCourse(enrolledCourseData)
+          : await enrolledCourseActions.createPurchasedCourse(
+              enrolledCourseData
+            );
 
         if (!createResponse.success) {
           logger.error(
-            `Failed to create enrolled course: ${createResponse.error}`
+            `Failed to create/update enrolled course: ${createResponse.error}`
           );
 
-          return new Response("Course creation failed", { status: 500 });
+          return new Response("Course creation/update failed", {
+            status: 500,
+          });
         }
 
         if (createResponse.success) {
@@ -126,13 +170,13 @@ export async function POST(req: Request) {
           await cloudflareWorkerActions.reminder1Days(
             courseId,
             userId,
-            expiresAt
+            enrolledCourseData.expiresAt
           );
 
           await cloudflareWorkerActions.reminder7Days(
             courseId,
             userId,
-            expiresAt
+            enrolledCourseData.expiresAt
           );
 
           await userActions.preferences.updateCoursePreferences(
@@ -142,7 +186,7 @@ export async function POST(req: Request) {
         }
 
         revalidateTag(`users-course-${userId}`);
-        logger.success("Enrolled course created successfully:");
+        logger.success("Enrolled course processed successfully");
       }
     }
 
