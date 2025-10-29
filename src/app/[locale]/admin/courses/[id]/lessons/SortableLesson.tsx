@@ -9,6 +9,7 @@ import { useGetCourseId } from "@/app/hooks/useGetCourseId";
 import { DeleteModal } from "@/components/ui/DeleteModal";
 import { coursesAction } from "@/app/actions/coursers";
 import toast from "react-hot-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface SortableLessonProps {
   isPublished?: boolean;
@@ -35,7 +36,7 @@ const SortableLesson: React.FC<SortableLessonProps> = ({
   } = useSortable({ id: lesson.lessonId, disabled: isPublished });
 
   const { courseId } = useGetCourseId();
-
+  const queryClient = useQueryClient();
   const style = {
     transform: transform
       ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
@@ -60,6 +61,7 @@ const SortableLesson: React.FC<SortableLessonProps> = ({
         return;
       }
       if (response.success) {
+        queryClient.invalidateQueries({ queryKey: ["course", courseId] });
         toast.success("Lesson deleted successfully.");
         deleteLesson(lesson.lessonId);
       }

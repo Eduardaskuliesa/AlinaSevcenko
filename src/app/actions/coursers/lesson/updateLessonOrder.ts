@@ -49,6 +49,7 @@ export async function updateLessonOrder(
     await dynamoDb.send(updateCourseCommand);
     revalidatePath(`/courses`);
     revalidateTag(`client-lessons-${courseId}`);
+    revalidateTag(`admin-lesson-${courseId}`)
     revalidateTag(`learning-data-${courseId}`);
     revalidateTag(`course-${courseId}`);
     revalidateTag(`course-client-${courseId}`);

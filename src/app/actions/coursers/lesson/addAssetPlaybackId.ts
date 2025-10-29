@@ -55,7 +55,8 @@ export async function addAssetPlaybackId(data: AddAssetPlaybackIdData) {
 
     await dynamoDb.send(updateLessonCommand);
 
-    revalidateTag(`course-${data.courseId}`);
+    revalidateTag(`course-${data.courseId}`)
+    revalidateTag(`admin-lesson-${data.courseId}`);
     revalidateTag(`course-client-${data.courseId}`);
     revalidateTag(`user-lesson-${data.courseId}`);
     revalidateTag(`learning-data-${data.courseId}`);

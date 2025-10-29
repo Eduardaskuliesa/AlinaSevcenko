@@ -34,6 +34,7 @@ export async function updateLessonStatus(data: UpdateLessonStatusData) {
     await dynamoDb.send(updateLessonCommand);
     logger.success(`Lesson status updated to ${data.status}`);
     revalidateTag(`course-${data.courseId}`);
+    revalidateTag(`admin-lesson-${data.courseId}`);
     revalidateTag(`user-lesson-${data.courseId}`);
     revalidateTag(`client-lessons-${data.courseId}`);
     revalidateTag(`course-client-${data.courseId}`);

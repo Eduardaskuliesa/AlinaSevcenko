@@ -7,8 +7,13 @@ import CardWrapper from "../components/CardWrapper";
 
 export const dynamic = "force-static";
 
-const Page = async () => {
-  const t = await getTranslations("LoginPage");
+export function generateStaticParams() {
+  return [{ locale: "lt" }, { locale: "ru" }];
+}
+
+const Page = async ({ params }: { params: Promise<{ locale: string }> }) => {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "LoginPage" });
 
   return (
     <CardWrapper>
