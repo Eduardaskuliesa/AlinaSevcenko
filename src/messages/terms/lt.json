@@ -1,14 +1,15 @@
 {
   "TermsPage": {
     "metadata": {
-      "title": "Naudojimosi Sąlygos | Jūsų Platformos Pavadinimas",
+      "title": "Naudojimosi Sąlygos | Alina Savcenko",
       "description": "Perskaitykite mūsų naudojimosi sąlygas, kad suprastumėte taisykles ir gaires naudojantis mūsų kursų platforma, įskaitant prieigos laikotarpius, mokėjimo sąlygas ir mūsų grąžinimo draudimo politiką."
     },
     "header": {
       "title": "Naudojimosi Sąlygos"
     },
+    "backButton": "Atgal",
     "mainTitle": "Naudojimosi Sąlygos",
-    "lastUpdated": "Paskutinį kartą atnaujinta: 2025 m. spalio 22 d.",
+    "lastUpdated": "Paskutinį kartą atnaujinta: 2025 m. spalio 30 d.",
     "sections": {
       "agreementToTerms": {
         "title": "Sutikimas su Sąlygomis",

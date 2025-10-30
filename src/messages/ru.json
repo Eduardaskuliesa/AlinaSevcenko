@@ -338,5 +338,9 @@
     "privacyPolicy": "Политика конфиденциальности",
     "termsOfService": "Условия обслуживания",
     "copyright": "© {year} Алина Савченко. Все права защищены."
+  },
+  "Buttons": {
+    "print": "Печать",
+    "downloadAsTxt": "Скачать как TXT файл"
   }
 }

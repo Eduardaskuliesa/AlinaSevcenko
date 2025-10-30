@@ -338,5 +338,9 @@
     "privacyPolicy": "Privatumo politika",
     "termsOfService": "Paslaugų teikimo sąlygos",
     "copyright": "© {year} Alina Savcenko. Visos teisės saugomos."
+  },
+  "Buttons": {
+    "print": "Spausdinti",
+    "downloadAsTxt": "Atsisiųsti kaip TXT failą"
   }
 }

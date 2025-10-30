@@ -70,6 +70,8 @@ export default function Footer() {
             <ul className="space-y-1.5 text-sm lg:text-base">
               <li>
                 <Link
+                  target="_blank"
+                  rel="noopener noreferrer"
                   href="/privacy"
                   className="hover:text-white transition-colors"
                 >
@@ -78,6 +80,8 @@ export default function Footer() {
               </li>
               <li>
                 <Link
+                  target="_blank"
+                  rel="noopener noreferrer"
                   href="/terms"
                   className="hover:text-white transition-colors"
                 >

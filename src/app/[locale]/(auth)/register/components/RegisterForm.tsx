@@ -11,6 +11,7 @@ import { userActions } from "@/app/actions/user";
 import { RegisterFormData } from "@/app/actions/user/authentication/register";
 import { useRouter } from "next/navigation";
 import { emailActions } from "@/app/actions/email";
+import Link from "next/link";
 
 const RegisterForm = () => {
   const t = useTranslations("RegisterPage");
@@ -321,13 +322,21 @@ const RegisterForm = () => {
           />
           <span className="text-gray-600">
             {t("agreePrefix")}{" "}
-            <a href="#" className="font-medium text-violet-800 hover:underline">
+            <Link
+              target="_blank"
+              href="terms"
+              className="font-medium text-violet-800 hover:underline"
+            >
               {t("termsLink")}
-            </a>{" "}
+            </Link>{" "}
             {t("and") || "and"}{" "}
-            <a href="#" className="font-medium text-violet-800 hover:underline">
+            <Link
+              target="_blank"
+              href="privacy"
+              className="font-medium text-violet-800 hover:underline"
+            >
               {t("privacyLink")}
-            </a>
+            </Link>
           </span>
         </label>
         {termsError && (
