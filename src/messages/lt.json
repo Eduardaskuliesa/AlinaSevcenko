@@ -342,5 +342,30 @@
   "Buttons": {
     "print": "Spausdinti",
     "downloadAsTxt": "Atsisiųsti kaip TXT failą"
+  },
+  "MainNav": {
+    "home": "Pradžia",
+    "courses": "Kursai",
+    "account": "Paskyra",
+    "menu": "Meniu",
+    "close": "Uždaryti"
+  },
+  "HomePage": {
+    "heroTitle": "Sveiki atvykę į erdvę, kurioje galima atsikvėpti, paleisti kontrolę ir išgirsti save.",
+    "paragraph1": "Čia atsiranda vietos jausmams ir jų įteisinimui, vidinei šilumai, nuoširdžiam dialogui ir ramybei.",
+    "paragraph2": "Jums prieinamos programos apie sugrįžimą į save, priėmimą, vidinę stiprybę ir meilę. Apie sveikus santykius, pasitikėjimą ir harmoningą sąveiką su pasauliu.",
+    "paragraph3": "Kaip šeimos psichologė, sukūriau šią erdvę tam, kad kiekvienas žmogus – nepriklausomai nuo lyties, vaidmens ar socialinio statuso – galėtų prisiminti, koks jis yra iš tikrųjų, ir leistų sau būti – mylimu, reikalingu ir laimingu.",
+    "paragraph4": "Gyvenimas harmonijoje, vidinėje ir išorinėje pilnatvėje įmanomas jau šiandien. Ir jis prasideda nuo pirmo žingsnio – kelio į save.",
+    "welcomeHome": "Sveiki sugrįžę namo.",
+    "aboutMeTitle": "Apie mane",
+    "aboutMeDescription": "Trumpas aprašymas apie mane ir mano metodus",
+    "contactMeTitle": "Susisiekite su manimi",
+    "contactMeDescription": "Susisiekite, kad pradėtumėte savo kelionę",
+    "personalSessionsTitle": "Asmeninės sesijos",
+    "personalSessionsDescription": "Užsiregistruokite susitikimui su manimi ir geriau mane pažinkite",
+    "coursesTitle": "Mano kursai",
+    "lithuanianCourses": "Kursai lietuvių kalba",
+    "russianCourses": "Kursai rusų kalba",
+    "noCourses": "Kursų nėra"
   }
 }

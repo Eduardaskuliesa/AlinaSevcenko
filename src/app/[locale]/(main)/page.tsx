@@ -1,87 +1,68 @@
-"use client";
-import { Link } from "@/i18n/navigation";
-import { useTransitionRouter } from "next-view-transitions";
 import Image from "next/image";
-import { pageAnimation } from "./pageTransition";
+import { getTranslations } from "next-intl/server";
+import { Suspense } from "react";
+import CourseSection from "./components/Course/CourseSection";
 
-export default function Home() {
-  const router = useTransitionRouter();
+export function generateStaticParams() {
+  return [{ locale: "lt" }, { locale: "ru" }];
+}
+
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "HomePage" });
+
   return (
     <>
-      <main className="bg-background min-h-screen p-12 lg:px-24 relative overflow-hidden">
-        <div className="max-w-3xl mx-auto px-6">
-          <div className="bg-primary rounded-t-full h-[400px] w-[400px] mx-auto flex relative">
+      <main className="bg-background min-h-screen py-12 px-6 lg:px-24 relative overflow-hidden">
+        <div className="max-w-4xl mx-auto">
+          <div className="relative w-[300px] h-[300px] lg:h-[400px] lg:w-[400px] mx-auto mb-6 lg:mb-12">
             <Image
-              objectFit="cover"
               alt="Alina Photo"
-              src={"/AlinaPhoto.jpg"}
+              src="/AlinaPhoto.jpg"
               fill
-              sizes="100%"
+              sizes="(max-width: 768px) 300px, 400px"
               priority
-              quality={100}
-              className="w-full h-full rounded-t-full"
-            ></Image>
+              quality={90}
+              className="object-cover rounded-t-full"
+            />
           </div>
-          <div className="text-7xl font-times font-semibold text-center mb-2">
-            Welcome
+          <div className="mb-6 lg:mb-12 space-y-6">
+            <p className="text-2xl md:text-3xl lg:text-4xl font-times leading-relaxed text-gray-950 text-center">
+              {t("heroTitle")}
+            </p>
+
+            <p className="text-lg md:text-xl font-times leading-relaxed text-gray-800 text-center max-w-3xl mx-auto">
+              {t("paragraph1")}
+            </p>
+
+            <p className="text-lg md:text-xl font-times leading-relaxed text-gray-800 text-center max-w-3xl mx-auto">
+              {t("paragraph2")}
+            </p>
+
+            <p className="text-lg md:text-xl font-times leading-relaxed text-gray-800 text-center max-w-3xl mx-auto">
+              {t("paragraph3")}
+            </p>
+
+            <p className="text-lg md:text-xl font-times leading-relaxed text-gray-800 text-center max-w-3xl mx-auto">
+              {t("paragraph4")}
+            </p>
+
+            <p className="text-xl md:text-2xl font-times font-semibold leading-relaxed text-gray-900 text-center">
+              {t("welcomeHome")}
+            </p>
           </div>
-          <div className="w-full h-1 bg-primary mb-10"></div>
-          <div className="flex flex-col items-center gap-6">
-            <Link
-              href={"/about"}
-              onClick={(e) => {
-                e.preventDefault();
-                router.push("/about", {
-                  onTransitionReady: pageAnimation,
-                });
-              }}
-              className="bg-secondary hover:bg-secondary-light transition-colors hover:shadow-lg w-full shadow-md text-center flex flex-col rounded-full"
-            >
-              <span className=" text-xl font-semibold text-gray-800">
-                About Me
-              </span>{" "}
-              <span className="text-gray-700">
-                Brief description about me and my methods
-              </span>
-            </Link>
-            <Link
-              href={"/contact"}
-              onClick={(e) => {
-                e.preventDefault();
-                router.push("/contact", {
-                  onTransitionReady: pageAnimation,
-                });
-              }}
-              className="bg-secondary hover:bg-secondary-light hover:shadow-lg transition-colors w-full shadow-md  text-center flex flex-col rounded-full"
-            >
-              <span className=" text-xl font-semibold text-gray-800">
-                Contact Me
-              </span>{" "}
-              <span className="text-gray-700">
-                Brief description about me and my methods
-              </span>
-            </Link>
-            <Link
-              href={"/personal"}
-              onClick={(e) => {
-                e.preventDefault();
-                router.push("/personal", {
-                  onTransitionReady: pageAnimation,
-                });
-              }}
-              className="bg-secondary hover:bg-secondary-light hover:shadow-lg transition-colors w-full shadow-md  text-center flex flex-col rounded-full"
-            >
-              <span className=" text-xl font-semibold text-gray-800">
-                Personal
-              </span>{" "}
-              <span className="text-gray-700">
-                Book a meeting with me and get to know me better
-              </span>
-            </Link>
-          </div>
+
+          <div className="w-full h-1 bg-primary mx-auto mb-6"></div>
+
+          <Suspense fallback={<p>Loading courses...</p>}>
+            <CourseSection locale={locale} />
+          </Suspense>
         </div>
       </main>
-      <footer></footer>
     </>
   );
 }

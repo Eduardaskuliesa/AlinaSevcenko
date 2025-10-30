@@ -1,9 +1,8 @@
 "use client";
-import { Link } from "@/i18n/navigation";
 import React from "react";
 import { motion } from "motion/react";
-import { useTransitionRouter } from "next-view-transitions";
-import { pageAnimation } from "../../pageTransition";
+import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 interface NavItemsProps {
   setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
@@ -34,18 +33,16 @@ const perspective = {
   },
 };
 
-const Links = [
-  { name: "Home", href: "/" },
-  { name: "About", href: "/about" },
-  { name: "Contact", href: "/contact" },
-  { name: "Personal", href: "/personal" },
-  { name: "Account", href: "/user/profile", skipTransition: true },
-];
-
 const NavItems: React.FC<NavItemsProps> = ({ setIsActive, isActive }) => {
-  const router = useTransitionRouter();
+  const t = useTranslations("MainNav");
+
+  const Links = [
+    { name: t("home"), href: "/" },
+    { name: t("courses"), href: "/courses", skipTransition: true },
+    { name: t("account"), href: "/user/profile", skipTransition: true },
+  ];
   return (
-    <div className="h-full px-[40px] pt-[100px] pb-[50px] box-border">
+    <div className="h-full px-[40px] pt-[80px] lg:pt-[100px] pb-[50px] box-border">
       <div className="flex flex-col gap-2">
         {Links.map((link, i) => (
           <div
@@ -60,16 +57,8 @@ const NavItems: React.FC<NavItemsProps> = ({ setIsActive, isActive }) => {
               custom={i}
             >
               <Link
-                onClick={(e) => {
-                  e.preventDefault();
+                onClick={() => {
                   setIsActive(!isActive);
-                  if (link.skipTransition) {
-                    window.location.href = link.href;
-                  } else {
-                    router.push(link.href, {
-                      onTransitionReady: pageAnimation,
-                    });
-                  }
                 }}
                 className="text-4xl"
                 href={link.href}

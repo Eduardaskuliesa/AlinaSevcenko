@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "motion/react";
+import { useTranslations } from "next-intl";
 
 interface PerspectiveTextProps {
   label: string;
@@ -35,6 +36,8 @@ interface NavButtonProps {
 }
 
 const NavButton: React.FC<NavButtonProps> = ({ isActive, setIsActive }) => {
+  const t = useTranslations("MainNav");
+
   return (
     <div
       onClick={() => setIsActive(!isActive)}
@@ -46,10 +49,10 @@ const NavButton: React.FC<NavButtonProps> = ({ isActive, setIsActive }) => {
         className="relative h-[40px] w-[100px]"
       >
         <div className="h-full w-full flex items-center justify-center bg-primary uppercase">
-          <PerspectiveText label="Menu" />
+          <PerspectiveText label={t("menu")} />
         </div>
         <div className="absolute top-full bg-gray-100 text-gray-800 h-full w-full uppercase">
-          <PerspectiveText label="Close" />
+          <PerspectiveText label={t("close")} />
         </div>
       </motion.div>
     </div>

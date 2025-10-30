@@ -7,10 +7,10 @@ import { AnimatePresence } from "motion/react";
 
 const mobileVariants = {
   open: {
-    width: "calc(100vw - 30px)",
-    height: 400,
-    top: "-25px",
-    right: "-25px",
+    width: "calc(100vw - 10px)",
+    height: 350,
+    top: "-14px",
+    right: "-14px",
     transition: { duration: 0.5, ease: [0.76, 0, 0.24, 1] },
   },
   closed: {
@@ -26,7 +26,7 @@ const mobileVariants = {
 const desktopVariants = {
   open: {
     width: 350,
-    height: 550,
+    height: 350,
     top: "-25px",
     right: "-25px",
     transition: { duration: 0.5, ease: [0.76, 0, 0.24, 1] },
@@ -56,7 +56,7 @@ const ClientNavBar = () => {
   }, []);
 
   return (
-    <div className="fixed top-10 right-10 z-10">
+    <div className="fixed top-5 right-5 sm:top-10 sm:right-10 z-10">
       <motion.div
         variants={isMobile ? mobileVariants : desktopVariants}
         animate={isActive ? "open" : "closed"}

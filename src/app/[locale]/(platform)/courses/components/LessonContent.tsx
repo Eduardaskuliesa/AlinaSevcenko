@@ -42,9 +42,8 @@ const LessonContent = ({ courseLessons }: { courseLessons: Lesson[] }) => {
   );
 
   return (
-    <div className="mt-4 bg-white border-primary-light border rounded-lg p-2">
+    <div className="mt-4 bg-white border-primary-light border rounded-lg px-4 py-4">
       <h2 className="text-2xl text-gray-800 font-bold mb-2">{t("courseContent")}</h2>
-
       <div className="flex justify-between items-center mb-3 text-sm px-2">
         <div className="text-gray-700">
           {totalLessons} {t("lectures")} • {convertTime(totalDuration)} {t("totalLength")}
