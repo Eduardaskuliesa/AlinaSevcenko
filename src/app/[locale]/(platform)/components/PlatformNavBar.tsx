@@ -69,7 +69,7 @@ const PlatformNavBar = () => {
   };
 
   return (
-    <div className="bg-gray-50 border-secondary w-full h-16 flex justify-between md:px-4 lg:px-14 2xl:px-24 items-center">
+    <div className="bg-gray-50 border-secondary border-b w-full h-16 flex justify-between md:px-4 lg:px-14 2xl:px-24 items-center">
       <div className="font-semibold text-3xl font-times text-gray-700 tracking-wider">
         Alina Savcenko
       </div>

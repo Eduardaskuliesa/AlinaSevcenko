@@ -8,9 +8,10 @@ import {
 } from "@/components/ui/accordion";
 import { ChevronDown, FileText, BookOpen } from "lucide-react";
 import { useState } from "react";
-import type { Course, Lesson } from "@/app/types/course"; // Adjust types as needed
+import type { Course, Lesson } from "@/app/types/course";
 import LessonContent from "@/app/[locale]/(platform)/courses/components/LessonContent";
 import LessonDescription from "@/app/[locale]/(platform)/courses/components/LessonDescription";
+import { useTranslations } from "next-intl";
 
 interface CourseAccordionProps {
   courseData: Course;
@@ -34,6 +35,7 @@ export default function CourseAccordion({
   courseLessons,
 }: CourseAccordionProps) {
   const [openItem, setOpenItem] = useState<string>("");
+  const t = useTranslations("CourseSlugPage");
 
   return (
     <Accordion
@@ -47,7 +49,7 @@ export default function CourseAccordion({
         <AccordionTrigger className="group px-6 py-4 rounded-xl bg-primary-light text-gray-800 font-semibold text-lg transition-all duration-300 hover:no-underline shadow-md  shadow-primary/80 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <FileText className="w-5 h-5" />
-            <span>Course Description</span>
+            <span>{t("courseDescription")}</span>
           </div>
           <CustomChevron isOpen={openItem === "description"} />
         </AccordionTrigger>
@@ -60,7 +62,7 @@ export default function CourseAccordion({
         <AccordionTrigger className="group px-6 py-4 rounded-xl bg-primary-light  text-gray-800 font-semibold text-lg transition-all duration-300 hover:no-underline shadow-md  shadow-primary/80  flex items-center justify-between">
           <div className="flex items-center gap-3">
             <BookOpen className="w-5 h-5" />
-            <span>Course Content</span>
+            <span>{t("courseContent")}</span>
           </div>
           <CustomChevron isOpen={openItem === "content"} />
         </AccordionTrigger>

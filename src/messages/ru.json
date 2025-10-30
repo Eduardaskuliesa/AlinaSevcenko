@@ -367,5 +367,11 @@
     "lithuanianCourses": "Курсы на литовском языке",
     "russianCourses": "Курсы на русском языке",
     "noCourses": "Курсов нет"
+  },
+  "CourseSlugPage": {
+    "coursePriceFrom": "Цена курса начинается от:",
+    "buy": "Купить",
+    "courseDescription": "Описание курса",
+    "courseContent": "Содержание курса"
   }
 }

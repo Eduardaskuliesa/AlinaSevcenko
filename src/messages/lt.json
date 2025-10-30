@@ -367,5 +367,11 @@
     "lithuanianCourses": "Kursai lietuvių kalba",
     "russianCourses": "Kursai rusų kalba",
     "noCourses": "Kursų nėra"
+  },
+  "CourseSlugPage": {
+    "coursePriceFrom": "Kurso kaina prasideda nuo:",
+    "buy": "Pirkti",
+    "courseDescription": "Kurso aprašymas",
+    "courseContent": "Kurso turinys"
   }
 }

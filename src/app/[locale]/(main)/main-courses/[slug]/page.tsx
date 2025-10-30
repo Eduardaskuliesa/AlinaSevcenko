@@ -62,9 +62,7 @@ export default async function CourseSlugPage({
           {courseData.course.title}
         </h1>
         {previewLesson && <PreviewPlayer lessonData={previewLesson} />}
-        <CoursePrice
-          courseAccessPlans={courseData.course.accessPlans}
-        ></CoursePrice>
+        <CoursePrice course={courseData.course}></CoursePrice>
         <CourseAccordion
           courseData={courseData.course}
           courseLessons={sortedLessons}

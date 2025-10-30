@@ -3,11 +3,7 @@ import React from "react";
 import { getTranslations } from "next-intl/server";
 import CoursesAccordion from "./CoursesAccordion";
 
-const CourseSection = async ({
-  locale,
-}: {
-  locale: string;
-}) => {
+const CourseSection = async ({ locale }: { locale: string }) => {
   const courses = await coursesAction.courses.getAllCoursesUP();
   const t = await getTranslations({ locale, namespace: "HomePage" });
 

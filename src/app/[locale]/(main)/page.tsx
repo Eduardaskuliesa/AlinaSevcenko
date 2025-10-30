@@ -2,10 +2,13 @@ import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import CourseSection from "./components/Course/CourseSection";
+import CourseSectionSkeleton from "./components/Course/CourseSectionSkeleton";
 
 export function generateStaticParams() {
   return [{ locale: "lt" }, { locale: "ru" }];
 }
+
+export const dynamic = "force-dynamic";
 
 export default async function Home({
   params,
@@ -58,7 +61,7 @@ export default async function Home({
 
           <div className="w-full h-1 bg-primary mx-auto mb-6"></div>
 
-          <Suspense fallback={<p>Loading courses...</p>}>
+          <Suspense fallback={<CourseSectionSkeleton />}>
             <CourseSection locale={locale} />
           </Suspense>
         </div>
