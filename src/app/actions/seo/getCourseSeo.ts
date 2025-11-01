@@ -1,6 +1,7 @@
 "use server";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { CourseSeo } from "@/app/types/course";
+import { logger } from "@/app/utils/logger";
 import { GetCommand } from "@aws-sdk/lib-dynamodb";
 
 export async function getCourseSeo({
@@ -10,7 +11,9 @@ export async function getCourseSeo({
   courseId: string;
   locale: string;
 }) {
+
   try {
+    logger.info(`Fetching SEO data`);
     const command = new GetCommand({
       TableName: dynamoTableName,
       Key: {

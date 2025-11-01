@@ -10,6 +10,7 @@ import PageActions from "./PageActions";
 import { SaveActionState } from "@/app/types/actions";
 import { coursesAction } from "@/app/actions/coursers";
 import { Language } from "@/app/types/course";
+import LocaleSelector from "./LocaleSelector";
 
 const ClientSeoPage = () => {
   const courseId = useGetCourseId();
@@ -63,17 +64,26 @@ const ClientSeoPage = () => {
   };
 
   const handleSubmit = async () => {
-    const response = await seoActions.updateCourseSeo({
+    const ltResponse = await seoActions.updateCourseSeo({
       courseId: courseId.courseId,
-      locale: locale,
-      metaTitle: formDataCache[locale].metaTitle,
-      metaDescription: formDataCache[locale].metaDescription,
+      locale: "lt",
+      metaTitle: formDataCache.lt.metaTitle,
+      metaDescription: formDataCache.lt.metaDescription,
     });
 
-    if (response?.success) {
-      toast.success("SEO data updated successfully");
+    const ruResponse = await seoActions.updateCourseSeo({
+      courseId: courseId.courseId,
+      locale: "ru",
+      metaTitle: formDataCache.ru.metaTitle,
+      metaDescription: formDataCache.ru.metaDescription,
+    });
+
+    if (ltResponse?.success && ruResponse?.success) {
+      toast.success("SEO data updated successfully for all languages");
+      setActionState("idle");
     } else {
-      toast.error("Failed to update SEO data");
+      toast.error("Failed to update SEO data for some languages");
+      setActionState("idle");
     }
   };
 
@@ -87,16 +97,6 @@ const ClientSeoPage = () => {
 
   return (
     <div className="max-w-7xl mx-auto">
-      <div className="mb-4">
-        <select
-          value={locale}
-          onChange={(e) => setLocale(e.target.value as Language)}
-          className="px-4 py-2 border rounded-md"
-        >
-          <option value="lt">Lithuanian</option>
-          <option value="ru">Russian</option>
-        </select>
-      </div>
       <Suspense>
         <PageActions
           isPublsihed={courseData?.cousre?.isPublished || false}
@@ -105,6 +105,7 @@ const ClientSeoPage = () => {
           handleSubmit={handleSubmit}
         />
       </Suspense>
+      <LocaleSelector value={locale} onChange={setLocale} />
       <SeoForm formData={formDataCache[locale]} handleChange={handleChange} />
     </div>
   );

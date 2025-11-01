@@ -21,7 +21,7 @@ const PageActions = ({
     useStickyAdminActions();
 
   return (
-    <div ref={placeholderRef} className="h-16 lg:h-20">
+    <div ref={placeholderRef} className="h-16 lg:h-20 flex">
       <div
         ref={actionButtonsRef}
         className={`w-full py-2 lg:py-4 px-2 lg:px-0 z-10 ${
@@ -30,71 +30,75 @@ const PageActions = ({
             : ""
         }`}
       >
-        <div className="flex justify-start lg:justify-end gap-2 lg:gap-4">
-          <Button
-            variant="outline"
-            className="flex h-8 lg:h-10 items-center gap-2"
-            onClick={() => {
-              setActionState("saving");
-              handleSubmit();
-            }}
-            disabled={actionState !== "idle"}
-          >
-            {actionState === "saving" ? (
-              <>
-                <Loader size={18} className="animate-spin" />
-                <span>Saving...</span>
-              </>
-            ) : (
-              <>
-                <Save size={18} />
-                <span>Save</span>
-              </>
-            )}
-          </Button>
-        </div>
-        <div className="flex justify-start lg:justify-end gap-2 lg:gap-4">
-          {isPublsihed ? (
-            <Button
-              className="flex h-8 lg:h-10 items-center gap-2 text-white"
-              onClick={() => {
-                setActionState("unpublishing");
-              }}
-              disabled={actionState !== "idle"}
-            >
-              {actionState === "unpublishing" ? (
-                <>
-                  <Loader size={18} className="animate-spin" />
-                  <span>Unpublishing...</span>
-                </>
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-row justify-end gap-2 px-4 lg:px-0 z-10  lg:gap-4">
+            <div className="flex justify-start lg:justify-end gap-2 lg:gap-4">
+              <Button
+                variant="outline"
+                className="flex h-8 lg:h-10 items-center gap-2"
+                onClick={() => {
+                  setActionState("saving");
+                  handleSubmit();
+                }}
+                disabled={actionState !== "idle"}
+              >
+                {actionState === "saving" ? (
+                  <>
+                    <Loader size={18} className="animate-spin" />
+                    <span>Saving...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save size={18} />
+                    <span>Save</span>
+                  </>
+                )}
+              </Button>
+            </div>
+            <div className="flex justify-start lg:justify-end gap-2 lg:gap-4">
+              {isPublsihed ? (
+                <Button
+                  className="flex h-8 lg:h-10 items-center gap-2 text-white"
+                  onClick={() => {
+                    setActionState("unpublishing");
+                  }}
+                  disabled={actionState !== "idle"}
+                >
+                  {actionState === "unpublishing" ? (
+                    <>
+                      <Loader size={18} className="animate-spin" />
+                      <span>Unpublishing...</span>
+                    </>
+                  ) : (
+                    <>
+                      <CircleXIcon size={18} />
+                      <span>Unpublish</span>
+                    </>
+                  )}
+                </Button>
               ) : (
-                <>
-                  <CircleXIcon size={18} />
-                  <span>Unpublish</span>
-                </>
+                <Button
+                  className="flex items-center h-8 lg:h-10 gap-2 bg-primary text-white hover:bg-primary/90"
+                  onClick={() => {
+                    setActionState("publishing");
+                  }}
+                  disabled={actionState !== "idle"}
+                >
+                  {actionState === "publishing" ? (
+                    <>
+                      <Loader size={18} className="animate-spin" />
+                      <span>Publishing...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send size={18} />
+                      <span>Publish</span>
+                    </>
+                  )}
+                </Button>
               )}
-            </Button>
-          ) : (
-            <Button
-              className="flex items-center h-8 lg:h-10 gap-2 bg-primary text-white hover:bg-primary/90"
-              onClick={() => {
-                setActionState("publishing");
-              }}
-              disabled={actionState !== "idle"}
-            >
-              {actionState === "publishing" ? (
-                <>
-                  <Loader size={18} className="animate-spin" />
-                  <span>Publishing...</span>
-                </>
-              ) : (
-                <>
-                  <Send size={18} />
-                  <span>Publish</span>
-                </>
-              )}
-            </Button>
-          )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
