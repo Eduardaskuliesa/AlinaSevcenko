@@ -5,6 +5,7 @@ import { deleteAccessPlan } from "./deleteAcessPlan";
 import { deleteCourse } from "./deleteCourse";
 import { getAllCoursesUP } from "./getAllCoursesNP";
 import { getCourse } from "./getCourse";
+import { getCourseBySlug } from "./getCourseBySlug";
 import { getCourseClient } from "./getCourseClient";
 import { getCourses } from "./getCourses";
 import { publishCourse } from "./publishCourse";
@@ -32,4 +33,5 @@ export const courses = {
   deleteCourse,
   createSlug,
   updateSlug,
+  getCourseBySlug,
 };

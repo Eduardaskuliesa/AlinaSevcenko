@@ -1,10 +1,12 @@
 import PreviewPlayer from "@/app/[locale]/(platform)/courses/[slugs]/components/PreviewPlayer";
 import { getCourseWithPreviewLesson } from "@/app/actions/coursers/course/getCourseWithPrevie";
+import { getCourseBySlug } from "@/app/actions/coursers/course/getCourseBySlug";
 import { getSlugs } from "@/app/actions/coursers/course/getSlugs";
 import { redirect } from "next/navigation";
 import React from "react";
 import CourseAccordion from "../components/SlugAccordion";
 import CoursePrice from "../components/CoursePrice";
+import { seoActions } from "@/app/actions/seo";
 
 export const dynamicParams = true;
 export const revalidate = 72000;
@@ -23,6 +25,35 @@ export async function generateStaticParams() {
     }
   }
   return paths;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}) {
+  const { slug, locale } = await params;
+
+  const course = await getCourseBySlug(slug);
+
+  if (!course) {
+    return {};
+  }
+
+  const seoData = await seoActions.getCourseSeo({
+    courseId: course.courseId,
+    locale: locale,
+  });
+
+  const metaTitle = seoData?.courseSeo?.metaTitle || "Online Course";
+  const metaDescription =
+    seoData?.courseSeo?.metaDescription ||
+    "Transform your life with our comprehensive self-improvement course. Develop new skills, build better habits, and achieve your personal growth goals.";
+
+  return {
+    title: metaTitle,
+    description: metaDescription,
+  };
 }
 
 export default async function CourseSlugPage({
