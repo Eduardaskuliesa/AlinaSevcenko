@@ -137,3 +137,14 @@ export interface Slug {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface CourseSeo {
+  PK: string;
+  SK: string;
+  courseId: string;
+  locale: string;
+  metaTitle: string;
+  metaDescription: string;
+  createdAt: string;
+  updatedAt: string;
+}

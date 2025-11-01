@@ -13,6 +13,7 @@ const NavBar = () => {
   const getActiveTab = () => {
     if (pathname.includes("/lessons")) return "lessons";
     if (pathname.includes("/settings")) return "settings";
+    if (pathname.includes("/seo")) return "seo";
     return "info";
   };
 
@@ -38,6 +39,12 @@ const NavBar = () => {
       href: `${baseUrl}/settings`,
       icon: Settings,
       id: "settings",
+    },
+    {
+      name: "SEO",
+      href: `${baseUrl}/seo`,
+      icon: null,
+      id: "seo",
     },
   ];
 
@@ -97,7 +104,9 @@ const NavBar = () => {
                   }
                 `}
               >
-                <tab.icon className="mr-1 lg:mr-2 h-4 w-4 lg:h-5 lg:w-5" />
+                {tab.icon && (
+                  <tab.icon className="mr-1 lg:mr-2 h-4 w-4 lg:h-5 lg:w-5" />
+                )}
                 {tab.name}
               </div>
             </Link>

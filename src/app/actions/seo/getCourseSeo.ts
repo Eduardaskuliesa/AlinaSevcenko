@@ -1,5 +1,6 @@
 "use server";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
+import { CourseSeo } from "@/app/types/course";
 import { GetCommand } from "@aws-sdk/lib-dynamodb";
 
 export async function getCourseSeo({
@@ -23,9 +24,13 @@ export async function getCourseSeo({
     if (response.Item) {
       return {
         success: true,
-        courseSeo: response.Item,
+        courseSeo: response.Item as CourseSeo,
       };
     }
+    return {
+      success: true,
+      courseSeo: null,
+    };
   } catch (error) {
     console.error("Failed to get course SEO data:", error);
     return {
