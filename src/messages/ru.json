@@ -373,5 +373,19 @@
     "buy": "Купить",
     "courseDescription": "Описание курса",
     "courseContent": "Содержание курса"
+  },
+  "Learning": {
+    "BackButton": {
+      "backToMyCourses": "Вернуться к моим курсам"
+    },
+    "LessonList": {
+      "courseContent": "Содержание курса",
+      "completed": "Завершено"
+    }
+  },
+  "CourseDetails": {
+    "BackButton": {
+      "backToCourses": "Вернуться к курсам"
+    }
   }
 }

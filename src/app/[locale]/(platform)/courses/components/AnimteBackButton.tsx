@@ -2,8 +2,10 @@
 import { motion } from "framer-motion";
 import { ArrowLeftCircleIcon } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export function BackButton() {
+  const t = useTranslations("CourseDetails.BackButton");
   return (
     <Link href="/courses">
       <motion.div
@@ -28,7 +30,7 @@ export function BackButton() {
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.3, delay: 0.1 }}
           >
-            Back to Courses
+            {t("backToCourses")}
           </motion.span>
         </motion.div>
       </motion.div>

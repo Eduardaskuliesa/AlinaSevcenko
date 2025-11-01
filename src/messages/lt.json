@@ -373,5 +373,19 @@
     "buy": "Pirkti",
     "courseDescription": "Kurso aprašymas",
     "courseContent": "Kurso turinys"
+  },
+  "Learning": {
+    "BackButton": {
+      "backToMyCourses": "Grįžti į mano kursus"
+    },
+    "LessonList": {
+      "courseContent": "Kurso turinys",
+      "completed": "Užbaigta"
+    }
+  },
+  "CourseDetails": {
+    "BackButton": {
+      "backToCourses": "Grįžti į kursus"
+    }
   }
 }

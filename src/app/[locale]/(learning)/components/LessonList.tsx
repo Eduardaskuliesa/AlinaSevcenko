@@ -1,5 +1,7 @@
+"use client";
 import { useCoursePlayerStore } from "@/app/store/useCoursePlayerStore";
 import { EnrolledCourse } from "@/app/types/enrolled-course";
+import { useTranslations } from "next-intl";
 
 import { CheckCircle2 } from "lucide-react";
 
@@ -21,6 +23,7 @@ const LessonList = ({
   userId,
   lessonProgress,
 }: LessonListProps) => {
+  const t = useTranslations("Learning.LessonList");
   const {
     setIsLessonChanging,
     selectedLessonId,
@@ -36,7 +39,7 @@ const LessonList = ({
     <div className="xl:min-w-[450px] h-full">
       <div className="divide-y sticky top-[0rem] h-fit overflow-y-auto bg-white">
         <div className="p-4 border-b-2 border-primary-light/60">
-          <h2 className="font-semibold text-gray-900">Course content</h2>
+          <h2 className="font-semibold text-gray-900">{t("courseContent")}</h2>
         </div>
         {lessons.map((lesson, index) => {
           const isCompleted = lessonProgress[lesson.lessonId]?.progress === 100;
@@ -70,7 +73,7 @@ const LessonList = ({
                     {isCompleted && (
                       <span className="flex items-center gap-1 bg-green-100 text-green-800 px-1.5 py-0.5 rounded">
                         <CheckCircle2 className="w-3 h-3" />
-                        Completed
+                        {t("completed")}
                       </span>
                     )}
                   </div>
