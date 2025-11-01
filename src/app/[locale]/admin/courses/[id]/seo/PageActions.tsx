@@ -1,11 +1,10 @@
 import useStickyAdminActions from "@/app/hooks/useStickyAdminActions";
 import { SaveActionState } from "@/app/types/actions";
 import { Button } from "@/components/ui/button";
-import { Loader, Save, CircleXIcon, Send } from "lucide-react";
+import { Loader, Save } from "lucide-react";
 import React from "react";
 
 interface PageActionsProps {
-  isPublsihed: boolean;
   handleSubmit: () => Promise<void>;
   actionState: SaveActionState;
   setActionState: React.Dispatch<React.SetStateAction<SaveActionState>>;
@@ -15,7 +14,6 @@ const PageActions = ({
   handleSubmit,
   setActionState,
   actionState,
-  isPublsihed,
 }: PageActionsProps) => {
   const { actionButtonsRef, isSticky, placeholderRef } =
     useStickyAdminActions();
@@ -54,49 +52,6 @@ const PageActions = ({
                   </>
                 )}
               </Button>
-            </div>
-            <div className="flex justify-start lg:justify-end gap-2 lg:gap-4">
-              {isPublsihed ? (
-                <Button
-                  className="flex h-8 lg:h-10 items-center gap-2 text-white"
-                  onClick={() => {
-                    setActionState("unpublishing");
-                  }}
-                  disabled={actionState !== "idle"}
-                >
-                  {actionState === "unpublishing" ? (
-                    <>
-                      <Loader size={18} className="animate-spin" />
-                      <span>Unpublishing...</span>
-                    </>
-                  ) : (
-                    <>
-                      <CircleXIcon size={18} />
-                      <span>Unpublish</span>
-                    </>
-                  )}
-                </Button>
-              ) : (
-                <Button
-                  className="flex items-center h-8 lg:h-10 gap-2 bg-primary text-white hover:bg-primary/90"
-                  onClick={() => {
-                    setActionState("publishing");
-                  }}
-                  disabled={actionState !== "idle"}
-                >
-                  {actionState === "publishing" ? (
-                    <>
-                      <Loader size={18} className="animate-spin" />
-                      <span>Publishing...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Send size={18} />
-                      <span>Publish</span>
-                    </>
-                  )}
-                </Button>
-              )}
             </div>
           </div>
         </div>

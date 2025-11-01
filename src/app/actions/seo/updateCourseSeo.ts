@@ -4,6 +4,7 @@ import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { logger } from "@/app/utils/logger";
 import { UpdateCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
 import { createCourseSeo } from "./createCourseSeo";
+import { revalidateTag } from "next/cache";
 
 interface UpdateCourseSeoData {
   courseId: string;
@@ -76,6 +77,7 @@ export async function updateCourseSeo({
 
     if (result) {
       logger.success("Course SEO data updated successfully.");
+      revalidateTag(`course-seo-${courseId}-${locale}`);
       return { success: true };
     }
   } catch (error) {

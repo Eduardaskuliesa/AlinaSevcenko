@@ -1,4 +1,3 @@
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { BookOpen, AlignLeft } from "lucide-react";
@@ -16,7 +15,7 @@ interface SeoFormProps {
 
 const SeoForm = ({ formData, handleChange }: SeoFormProps) => {
   return (
-    <div className="p-2 flex flex-col mt-6">
+    <div className="flex flex-col">
       <div className="mb-4 lg:mb-8">
         <Label
           htmlFor="metaTitle"
@@ -28,7 +27,9 @@ const SeoForm = ({ formData, handleChange }: SeoFormProps) => {
           SEO Meta Title
         </Label>
         <div className="border-2 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-secondary focus-within:border-transparent transition-all bg-white">
-          <Input
+          <Textarea
+            maxLength={90}
+            rows={2}
             onChange={handleChange}
             id="metaTitle"
             value={formData.metaTitle}
@@ -47,11 +48,12 @@ const SeoForm = ({ formData, handleChange }: SeoFormProps) => {
           </div>
           SEO Meta Description
         </Label>
-        <div className="text-sm">/160</div>
+        <div className="text-sm">{formData.metaDescription.length}/160</div>
       </div>
 
       <div className="border-2 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-secondary focus-within:border-transparent transition-all bg-white">
         <Textarea
+          rows={3}
           onChange={handleChange}
           value={formData.metaDescription}
           id="metaDescription"
