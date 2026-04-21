@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Script from "next/script";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import CourseSection from "./components/Course/CourseSection";
@@ -57,8 +58,21 @@ export default async function Home({
             <p className="text-xl md:text-2xl font-times font-semibold leading-relaxed text-gray-900 text-center">
               {t("welcomeHome")}
             </p>
+<div className="container-form" style={{ display:"flex", justifyContent:"center", alignItems:"center", width:"100%", height:"auto"}}>
+            <div id="flexiao-booking" style={{ backgroundColor: "white", width: "min(100%, 500px)", height:"600px", border:"none", borderRadius:"16px", alignSelf:"center"}}></div>
+            <Script id="flexiao-booking-script" strategy="afterInteractive">
+              {`(function(){
+  var d=document,c=d.getElementById('flexiao-booking'),
+  f=d.createElement('iframe');
+  f.src='https://flexiao.com/embed/be9ab18e-5df0-4ea8-96dc-9a7bb1e72863?master=51c80307-95bf-492e-8b9f-14f59261c857&theme=light&lang=ru';
+  f.style.cssText='width:100%;height:700px;border:none;border-radius:16px;background:transparent;';
+  f.allow='clipboard-write';
+  f.setAttribute('allowtransparency','true');
+  c.appendChild(f);
+})();`}
+            </Script>
           </div>
-
+                </div>
           <div className="w-full h-1 bg-primary mx-auto mb-6"></div>
 
           <Suspense fallback={<CourseSectionSkeleton />}>

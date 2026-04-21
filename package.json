@@ -65,7 +65,7 @@
     "latest": "^0.2.0",
     "lucide-react": "^0.488.0",
     "motion": "^12.7.2",
-    "next": "^15.5.3",
+    "next": "^15.5.15",
     "next-auth": "^4.24.11",
     "next-intl": "^4.0.2",
     "next-nprogress-bar": "^2.4.7",
