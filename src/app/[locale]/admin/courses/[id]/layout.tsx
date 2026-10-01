@@ -1,4 +1,6 @@
 import React from "react";
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import NavBar from "./NavBar";
 import AlertComponent from "./AlertComponent";
 import { coursesAction } from "@/app/actions/coursers";
@@ -13,6 +15,21 @@ interface CourseIdLayoutProps {
     id: string;
     locale?: string;
   }>;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string; locale: string }>;
+}): Promise<Metadata> {
+  const { id, locale } = await params;
+  const t = await getTranslations({ locale, namespace: "AdminSeo" });
+  const { cousre } = await coursesAction.courses.getCourse(id);
+  const courseTitle = cousre?.title || t("course");
+  const suffix = `${courseTitle} | ${t("admin")} – Alina Savcenko`;
+  return {
+    title: { default: suffix, template: `%s – ${suffix}` },
+  };
 }
 
 export default async function CourseIdLayout({

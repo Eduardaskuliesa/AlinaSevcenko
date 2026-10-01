@@ -476,5 +476,17 @@
     "successTitle": "Žinutė išsiųsta!",
     "successMessage": "Ačiū, kad parašėte. Atsakysime į jūsų nurodytą el. paštą.",
     "sendAnother": "Siųsti kitą žinutę"
+  },
+  "AdminSeo": {
+    "admin": "Administravimas",
+    "courses": "Kursai",
+    "createCourse": "Naujas kursas",
+    "categories": "Kategorijos",
+    "course": "Kursas",
+    "info": "Informacija",
+    "lessons": "Pamokos",
+    "seo": "SEO",
+    "settings": "Prieigos planai",
+    "editor": "Redaktorius"
   }
 }

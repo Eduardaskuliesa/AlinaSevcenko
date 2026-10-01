@@ -1,4 +1,20 @@
 import React from "react";
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "AdminSeo" });
+  const suffix = `${t("admin")} – Alina Savcenko`;
+  return {
+    title: { default: suffix, template: `%s | ${suffix}` },
+    robots: { index: false, follow: false },
+  };
+}
 import Sidebar from "./components/SideBar";
 import MobileNav from "./components/MobNav";
 

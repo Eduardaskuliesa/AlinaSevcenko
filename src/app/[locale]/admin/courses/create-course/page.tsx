@@ -1,4 +1,15 @@
+import type { Metadata } from "next";
+import { adminPageMetadata } from "@/app/lib/seo";
 import CreateCourseForm from "./CreateCourseForm";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return adminPageMetadata(locale, "createCourse");
+}
 
 export const dynamic = "force-static";
 

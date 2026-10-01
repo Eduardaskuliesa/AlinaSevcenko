@@ -94,3 +94,21 @@ export async function rootMetadata(locale: string): Promise<Metadata> {
     },
   };
 }
+
+export type AdminSeoPage =
+  | "courses"
+  | "createCourse"
+  | "categories"
+  | "info"
+  | "lessons"
+  | "seo"
+  | "settings"
+  | "editor";
+
+export async function adminPageMetadata(
+  locale: string,
+  page: AdminSeoPage
+): Promise<Metadata> {
+  const t = await getTranslations({ locale, namespace: "AdminSeo" });
+  return { title: t(page) };
+}
