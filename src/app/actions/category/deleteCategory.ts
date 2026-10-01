@@ -1,10 +1,12 @@
 "use server";
+import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { logger } from "@/app/utils/logger";
 import { DeleteCommand } from "@aws-sdk/lib-dynamodb";
 import { revalidateTag } from "next/cache";
 
 export async function deleteCategory(categoryId: string) {
+  await verifyAdminAccess();
   try {
     const command = new DeleteCommand({
       TableName: dynamoTableName,

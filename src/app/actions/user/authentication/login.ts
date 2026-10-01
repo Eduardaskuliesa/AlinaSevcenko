@@ -1,4 +1,4 @@
-"use server";
+import "server-only";
 
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { QueryCommand } from "@aws-sdk/lib-dynamodb";
@@ -58,7 +58,7 @@ export async function login(formData: LoginFormData) {
       TableName: dynamoTableName,
       Key: {
         PK: user.PK,
-        SK: "PROFILE",
+        SK: user.SK,
       },
       UpdateExpression: "SET lastLoginAt = :lastLoginAt",
       ExpressionAttributeValues: {
@@ -68,10 +68,13 @@ export async function login(formData: LoginFormData) {
 
     await dynamoDb.send(updateCommand);
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password: _password, ...safeUser } = user;
+
     return {
       success: true,
       message: "Login successful",
-      user: userResult.Items[0],
+      user: safeUser,
     };
   } catch (e) {
     console.error("Error logging in:", e);

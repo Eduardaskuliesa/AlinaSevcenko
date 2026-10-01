@@ -1,9 +1,11 @@
 "use server";
+import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 
 import jwt from "jsonwebtoken";
 import sharp from "sharp";
 
 export async function getPlaceholder(playbackId: string) {
+  await verifyAdminAccess();
   const secret = process.env.MUX_SIGNING_KEY_SECRET || "";
   const keyId = process.env.MUX_SIGNING_KEY_ID || "";
 

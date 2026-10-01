@@ -1,4 +1,4 @@
-"use server";
+import "server-only";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import stripe from "@/app/services/stripe";
 import { EnrolledCourse } from "@/app/types/enrolled-course";

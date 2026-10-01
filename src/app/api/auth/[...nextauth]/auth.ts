@@ -2,8 +2,13 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProivder from "next-auth/providers/google";
 import type { NextAuthOptions } from "next-auth";
-import { LoginFormData } from "@/app/actions/user/authentication/login";
-import { userActions } from "@/app/actions/user";
+import {
+  login,
+  LoginFormData,
+} from "@/app/actions/user/authentication/login";
+import { checkEmail } from "@/app/actions/user/authentication/checkEmail";
+import { registerOAuth } from "@/app/actions/user/authentication/registerOAuth";
+import { getUserByEmail } from "@/app/actions/user/authentication/getUserByEmail";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -31,7 +36,7 @@ export const authOptions: NextAuthOptions = {
           password: credentials.password,
         };
 
-        const result = await userActions.authentication.login(loginForm);
+        const result = await login(loginForm);
 
         if (!result.success) {
           throw new Error(result.error);
@@ -51,12 +56,12 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user, account }) {
       if (account?.provider === "google") {
         try {
-          const existingUsr = await userActions.authentication.checkEmail(
+          const existingUsr = await checkEmail(
             user.email
           );
 
           if (existingUsr.error !== "EMAIL_ALREADY_EXISTS") {
-            await userActions.authentication.registerOAuth({
+            await registerOAuth({
               email: user.email!,
               fullName: user.name!,
               provider: "google",
@@ -73,7 +78,7 @@ export const authOptions: NextAuthOptions = {
     },
     async jwt({ token, user, account }) {
       if (account?.provider === "google") {
-        const user = await userActions.authentication.getUserByEmail(
+        const user = await getUserByEmail(
           token.email
         );
         if (user.success && user.user) {

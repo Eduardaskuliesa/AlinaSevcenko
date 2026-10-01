@@ -61,7 +61,7 @@ const LessonVideoUpload = ({
       if (playbackId) {
         setIsTokensLoading(true);
         try {
-          const fetchedTokens = await getOrGenerateTokens(playbackId);
+          const fetchedTokens = await getOrGenerateTokens(playbackId, courseId);
           setTokens(fetchedTokens);
         } catch (error) {
           console.error("Error loading tokens:", error);
@@ -73,7 +73,7 @@ const LessonVideoUpload = ({
     };
 
     loadTokens();
-  }, [playbackId]);
+  }, [playbackId, courseId]);
 
   useEffect(() => {
     if (pollingIntervalRef.current) {

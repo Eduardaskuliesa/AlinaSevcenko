@@ -1,4 +1,5 @@
 "use server";
+import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 import {
   cloudFrontDomain,
   s3BucketName,
@@ -13,6 +14,7 @@ export async function getPresignedUploadUrl(
   fileType: string,
   isPhoto: boolean = false
 ) {
+  await verifyAdminAccess();
   try {
     if (!fileName || !fileType) {
       return {

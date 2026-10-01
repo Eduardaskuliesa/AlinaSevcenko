@@ -1,4 +1,5 @@
 "use server";
+import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { Course, Lesson } from "@/app/types/course";
 import { logger } from "@/app/utils/logger";
@@ -12,6 +13,7 @@ export interface UpdateLessonStatusData {
 }
 
 export async function updateLessonStatus(data: UpdateLessonStatusData) {
+  await verifyAdminAccess();
   try {
     const updateLessonCommand = new UpdateCommand({
       TableName: dynamoTableName,

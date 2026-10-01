@@ -6,7 +6,6 @@ import { AlertCircle, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { userActions } from "@/app/actions/user";
-import { emailActions } from "@/app/actions/email";
 import CardHeader from "../components/CardHeader";
 import CardWrapper from "../components/CardWrapper";
 
@@ -47,34 +46,26 @@ const ForgotPasswordPage = () => {
     setIsLoading(true);
 
     try {
-      const token = await userActions.authentication.generateMagicLinkToken(
-        email
+      const htmlLang = document.documentElement.lang as string;
+      const userLang = htmlLang === "ru" ? "ru" : "lt";
+
+      const result = await userActions.authentication.requestPasswordReset(
+        email,
+        userLang
       );
-      if (token.error === "USER_NOT_FOUND") {
+
+      if (result.error === "USER_NOT_FOUND") {
         setEmailError(t("userNotFound"));
-        setIsLoading(false);
         return;
       }
-      if (token.error === "OAUTH_USER") {
+      if (result.error === "OAUTH_USER") {
         setEmailError(t("oauthUserError"));
-        setIsLoading(false);
         return;
       }
-      if (token.success) {
-        const htmlLang = document.documentElement.lang as string;
-        const userLang =
-          htmlLang === "lt" || htmlLang === "ru"
-            ? (htmlLang as "lt" | "ru")
-            : "lt";
-        const passwordResetLink =
-          await emailActions.authentication.sendPasswordResetEmail(
-            email,
-            token.token ?? "",
-            userLang
-          );
-        if (passwordResetLink.success) {
-          setIsSuccess(true);
-        }
+      if (result.success) {
+        setIsSuccess(true);
+      } else {
+        setEmailError(t("resetLinkError"));
       }
     } catch (error) {
       console.error("Reset password error:", error);

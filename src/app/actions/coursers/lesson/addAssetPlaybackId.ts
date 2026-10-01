@@ -1,4 +1,4 @@
-"use server";
+import "server-only";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { mux } from "@/app/services/mux";
 import { Course, Lesson } from "@/app/types/course";

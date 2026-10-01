@@ -1,4 +1,5 @@
 "use server";
+import { requireSelf } from "@/app/lib/session";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { logger } from "@/app/utils/logger";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
@@ -18,6 +19,7 @@ export async function updateLessonProgress({
   progress,
   completed = false,
 }: UpdateLessonProgressParams) {
+  await requireSelf(userId);
   try {
     logger.info(
       `Updating lesson progress for user ${userId}, course ${courseId}, lesson ${lessonId}`
@@ -33,6 +35,7 @@ export async function updateLessonProgress({
         PK: `PURCHASE#${userId}`,
         SK: `COURSE#${courseId}`,
       },
+      ConditionExpression: "attribute_exists(PK)",
       UpdateExpression: updateExpression,
       ExpressionAttributeNames: {
         "#lessonId": lessonId,

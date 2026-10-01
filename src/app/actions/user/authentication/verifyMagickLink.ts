@@ -1,6 +1,6 @@
 "use server";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
-import { QueryCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { QueryCommand } from "@aws-sdk/lib-dynamodb";
 export async function verifyMagicLinkToken(token: string) {
   try {
     const verifyCommand = new QueryCommand({
@@ -39,20 +39,6 @@ export async function verifyMagicLinkToken(token: string) {
           "This login link has already been used. Please request a new one.",
       };
     }
-
-    const updateTokenCommand = new UpdateCommand({
-      TableName: dynamoTableName,
-      Key: {
-        PK: `MAGICLINK#${token}`,
-        SK: tokenRecord.SK,
-      },
-      UpdateExpression: "SET used = :used",
-      ExpressionAttributeValues: {
-        ":used": true,
-      },
-    });
-
-    await dynamoDb.send(updateTokenCommand);
 
     return {
       success: true,

@@ -1,4 +1,5 @@
 "use server";
+import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { logger } from "@/app/utils/logger";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
@@ -14,6 +15,7 @@ export async function updateCategory(
   categoryId: string,
   data: UpdateCategoryData
 ) {
+  await verifyAdminAccess();
   try {
     const updateExpressionParts: string[] = [];
     const expressionAttributeNames: Record<string, string> = {};

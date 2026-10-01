@@ -1,5 +1,3 @@
-import { addAssetPlaybackId } from "./addAssetPlaybackId";
-import { addLessonDuration } from "./addLessonDuration";
 import { createLesson } from "./createLesson";
 import { deleteLesson } from "./deleteLesson";
 import { getClientLessons } from "./getClientLessons";
@@ -17,9 +15,7 @@ export const lessons = {
   getClientLessons,
   updateLessonOrder,
   deleteLesson,
-  addAssetPlaybackId,
   updateLessons,
   storeBlurPlaceholder,
-  addLessonDuration,
   updateLessonStatus,
 };

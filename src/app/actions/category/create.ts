@@ -1,4 +1,5 @@
 "use server";
+import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { Category } from "@/app/types/course";
 import { logger } from "@/app/utils/logger";
@@ -12,6 +13,7 @@ export interface CreateCategoryData {
   languge: Category["language"];
 }
 export async function createCategory(createData: CreateCategoryData) {
+  await verifyAdminAccess();
   try {
     const categoryId = uuidv4();
     const timestamp = new Date().toISOString();

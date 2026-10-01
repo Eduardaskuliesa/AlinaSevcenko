@@ -15,14 +15,21 @@ const PreviewPlayer = ({ lessonData }: { lessonData: Lesson }) => {
   useEffect(() => {
     const loadTokens = async () => {
       if (lessonData?.playbackId) {
-        const fetchedTokens = await getOrGenerateTokens(lessonData.playbackId);
-        setTokens(fetchedTokens);
+        try {
+          const fetchedTokens = await getOrGenerateTokens(
+            lessonData.playbackId,
+            lessonData.PK.replace("COURSE#", "")
+          );
+          setTokens(fetchedTokens);
+        } catch (error) {
+          console.error("Error loading preview tokens:", error);
+        }
       }
       setIsTokensLoading(false);
     };
 
     loadTokens();
-  }, [lessonData?.playbackId]);
+  }, [lessonData?.playbackId, lessonData?.PK]);
 
   return (
     <div className="aspect-[16/9] w-full relative  rounded-lg">

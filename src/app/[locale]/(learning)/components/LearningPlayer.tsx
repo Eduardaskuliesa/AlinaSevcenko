@@ -60,10 +60,15 @@ const LearningPlayer = ({
       if (currentLesson?.playbackId && selectedLessonId) {
         setTokens(null);
 
-        const fetchedTokens = await getOrGenerateTokens(
-          currentLesson.playbackId
-        );
-        setTokens(fetchedTokens);
+        try {
+          const fetchedTokens = await getOrGenerateTokens(
+            currentLesson.playbackId,
+            courseId
+          );
+          setTokens(fetchedTokens);
+        } catch (error) {
+          console.error("Error loading tokens:", error);
+        }
         setTimeout(() => {
           setIsLessonChanging(false);
         }, 200);
@@ -72,6 +77,7 @@ const LearningPlayer = ({
 
     loadTokens();
   }, [
+    courseId,
     currentLesson?.playbackId,
     isLessonChanging,
     selectedLessonId,

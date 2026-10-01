@@ -11,9 +11,13 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "TermsPage.metadata" });
 
   return {
-    title: t("title"),
+    title: { absolute: t("title") },
     description: t("description"),
     robots: "index, follow",
+    alternates: {
+      canonical: `/${locale}/terms`,
+      languages: { lt: "/lt/terms", ru: "/ru/terms", "x-default": "/lt/terms" },
+    },
     openGraph: {
       title: t("title"),
       description: t("description"),

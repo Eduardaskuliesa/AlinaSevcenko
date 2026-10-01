@@ -1,8 +1,19 @@
+import type { Metadata } from "next";
+import { pageMetadata } from "@/app/lib/seo";
 import { getUserIdServer } from "@/app/lib/getUserIdServer";
 
-import { enrolledCourseActions } from "@/app/actions/enrolled-course";
+import { verifyPurchase } from "@/app/actions/enrolled-course/verifyPurschase";
 import { logger } from "@/app/utils/logger";
 import { redirect } from "next/navigation";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return pageMetadata({ locale, page: "learn", path: "/learn", index: false });
+}
 
 export default async function LearningCourseLayout({
   children,
@@ -15,7 +26,7 @@ export default async function LearningCourseLayout({
 
   const userId = await getUserIdServer();
 
-  const verify = await enrolledCourseActions.verifyPurchase(
+  const verify = await verifyPurchase(
     userId as string,
     courseId as string
   );

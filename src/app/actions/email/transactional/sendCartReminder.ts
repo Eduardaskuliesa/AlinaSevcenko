@@ -1,4 +1,5 @@
-"use server";
+import "server-only";
+import { getAppUrl } from "@/app/lib/appUrl";
 import transporter from "@/app/services/nodemailer";
 
 interface SendCartReminderParams {
@@ -11,7 +12,7 @@ export async function sendCartReminder({
   email,
   language,
 }: SendCartReminderParams) {
-  const baseUrl = process.env.NEXTAUTH_URL;
+  const baseUrl = getAppUrl();
   const cartLink = `${baseUrl}/${language}/cart`;
   const content = getEmailContent(language, cartLink);
   try {

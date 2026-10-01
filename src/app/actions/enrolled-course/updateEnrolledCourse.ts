@@ -1,4 +1,4 @@
-"use server";
+import "server-only";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { logger } from "@/app/utils/logger";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";

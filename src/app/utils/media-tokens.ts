@@ -8,7 +8,8 @@ interface MediaTokens {
 }
 
 export const getOrGenerateTokens = async (
-  playbackId: string
+  playbackId: string,
+  courseId: string
 ): Promise<Omit<MediaTokens, "expiresAt">> => {
   const storageKey = `media-tokens-${playbackId}`;
   const stored = localStorage.getItem(storageKey);
@@ -26,7 +27,10 @@ export const getOrGenerateTokens = async (
 
     localStorage.removeItem(storageKey);
   }
-  const token = await createSignToken(playbackId);
+  const token = await createSignToken(playbackId, courseId);
+  if (!token) {
+    throw new Error("Not allowed to play this video");
+  }
 
   const newTokens: MediaTokens = {
     thumbnailToken: token?.thumbnailToken || "",

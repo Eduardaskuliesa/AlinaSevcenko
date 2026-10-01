@@ -1,4 +1,5 @@
 "use server";
+import { requireSelf } from "@/app/lib/session";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { Course } from "@/app/types/course";
 import { logger } from "@/app/utils/logger";
@@ -9,6 +10,7 @@ export async function updateLastWatchedTime(
   courseId: Course["courseId"],
   userId: string
 ) {
+  await requireSelf(userId);
   try {
     const timestamp = new Date().toISOString();
     const updateCommand = new UpdateCommand({
@@ -17,6 +19,7 @@ export async function updateLastWatchedTime(
         PK: `PURCHASE#${userId}`,
         SK: `COURSE#${courseId}`,
       },
+      ConditionExpression: "attribute_exists(PK)",
       UpdateExpression:
         "SET lastWatchedAt = :lastWatchedAt, updatedAt = :updatedAt",
       ExpressionAttributeValues: {

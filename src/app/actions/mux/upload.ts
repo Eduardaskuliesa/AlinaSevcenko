@@ -1,4 +1,6 @@
 "use server";
+import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
+import { getAppUrl } from "@/app/lib/appUrl";
 import { mux } from "@/app/services/mux";
 import { Course, Lesson } from "@/app/types/course";
 import { logger } from "@/app/utils/logger";
@@ -12,13 +14,14 @@ export async function createUploadUrl(
   lessonId: Lesson["lessonId"],
   cousreId: Course["courseId"]
 ) {
+  await verifyAdminAccess();
   try {
     const passthrough = JSON.stringify({
       lessonId: lessonId,
       courseId: cousreId,
     });
     const upload = await mux.video.uploads.create({
-      cors_origin: process.env.NEXTAUTH_URL || "http://localhost:3000",
+      cors_origin: getAppUrl(),
 
       new_asset_settings: {
         playback_policies: ["signed"],

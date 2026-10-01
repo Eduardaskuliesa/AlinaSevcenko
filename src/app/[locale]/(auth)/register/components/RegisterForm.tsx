@@ -8,9 +8,8 @@ import Divider from "./Divider";
 import SocialLoginButtons from "./SocialLoginButtons";
 import { useTranslations } from "next-intl";
 import { userActions } from "@/app/actions/user";
-import { RegisterFormData } from "@/app/actions/user/authentication/register";
+import type { RegisterFormData } from "@/app/actions/user/authentication/register";
 import { useRouter } from "next/navigation";
-import { emailActions } from "@/app/actions/email";
 import Link from "next/link";
 
 const RegisterForm = () => {
@@ -129,45 +128,22 @@ const RegisterForm = () => {
         fullName: fullname,
       };
 
-      const emailCheckResult = await userActions.authentication.checkEmail(
-        email
+      const htmlLang = document.documentElement.lang as string;
+      const userLang = htmlLang === "ru" ? "ru" : "lt";
+
+      const result = await userActions.authentication.registerUser(
+        formData,
+        userLang
       );
-      if (!emailCheckResult.success) {
-        if (emailCheckResult.error === "EMAIL_ALREADY_EXISTS") {
+
+      if (!result.success) {
+        if (result.error === "EMAIL_ALREADY_EXISTS") {
           setEmailError(t("emailAlreadyExists"));
         }
         return;
       }
 
-      const result = await userActions.authentication.register(formData);
-
-      if (result.success && result.userId) {
-        const verifyToken =
-          await userActions.authentication.generateVerificationToken(
-            result.userId
-          );
-
-        const htmlLang = document.documentElement.lang as string;
-        const userLang =
-          htmlLang === "lt" || htmlLang === "ru"
-            ? (htmlLang as "lt" | "ru")
-            : "lt";
-        await userActions.preferences.createPreferences(
-          result.userId,
-          userLang
-        );
-        const verificationResult =
-          await emailActions.authentication.sendVerificationEmail(
-            email,
-            verifyToken.token ?? "",
-            userLang
-          );
-        if (verificationResult.success) {
-          router.push(
-            `/register?status=pending&email=${encodeURIComponent(email)}`
-          );
-        }
-      }
+      router.push(`/register?status=pending&email=${encodeURIComponent(email)}`);
     } catch (error) {
       console.error("Registration error:", error);
     } finally {

@@ -1,6 +1,11 @@
-import { coursesAction } from "@/app/actions/coursers";
-import { AddAssetPlaybackIdData } from "@/app/actions/coursers/lesson/addAssetPlaybackId";
-import { AddDurationData } from "@/app/actions/coursers/lesson/addLessonDuration";
+import {
+  addAssetPlaybackId,
+  AddAssetPlaybackIdData,
+} from "@/app/actions/coursers/lesson/addAssetPlaybackId";
+import {
+  addLessonDuration,
+  AddDurationData,
+} from "@/app/actions/coursers/lesson/addLessonDuration";
 import { passthroughData } from "@/app/actions/mux/upload";
 import { mux } from "@/app/services/mux";
 import { headers } from "next/headers";
@@ -36,7 +41,7 @@ export async function POST(req: Request) {
         playbackId: data.playback_ids[0].id,
         status: data.status,
       };
-      const lesson = await coursesAction.lessons.addAssetPlaybackId(updateData);
+      const lesson = await addAssetPlaybackId(updateData);
       revalidateTag(`lesson-${passthrough.lessonId}`);
       if (!lesson.success) {
         return new Response("Error updating lesson", { status: 200 });
@@ -53,7 +58,7 @@ export async function POST(req: Request) {
         duration: data.duration,
         status: data.status,
       };
-      const lesson = await coursesAction.lessons.addLessonDuration(updateData);
+      const lesson = await addLessonDuration(updateData);
       revalidateTag(`lesson-${passthrough.lessonId}`);
       if (!lesson.success) {
         return new Response("Error updating lesson", { status: 200 });

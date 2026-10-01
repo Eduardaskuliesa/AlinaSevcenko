@@ -387,5 +387,94 @@
     "BackButton": {
       "backToCourses": "Grįžti į kursus"
     }
+  },
+  "Seo": {
+    "site": {
+      "name": "Alina Savcenko",
+      "defaultTitle": "Alina Savcenko – šeimos psichologės internetiniai kursai",
+      "description": "Šeimos psichologės Alinos Savcenko internetiniai kursai apie sugrįžimą į save, priėmimą, vidinę stiprybę, sveikus santykius ir harmoniją su pasauliu. Mokykitės savo tempu."
+    },
+    "home": {
+      "title": "Šeimos psichologės internetiniai kursai",
+      "description": "Erdvė atsikvėpti, paleisti kontrolę ir išgirsti save. Šeimos psichologės Alinos Savcenko vaizdo kursai apie santykius, pasitikėjimą, vidinę stiprybę ir meilę."
+    },
+    "courses": {
+      "title": "Visi kursai",
+      "description": "Naršykite Alinos Savcenko vaizdo kursus apie savęs pažinimą, santykius ir emocinę savijautą. Filtruokite pagal temą, trukmę ir kalbą, peržiūrėkite nemokamas pamokas."
+    },
+    "contact": {
+      "title": "Susisiekite",
+      "description": "Turite klausimų apie kursus, prieigą ar mokėjimus? Parašykite Alinai Savcenko per kontaktų formą arba el. paštu info@alinasavcenko.com."
+    },
+    "login": {
+      "title": "Prisijungimas",
+      "description": "Prisijunkite prie savo paskyros ir tęskite kursus ten, kur sustojote."
+    },
+    "register": {
+      "title": "Registracija",
+      "description": "Susikurkite paskyrą ir pradėkite mokytis Alinos Savcenko internetiniuose kursuose."
+    },
+    "forgotPassword": {
+      "title": "Slaptažodžio atkūrimas",
+      "description": "Gaukite nuorodą slaptažodžiui atkurti el. paštu."
+    },
+    "resetPassword": {
+      "title": "Naujas slaptažodis",
+      "description": "Susikurkite naują paskyros slaptažodį."
+    },
+    "verifyEmail": {
+      "title": "El. pašto patvirtinimas",
+      "description": "Patvirtinkite savo el. pašto adresą."
+    },
+    "cart": {
+      "title": "Pirkinių krepšelis",
+      "description": "Jūsų pasirinkti kursai."
+    },
+    "checkout": {
+      "title": "Apmokėjimas",
+      "description": "Saugus kursų apmokėjimas."
+    },
+    "checkoutSuccess": {
+      "title": "Apmokėjimas sėkmingas",
+      "description": "Ačiū! Jūsų kursai jau laukia."
+    },
+    "myCourses": {
+      "title": "Mano kursai",
+      "description": "Jūsų įsigyti kursai ir mokymosi pažanga."
+    },
+    "wishlist": {
+      "title": "Norų sąrašas",
+      "description": "Kursai, kuriuos išsaugojote vėlesniam laikui."
+    },
+    "profile": {
+      "title": "Mano paskyra",
+      "description": "Paskyros nustatymai, slaptažodis ir kalba."
+    },
+    "learn": {
+      "title": "Mokymasis",
+      "description": "Kurso pamokos."
+    }
+  },
+  "ContactPage": {
+    "title": "Susisiekite",
+    "intro": "Turite klausimų apie kursus, prieigą ar mokėjimą? Parašykite – atsakysime kuo greičiau.",
+    "orWriteDirectly": "Arba rašykite tiesiogiai:",
+    "subjectAboutCourse": "Klausimas apie kursą „{course}“",
+    "name": "Vardas",
+    "email": "El. paštas",
+    "subject": "Tema",
+    "optional": "neprivaloma",
+    "message": "Žinutė",
+    "messagePlaceholder": "Parašykite savo klausimą...",
+    "send": "Siųsti",
+    "sending": "Siunčiama...",
+    "nameRequired": "Įveskite savo vardą",
+    "invalidEmail": "Įveskite teisingą el. pašto adresą",
+    "messageTooShort": "Žinutė turi būti bent 10 simbolių",
+    "sendError": "Nepavyko išsiųsti žinutės. Bandykite dar kartą arba rašykite info@alinasavcenko.com",
+    "tooManyRequests": "Per daug bandymų. Pabandykite po kelių minučių.",
+    "successTitle": "Žinutė išsiųsta!",
+    "successMessage": "Ačiū, kad parašėte. Atsakysime į jūsų nurodytą el. paštą.",
+    "sendAnother": "Siųsti kitą žinutę"
   }
 }

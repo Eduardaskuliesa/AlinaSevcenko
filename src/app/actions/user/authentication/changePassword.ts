@@ -1,4 +1,5 @@
 "use server";
+import { requireSelf } from "@/app/lib/session";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { logger } from "@/app/utils/logger";
 import { GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
@@ -11,6 +12,7 @@ interface ChangePasswordData {
 }
 
 export async function changePassword(data: ChangePasswordData) {
+  await requireSelf(data.userId);
   try {
     if (data.newPassword.length < 8) {
       return {

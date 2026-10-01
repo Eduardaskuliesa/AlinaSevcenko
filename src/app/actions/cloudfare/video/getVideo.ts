@@ -1,5 +1,7 @@
 "use server";
+import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 export async function getVideo(videoId: string) {
+  await verifyAdminAccess();
   try {
     const token = process.env.CLOUDFLARE_STREAM_TOKEN || "";
     const accountId = process.env.CLOUDFLARE_ACCOUNT_ID || "";

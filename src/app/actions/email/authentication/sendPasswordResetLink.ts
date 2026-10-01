@@ -1,4 +1,5 @@
-"use server";
+import "server-only";
+import { getAppUrl } from "@/app/lib/appUrl";
 
 import transporter from "@/app/services/nodemailer";
 
@@ -9,7 +10,7 @@ export async function sendPasswordResetEmail(
   token: string,
   lang: Lang
 ) {
-  const baseUrl = process.env.NEXTAUTH_URL;
+  const baseUrl = getAppUrl();
   const resetPasswordLink = `${baseUrl}/${lang}/reset-password?token=${token}`;
 
   const content = getEmailContent(lang, resetPasswordLink);

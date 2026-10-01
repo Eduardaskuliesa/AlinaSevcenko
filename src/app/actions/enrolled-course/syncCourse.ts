@@ -1,6 +1,8 @@
 "use server";
+import { requireSelf } from "@/app/lib/session";
 import { logger } from "@/app/utils/logger";
 import { enrolledCourseActions } from ".";
+import { getCourse } from "./getCourse";
 import { coursesAction } from "../coursers";
 import { EnrolledCourse } from "@/app/types/enrolled-course";
 import { Course, Lesson } from "@/app/types/course";
@@ -77,11 +79,9 @@ const syncEnrolledCourse = async (
 };
 
 export async function syncCourseAction(courseId: string, userId: string) {
+  await requireSelf(userId);
   try {
-    const enrolledCourseData = await enrolledCourseActions.getCourse(
-      courseId,
-      userId
-    );
+    const enrolledCourseData = await getCourse(userId, courseId);
     if (enrolledCourseData.error) {
       logger.error(
         `Error fetching enrolled course data for courseId: ${courseId}`,

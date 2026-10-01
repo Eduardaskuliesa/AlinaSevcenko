@@ -1,5 +1,6 @@
 import { emailActions } from "@/app/actions/email";
-import { userActions } from "@/app/actions/user";
+import { getUser } from "@/app/actions/user/authentication/getUser";
+import { fetchPreferences } from "@/app/actions/user/preferences/fetchPreferences";
 import { withWorkerAuth } from "@/app/lib/withWorkerAuth";
 import { CartItem } from "@/app/types/cart";
 import { Language } from "@/app/types/course";
@@ -26,8 +27,8 @@ async function handler(req: NextRequest): Promise<NextResponse> {
     }
 
     const [preferences, user] = await Promise.all([
-      userActions.preferences.getPreferences(userId),
-      userActions.authentication.getUser(userId),
+      fetchPreferences(userId),
+      getUser(userId),
     ]);
 
     if (!user || !preferences) {

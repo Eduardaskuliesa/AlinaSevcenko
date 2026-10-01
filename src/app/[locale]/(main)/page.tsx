@@ -1,9 +1,20 @@
+import type { Metadata } from "next";
+import { pageMetadata } from "@/app/lib/seo";
 import Image from "next/image";
 import Script from "next/script";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import CourseSection from "./components/Course/CourseSection";
 import CourseSectionSkeleton from "./components/Course/CourseSectionSkeleton";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return pageMetadata({ locale, page: "home", path: "" });
+}
 
 export function generateStaticParams() {
   return [{ locale: "lt" }, { locale: "ru" }];

@@ -1,6 +1,8 @@
 "use server";
+import { requireSelf } from "@/app/lib/session";
 import { logger } from "@/app/utils/logger";
 import { enrolledCourseActions } from ".";
+import { getCourse } from "./getCourse";
 import { coursesAction } from "../coursers";
 import { EnrolledCourse } from "@/app/types/enrolled-course";
 import { Course, Lesson } from "@/app/types/course";
@@ -53,7 +55,7 @@ const needsSync = (
 async function fetchLearningData(courseId: string, userId: string) {
   logger.info(`Fetching fresh learning data`);
   try {
-    const enrolledCourseData = await enrolledCourseActions.getCourse(
+    const enrolledCourseData = await getCourse(
       userId,
       courseId
     );
@@ -117,12 +119,13 @@ export async function getLearningData(
   courseId: EnrolledCourse["courseId"],
   userId: string
 ) {
-  const cacheTag = `learning-data-${courseId}}`;
+  await requireSelf(userId);
+  const cacheTag = `learning-data-${courseId}-${userId}`;
   return unstable_cache(
     async () => {
       return fetchLearningData(courseId, userId);
     },
     [cacheTag],
-    { revalidate: 1080, tags: [cacheTag] }
+    { revalidate: 1080, tags: [cacheTag, `learning-data-${courseId}`] }
   )();
 }

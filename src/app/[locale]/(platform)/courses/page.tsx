@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+import { pageMetadata } from "@/app/lib/seo";
 import React from "react";
 import CoursePageContent from "./CoursePage";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
@@ -5,6 +7,15 @@ import { getQueryClient } from "@/app/lib/getQueryClient";
 import { coursesAction } from "@/app/actions/coursers";
 import { categoryActions } from "@/app/actions/category";
 import { getTranslations } from "next-intl/server";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return pageMetadata({ locale, page: "courses", path: "/courses" });
+}
 
 export default async function CoursePage() {
   const queryClient = getQueryClient();

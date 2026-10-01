@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+import { pageMetadata } from "@/app/lib/seo";
 import stripe from "@/app/services/stripe";
 import ClearCartComponent from "./ClearCartComponent";
 import { coursesAction } from "@/app/actions/coursers";
@@ -132,5 +134,14 @@ const CheckoutSuccessPage = async ({
     </div>
   );
 };
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return pageMetadata({ locale, page: "checkoutSuccess", path: "/checkout-success", index: false });
+}
 
 export default CheckoutSuccessPage;

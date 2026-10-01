@@ -1,4 +1,5 @@
 "use server";
+import { requireSelf } from "@/app/lib/session";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { logger } from "@/app/utils/logger";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
@@ -8,6 +9,7 @@ export async function updateLanguagePreferences(
   language: string,
   userId: string
 ) {
+  await requireSelf(userId);
   try {
     const command = new UpdateCommand({
       TableName: dynamoTableName,

@@ -29,8 +29,7 @@ interface CartState {
   clearCartOnLogout: () => void;
 }
 
-const workerUrl = process.env.WORKER_URL;
-const workerKey = process.env.WORKER_API_KEY;
+const workerUrl = "/api/worker";
 export const useCartStore = create<CartState>()(
   persist(
     immer((set) => ({
@@ -46,25 +45,23 @@ export const useCartStore = create<CartState>()(
           hydrated,
         })),
 
-      syncWithBackend: async (userId: string) => {
+      syncWithBackend: async () => {
         try {
           set((state) => {
             state.loading = true;
           });
 
           const [cartResponse, wishlistResponse] = await Promise.all([
-            fetch(`${workerUrl}/cart?userId=${userId}`, {
+            fetch(`${workerUrl}/cart`, {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
-                "x-api-key": `${workerKey}` || "",
               },
             }),
-            fetch(`${workerUrl}/whishlist?userId=${userId}`, {
+            fetch(`${workerUrl}/whishlist`, {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
-                "x-api-key": `${workerKey}` || "",
               },
             }),
           ]);
@@ -120,17 +117,16 @@ export const useCartStore = create<CartState>()(
           state.totalItems = state.cartItems.length;
         });
 
-        await fetch(`${workerUrl}/cart/add?userId=${item.userId}`, {
+        await fetch(`${workerUrl}/cart/add`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "x-api-key": `${workerKey}` || "",
           },
           body: JSON.stringify({ ...item, isFromPrice }),
         });
       },
 
-      removeFromCart: async (courseId: string, userId: string) => {
+      removeFromCart: async (courseId: string) => {
         set((state) => {
           state.cartItems = state.cartItems.filter(
             (cartItem) => cartItem.courseId !== courseId
@@ -143,36 +139,33 @@ export const useCartStore = create<CartState>()(
           state.totalItems = state.cartItems.length;
         });
 
-        await fetch(`${workerUrl}/cart/remove?userId=${userId}`, {
+        await fetch(`${workerUrl}/cart/remove`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            "x-api-key": `${workerKey}` || "",
           },
           body: JSON.stringify({ courseId }),
         });
       },
 
-      clearCart: async (userId: string) => {
+      clearCart: async () => {
         set((state) => {
           state.cartItems = [];
           state.totalPrice = 0;
           state.totalItems = 0;
         });
 
-        await fetch(`${workerUrl}/cart/clear?userId=${userId}`, {
+        await fetch(`${workerUrl}/cart/clear`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "x-api-key": `${workerKey}` || "",
           },
         });
       },
 
       updateCartItem: async (
         courseId: string,
-        updates: Partial<CartItem>,
-        userId: string
+        updates: Partial<CartItem>
       ) => {
         set((state) => {
           const item = state.cartItems.find(
@@ -190,11 +183,10 @@ export const useCartStore = create<CartState>()(
           }
         });
 
-        await fetch(`${workerUrl}/cart/update-item?userId=${userId}`, {
+        await fetch(`${workerUrl}/cart/update-item`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            "x-api-key": `${workerKey}` || "",
           },
           body: JSON.stringify({ courseId, updates }),
         });
@@ -215,11 +207,10 @@ export const useCartStore = create<CartState>()(
         });
 
         try {
-          await fetch(`${workerUrl}/whishlist/add?userId=${item.userId}`, {
+          await fetch(`${workerUrl}/whishlist/add`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "x-api-key": `${workerKey}` || "",
             },
             body: JSON.stringify({ ...item, isFromPrice }),
           });
@@ -228,7 +219,7 @@ export const useCartStore = create<CartState>()(
         }
       },
 
-      removeFromWishlist: async (courseId: string, userId: string) => {
+      removeFromWishlist: async (courseId: string) => {
         set((state) => {
           state.wishlistItems = state.wishlistItems.filter(
             (wishlistItem) => wishlistItem.courseId !== courseId
@@ -236,11 +227,10 @@ export const useCartStore = create<CartState>()(
         });
 
         try {
-          await fetch(`${workerUrl}/whishlist/remove?userId=${userId}`, {
+          await fetch(`${workerUrl}/whishlist/remove`, {
             method: "DELETE",
             headers: {
               "Content-Type": "application/json",
-              "x-api-key": `${workerKey}` || "",
             },
             body: JSON.stringify({ courseId }),
           });

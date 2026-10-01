@@ -1,212 +1,156 @@
-/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 import { logger } from "@/app/utils/logger";
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
-import { enrolledCourseActions } from "@/app/actions/enrolled-course";
-import { PurschaseCourseData } from "@/app/actions/enrolled-course/createEnrolledCourse";
-import { cloudflareWorkerActions } from "@/app/actions/cloudflareWorker";
 import { revalidateTag } from "next/cache";
-import { userActions } from "@/app/actions/user";
-import { coursesAction } from "@/app/actions/coursers";
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-05-28.basil",
-});
+import stripe from "@/app/services/stripe";
+import { cloudflareWorkerActions } from "@/app/actions/cloudflareWorker";
+import { getCourse } from "@/app/actions/enrolled-course/getCourse";
+import {
+  createPurchasedCourse,
+  PurschaseCourseData,
+} from "@/app/actions/enrolled-course/createEnrolledCourse";
+import { updateEnrolledCourse } from "@/app/actions/enrolled-course/updateEnrolledCourse";
+import { updateEnrollmentCount } from "@/app/actions/enrolled-course/updateEnrollmentCount";
+import { updateCoursePreferences } from "@/app/actions/user/preferences/updateCoursePreferences";
+import { fetchCourse } from "@/app/actions/coursers/course/getCourseClient";
+import { fetchLessons } from "@/app/actions/coursers/lesson/getClientLessons";
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+function computeExpiry(
+  currentExpiry: string | undefined,
+  durationDays: number
+): string {
+  if (durationDays === 0 || currentExpiry === "lifetime") return "lifetime";
+
+  const current = currentExpiry ? new Date(currentExpiry).getTime() : 0;
+  const base = Math.max(Date.now(), Number.isNaN(current) ? 0 : current);
+  return new Date(base + durationDays * DAY_MS).toISOString();
+}
+
+async function enrollFromPaymentIntent(paymentIntent: Stripe.PaymentIntent) {
+  const { courseIds, accessIds, userId } = paymentIntent.metadata;
+  if (!courseIds || !accessIds || !userId) {
+    logger.error(`PaymentIntent ${paymentIntent.id} has no enrollment metadata`);
+    return;
+  }
+
+  const courseIdArray = courseIds.split(",");
+  const accessIdArray = accessIds.split(",");
+  const coursePreferences: { courseId: string; expiresAt: string }[] = [];
+
+  for (let i = 0; i < courseIdArray.length; i++) {
+    const courseId = courseIdArray[i];
+    const accessPlanId = accessIdArray[i];
+
+    const existing = (await getCourse(userId, courseId)).cousre;
+
+    if (existing?.paymentId === paymentIntent.id) {
+      logger.info(`Payment ${paymentIntent.id} already applied to ${courseId}`);
+      coursePreferences.push({ courseId, expiresAt: existing.expiresAt });
+      continue;
+    }
+
+    const { course, error } = await fetchCourse(courseId);
+    if (error || !course) throw new Error(`Course ${courseId} not found`);
+
+    const accessPlan = course.accessPlans?.find((p) => p.id === accessPlanId);
+    if (!accessPlan) {
+      throw new Error(`Access plan ${accessPlanId} not found for ${courseId}`);
+    }
+
+    const expiresAt = computeExpiry(existing?.expiresAt, accessPlan.duration);
+    const purchaseFields = {
+      purchaseId: paymentIntent.id,
+      paymentId: paymentIntent.id,
+      expiresAt,
+      accessPlanName: accessPlan.name,
+      accessPlanDuration: accessPlan.duration,
+      pricePaid: accessPlan.price,
+      purchaseDate: new Date().toISOString(),
+      status: "ACTIVE" as const,
+    };
+
+    let result: { success: boolean; error?: unknown };
+
+    if (existing) {
+      result = await updateEnrolledCourse({
+        ...(existing as unknown as PurschaseCourseData),
+        ...purchaseFields,
+      });
+      logger.info(`Extended ${courseId}: ${existing.expiresAt} -> ${expiresAt}`);
+    } else {
+      const lessons = (await fetchLessons(courseId)) ?? [];
+      const lessonProgress: PurschaseCourseData["lessonProgress"] = {};
+      lessons
+        .filter((lesson) => lesson.status === "ready")
+        .forEach((lesson) => {
+          lessonProgress[lesson.lessonId] = {
+            progress: 0,
+            completedAt: "",
+            wasReworked: false,
+          };
+        });
+
+      result = await createPurchasedCourse({
+        ...purchaseFields,
+        userId,
+        courseId,
+        slug: course.slug || "",
+        duration: course.duration || 0,
+        shortDescription: course.shortDescription || "",
+        longDescription: course.description || "",
+        lessonCount: course.lessonCount || 0,
+        title: course.title || "",
+        languge: course.language || "lt",
+        thumbnailImage: course.thumbnailImage || "",
+        lessonProgress,
+      });
+
+      if (result.success) await updateEnrollmentCount(courseId);
+    }
+
+    if (!result.success) {
+      throw new Error(`Failed to save enrollment for ${courseId}`);
+    }
+
+    coursePreferences.push({ courseId, expiresAt });
+
+    await cloudflareWorkerActions.reminder1Days(courseId, userId, expiresAt);
+    await cloudflareWorkerActions.reminder7Days(courseId, userId, expiresAt);
+
+    revalidateTag(`verify-purchase-${courseId}-${userId}`);
+    revalidateTag(`learning-data-${courseId}-${userId}`);
+  }
+
+  await updateCoursePreferences(userId, coursePreferences);
+  revalidateTag(`users-course-${userId}`);
+}
 
 export async function POST(req: Request) {
-  logger.success("Received webhook request from Stripe");
+  let event: Stripe.Event;
 
   try {
     const body = await req.text();
-    const signature = req.headers.get("stripe-signature")!;
-
-    const event = stripe.webhooks.constructEvent(
-      body,
-      signature,
-      webhookSecret
-    );
-
-    const coursePreferences = [];
-
-    if (event.type === "payment_intent.succeeded") {
-      const metadata = event.data.object.metadata;
-
-      const { courseIds, accessIds, userId } = metadata as Stripe.Metadata;
-
-      const courseIdArray = courseIds.split(",");
-      const accessIdArray = accessIds.split(",");
-
-      for (let i = 0; i < courseIdArray.length; i++) {
-        const courseId = courseIdArray[i];
-        const accessPlanId = accessIdArray[i];
-
-        logger.info(
-          `Processing course ID: ${courseId}, Access Plan: ${accessPlanId}`
-        );
-
-        const course = (await coursesAction.courses.getCourseClient(courseId))
-          .course;
-        const lessons = await coursesAction.lessons.getClientLessons(courseId);
-
-        const accessPlan = course?.accessPlans?.find(
-          (plan) => plan.id === accessPlanId
-        );
-
-        if (!accessPlan) {
-          logger.error(
-            `Access plan ${accessPlanId} not found for course ${courseId}`
-          );
-          continue;
-        }
-
-        const lifeTime = accessPlan.duration === 0;
-
-        const existingCourse = await enrolledCourseActions.getCourse(
-          userId,
-          courseId
-        );
-
-        let enrolledCourseData: PurschaseCourseData;
-
-        if (existingCourse.cousre) {
-          let newExpiresAt: string;
-
-          if (lifeTime) {
-            newExpiresAt = "lifetime";
-          }
-          if (existingCourse.cousre?.expiresAt === "lifetime") {
-            newExpiresAt = "lifetime";
-          } else {
-            const currentExpiry = new Date(
-              existingCourse.cousre?.expiresAt!
-            ).getTime();
-            const additionalTime = accessPlan.duration * 24 * 60 * 60 * 1000;
-            newExpiresAt = new Date(
-              currentExpiry + additionalTime
-            ).toISOString();
-          }
-
-          enrolledCourseData = {
-            ...existingCourse.cousre!,
-            purchaseId: event.data.object.id,
-            paymentId: event.data.object.id as string,
-            expiresAt: newExpiresAt,
-            accessPlanName: accessPlan.name,
-            accessPlanDuration: accessPlan.duration,
-            pricePaid: accessPlan.price,
-            purchaseDate: new Date().toISOString(),
-            status: "ACTIVE",
-          };
-
-          logger.info(
-            `Extending course ${courseId} - Old expiry: ${existingCourse.cousre?.expiresAt}, New expiry: ${newExpiresAt}`
-          );
-        } else {
-          const lessonProgress: {
-            [lessonId: string]: {
-              progress: number;
-              completedAt?: string;
-              wasReworked?: boolean;
-            };
-          } = {};
-
-          lessons?.forEach((lesson) => {
-            lessonProgress[lesson.lessonId] = {
-              progress: 0,
-              completedAt: "",
-              wasReworked: false,
-            };
-          });
-
-          const expiresAt = lifeTime
-            ? "lifetime"
-            : new Date(
-                Date.now() + accessPlan.duration * 24 * 60 * 60 * 1000
-              ).toISOString();
-
-          enrolledCourseData = {
-            purchaseId: event.data.object.id,
-            paymentId: event.data.object.id as string,
-            userId: userId,
-            courseId: courseId,
-            slug: course?.slug || "",
-            duration: course?.duration || 0,
-            shortDescription: course?.shortDescription || "",
-            longDescription: course?.description || "",
-            lessonCount: course?.lessonCount || 0,
-            title: course?.title || "",
-            languge: course?.language || "lt",
-            accessPlanName: accessPlan.name,
-            accessPlanDuration: accessPlan.duration,
-            pricePaid: accessPlan.price,
-            thumbnailImage: course?.thumbnailImage || "",
-            purchaseDate: new Date().toISOString(),
-            expiresAt: expiresAt,
-            status: "ACTIVE",
-            lessonProgress: lessonProgress,
-          };
-
-          logger.info(`Creating new enrolled course ${courseId}`);
-        }
-
-        coursePreferences.push({
-          courseId: courseId,
-          expiresAt: enrolledCourseData.expiresAt,
-        });
-
-        const createResponse = existingCourse.cousre
-          ? await enrolledCourseActions.updateEnrolledCourse(enrolledCourseData)
-          : await enrolledCourseActions.createPurchasedCourse(
-              enrolledCourseData
-            );
-
-        if (!createResponse.success) {
-          logger.error(
-            `Failed to create/update enrolled course: ${createResponse.error}`
-          );
-
-          return new Response("Course creation/update failed", {
-            status: 500,
-          });
-        }
-
-        if (createResponse.success) {
-          await enrolledCourseActions.updateEnrollmentCount(courseId);
-
-          await cloudflareWorkerActions.reminder1Days(
-            courseId,
-            userId,
-            enrolledCourseData.expiresAt
-          );
-
-          await cloudflareWorkerActions.reminder7Days(
-            courseId,
-            userId,
-            enrolledCourseData.expiresAt
-          );
-
-          await userActions.preferences.updateCoursePreferences(
-            userId,
-            coursePreferences
-          );
-        }
-
-        revalidateTag(`users-course-${userId}`);
-        logger.success("Enrolled course processed successfully");
-      }
+    const signature = req.headers.get("stripe-signature");
+    if (!signature) {
+      return NextResponse.json({ error: "Missing signature" }, { status: 400 });
     }
+    event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+  } catch (error) {
+    logger.error("Invalid Stripe webhook signature", error);
+    return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+  }
 
-    return NextResponse.json({ recieved: true });
+  try {
+    if (event.type === "payment_intent.succeeded") {
+      await enrollFromPaymentIntent(event.data.object);
+      logger.success(`Enrollment processed for ${event.data.object.id}`);
+    }
+    return NextResponse.json({ received: true });
   } catch (error) {
     logger.error("Error processing Stripe webhook:", error);
-    return NextResponse.json(
-      {
-        received: true,
-        error: "Processing failed but acknowledged",
-      },
-      { status: 200 }
-    );
+    return NextResponse.json({ error: "Processing failed" }, { status: 500 });
   }
 }

@@ -9,6 +9,7 @@ import { useCartStore } from "@/app/store/useCartStore";
 import { motion, AnimatePresence, PanInfo } from "motion/react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { Link as LocaleLink } from "@/i18n/navigation";
 import {
   Sheet,
   SheetContent,
@@ -428,13 +429,15 @@ const MobileCartDrawer = ({ courseData }: MobileCartDrawerProps) => {
                 </Link>
 
                 <div className="text-center pt-2">
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => console.log("Opening support chat")}
+                  <LocaleLink
+                    href={{
+                      pathname: "/contact",
+                      query: { course: courseData.title },
+                    }}
                     className="text-sm text-gray-500 hover:text-gray-700 transition-colors underline"
                   >
                     {t("haveQuestions")}
-                  </motion.button>
+                  </LocaleLink>
                 </div>
               </div>
             </div>

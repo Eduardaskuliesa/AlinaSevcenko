@@ -1,4 +1,5 @@
 "use server";
+import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { logger } from "@/app/utils/logger";
@@ -15,6 +16,7 @@ export async function storeBlurPlaceholder(
   courseId: string,
   playbackId: string
 ): Promise<BlurPlaceholderData | null> {
+  await verifyAdminAccess();
   try {
     const placeholder = await muxActions.getPlaceholder(playbackId);
 

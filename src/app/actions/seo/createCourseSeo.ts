@@ -1,4 +1,5 @@
 "use server";
+import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 import { coursesAction } from "../coursers";
 import { logger } from "@/app/utils/logger";
 import { PutCommand } from "@aws-sdk/lib-dynamodb";
@@ -12,6 +13,7 @@ interface CourseSeoData {
 }
 
 export async function createCourseSeo(courseData: CourseSeoData) {
+  await verifyAdminAccess();
   try {
     const getCourseResponses = await coursesAction.courses.getCourse(
       courseData.courseId

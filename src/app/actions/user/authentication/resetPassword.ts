@@ -1,72 +1,76 @@
 "use server";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { QueryCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { ConditionalCheckFailedException } from "@aws-sdk/client-dynamodb";
 import bcrypt from "bcryptjs";
 
 export async function resetPassword(token: string, password: string) {
   try {
-    const tokenCommand = new QueryCommand({
-      TableName: dynamoTableName,
-      KeyConditionExpression: "PK = :pk",
-      ExpressionAttributeValues: {
-        ":pk": `MAGICLINK#${token}`,
-      },
-    });
-
-    const tokenResult = await dynamoDb.send(tokenCommand);
-
-    if (!tokenResult.Items || tokenResult.Items.length === 0) {
+    if (typeof token !== "string" || !token) {
+      return { success: false, message: "Invalid token." };
+    }
+    if (
+      typeof password !== "string" ||
+      password.length < 8 ||
+      !/[A-Z]/.test(password)
+    ) {
       return {
         success: false,
-        message: "Invalid token.",
+        message:
+          "Password must be at least 8 characters and contain an uppercase letter.",
       };
     }
 
-    const tokenRecord = tokenResult.Items[0];
-    const userEmail = tokenRecord.email;
+    const tokenResult = await dynamoDb.send(
+      new QueryCommand({
+        TableName: dynamoTableName,
+        KeyConditionExpression: "PK = :pk",
+        ExpressionAttributeValues: { ":pk": `MAGICLINK#${token}` },
+      })
+    );
 
-    const findUserCommand = new QueryCommand({
-      TableName: dynamoTableName,
-      IndexName: "GSI1",
-      KeyConditionExpression: "GSI1PK = :email AND GSI1SK = :sk",
-      ExpressionAttributeValues: {
-        ":email": userEmail,
-        ":sk": "EMAIL",
-      },
-    });
-
-    const userResult = await dynamoDb.send(findUserCommand);
-
-    if (!userResult.Items || userResult.Items.length === 0) {
-      return {
-        success: false,
-        message: "User not found.",
-      };
+    const tokenRecord = tokenResult.Items?.[0];
+    if (!tokenRecord) {
+      return { success: false, message: "Invalid token." };
+    }
+    if (tokenRecord.ttl < Math.floor(Date.now() / 1000)) {
+      return { success: false, message: "Reset link has expired." };
     }
 
-    const user = userResult.Items[0];
-    const userId = user.PK.replace("USER#", "");
+    try {
+      await dynamoDb.send(
+        new UpdateCommand({
+          TableName: dynamoTableName,
+          Key: { PK: tokenRecord.PK, SK: tokenRecord.SK },
+          UpdateExpression: "SET used = :true",
+          ConditionExpression: "used = :false",
+          ExpressionAttributeValues: { ":true": true, ":false": false },
+        })
+      );
+    } catch (error) {
+      if (error instanceof ConditionalCheckFailedException) {
+        return { success: false, message: "Reset link has already been used." };
+      }
+      throw error;
+    }
 
-    const hashedPassword = bcrypt.hashSync(password, 10);
+    const userId = (tokenRecord.SK as string).replace("USER#", "");
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    const updateUserCommand = new UpdateCommand({
-      TableName: dynamoTableName,
-      Key: {
-        PK: `USER#${userId}`,
-        SK: "PROFILE",
-      },
-      UpdateExpression: "SET password = :password, updatedAt = :updatedAt",
-      ExpressionAttributeValues: {
-        ":password": hashedPassword,
-        ":updatedAt": new Date().toISOString(),
-      },
-    });
+    await dynamoDb.send(
+      new UpdateCommand({
+        TableName: dynamoTableName,
+        Key: { PK: "PROFILE", SK: `USER#${userId}` },
+        UpdateExpression: "SET password = :password, updatedAt = :updatedAt",
+        ConditionExpression: "attribute_exists(PK)",
+        ExpressionAttributeValues: {
+          ":password": hashedPassword,
+          ":updatedAt": new Date().toISOString(),
+        },
+      })
+    );
 
-    await dynamoDb.send(updateUserCommand);
-    return {
-      success: true,
-      message: "Password reset successfully.",
-    };
+    return { success: true, message: "Password reset successfully." };
   } catch (error) {
     console.error("Error resetting password:", error);
     return {

@@ -1,5 +1,16 @@
+import type { Metadata } from "next";
+import { pageMetadata } from "@/app/lib/seo";
 import Navigation from "./components/Navigation";
 import { getTranslations } from "next-intl/server";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return pageMetadata({ locale, page: "profile", path: "/user/profile", index: false });
+}
 
 export default async function MyCoursersLayout({
   children,

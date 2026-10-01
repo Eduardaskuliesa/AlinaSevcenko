@@ -1,4 +1,5 @@
 "use server";
+import { requireSelf } from "@/app/lib/session";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { logger } from "@/app/utils/logger";
@@ -28,6 +29,7 @@ async function fetchCourses(userId: string) {
 }
 
 export async function getUsersCourses(userId: string) {
+  await requireSelf(userId);
   const cacheTag = `users-course-${userId}`;
   return unstable_cache(
     async () => {

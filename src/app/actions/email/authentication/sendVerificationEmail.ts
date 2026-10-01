@@ -1,4 +1,5 @@
-"use server";
+import "server-only";
+import { getAppUrl } from "@/app/lib/appUrl";
 import transporter from "@/app/services/nodemailer";
 
 type Lang = "lt" | "ru";
@@ -8,7 +9,7 @@ export async function sendVerificationEmail(
   token: string,
   lang: Lang
 ) {
-  const baseUrl = process.env.NEXTAUTH_URL;
+  const baseUrl = getAppUrl();
   const verificationLink = `${baseUrl}/${lang}/verify-email?token=${token}`;
 
   const content = getEmailContent(lang, verificationLink);

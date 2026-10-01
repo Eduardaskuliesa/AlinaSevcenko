@@ -1,4 +1,4 @@
-"use server";
+import "server-only";
 import { v4 as uuidv4 } from "uuid";
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";

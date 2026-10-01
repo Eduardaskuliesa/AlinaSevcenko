@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+import { pageMetadata } from "@/app/lib/seo";
 import React from "react";
 import PageWrapper from "../../components/PageWrapper";
 import MyLearningPage from "./components/MyLearningPage";
@@ -23,5 +25,14 @@ const page = async () => {
     </>
   );
 };
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return pageMetadata({ locale, page: "myCourses", path: "/my-courses/courses", index: false });
+}
 
 export default page;

@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+import { pageMetadata } from "@/app/lib/seo";
 import React from "react";
 import WishlistWrapper from "./componets/WishlistWrapper";
 import PageWrapper from "../../components/PageWrapper";
@@ -23,5 +25,14 @@ const WishlistPage = async () => {
     </>
   );
 };
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return pageMetadata({ locale, page: "wishlist", path: "/my-courses/wishlist", index: false });
+}
 
 export default WishlistPage;

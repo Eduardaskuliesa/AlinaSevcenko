@@ -1,39 +1,38 @@
-import { CartItem } from "@/app/types/cart";
+import { CartLine, priceCart, PricingError } from "@/app/lib/pricing";
+import { AuthError, requireUserId } from "@/app/lib/session";
+import stripe from "@/app/services/stripe";
+import { logger } from "@/app/utils/logger";
 import { NextRequest, NextResponse } from "next/server";
-import Stripe from "stripe";
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-05-28.basil",
-});
 
 export async function POST(req: NextRequest) {
   try {
-    const { cartItems, userId } = await req.json();
+    const userId = await requireUserId();
+    const { cartItems } = (await req.json()) as { cartItems: CartLine[] };
 
-    const totalAmount = cartItems.reduce(
-      (sum: number, item: CartItem) => sum + item.price,
-      0
-    );
+    const { priced, totalCents } = await priceCart(cartItems);
 
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(totalAmount * 100),
+      amount: totalCents,
       currency: "eur",
       automatic_payment_methods: { enabled: true },
       metadata: {
-        courseIds: cartItems.map((item: CartItem) => item.courseId).join(","),
-        accessIds: cartItems
-          .map((item: CartItem) => item.accessPlanId)
-          .join(","),
-        userId: userId,
+        courseIds: priced.map(({ course }) => course.courseId).join(","),
+        accessIds: priced.map(({ accessPlan }) => accessPlan.id).join(","),
+        userId,
       },
     });
 
-    return NextResponse.json({
-      clientSecret: paymentIntent.client_secret,
-    });
+    return NextResponse.json({ clientSecret: paymentIntent.client_secret });
   } catch (error) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    if (error instanceof PricingError) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+    logger.error("Failed to create payment intent", error);
     return NextResponse.json(
-      { error: `Failed to create payment intent: ${error}` },
+      { error: "Failed to create payment intent" },
       { status: 500 }
     );
   }

@@ -1,6 +1,7 @@
 import { coursesAction } from "@/app/actions/coursers";
 import { emailActions } from "@/app/actions/email";
-import { userActions } from "@/app/actions/user";
+import { getUser } from "@/app/actions/user/authentication/getUser";
+import { fetchPreferences } from "@/app/actions/user/preferences/fetchPreferences";
 import { withWorkerAuth } from "@/app/lib/withWorkerAuth";
 import { Language } from "@/app/types/course";
 import { logger } from "@/app/utils/logger";
@@ -28,8 +29,8 @@ async function handler(req: NextRequest): Promise<NextResponse> {
     }
     const [course, preferences, user] = await Promise.all([
       coursesAction.courses.getCourseClient(courseId),
-      userActions.preferences.getPreferences(userId),
-      userActions.authentication.getUser(userId),
+      fetchPreferences(userId),
+      getUser(userId),
     ]);
 
     if (!course || !preferences || !user) {

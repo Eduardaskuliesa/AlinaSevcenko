@@ -51,6 +51,8 @@ const middleware = withAuth(
           "/user",
           "/cart",
           "/checkout-success",
+          "/checkout",
+          "/learn",
         ].some((path) => pathnameWithoutLocale.startsWith(path));
 
         return requiresAuth ? !!token : true;

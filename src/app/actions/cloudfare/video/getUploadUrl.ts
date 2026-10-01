@@ -1,7 +1,9 @@
 "use server";
+import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 import { logger } from "@/app/utils/logger";
 
 export async function getUploadUrl() {
+  await verifyAdminAccess();
   const token = process.env.CLOUDFLARE_STREAM_TOKEN;
   const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
 

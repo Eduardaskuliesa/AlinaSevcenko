@@ -1,4 +1,5 @@
 "use server";
+import { verifyAdminAccess } from "@/app/lib/checkIsAdmin";
 
 import { dynamoDb, dynamoTableName } from "@/app/services/dynamoDB";
 import { logger } from "@/app/utils/logger";
@@ -19,6 +20,7 @@ export async function updateCourseSeo({
   metaTitle,
   metaDescription,
 }: UpdateCourseSeoData) {
+  await verifyAdminAccess();
   try {
     const getCommand = new GetCommand({
       TableName: dynamoTableName,
